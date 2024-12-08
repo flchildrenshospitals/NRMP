@@ -6,7 +6,6 @@
   <title>NRMP Data</title>
 
   <style>
-  /* General Page Styling */
   body {
     font-family: 'Arial', sans-serif;
     margin: 20px;
@@ -33,7 +32,6 @@
     color: #4CAF50;
   }
 
-  /* Table Styling */
   table {
     width: 90%;
     border-collapse: collapse;
@@ -42,6 +40,7 @@
     overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    table-layout: fixed; /* Ensures equal column widths */
   }
 
   th, td {
@@ -73,6 +72,7 @@
     font-size: 15px;
     color: #555;
     vertical-align: middle;
+    word-wrap: break-word; /* Prevents overflow issues */
   }
 
   td:last-child {
@@ -84,17 +84,18 @@
   /* Total Row Styling */
   .total-row {
     font-weight: bold;
-    background-color: #ffefc5;
+    background-color: #ffeeba;
     color: #333;
     border-top: 2px solid #ddd;
+    text-transform: uppercase;
   }
 
   .total-row td {
     font-size: 16px;
-    text-transform: uppercase;
+    color: #000;
   }
 
-  /* Table Animation */
+  /* Animation for Table */
   table {
     animation: fadeIn 0.6s ease-in-out;
   }
@@ -110,14 +111,6 @@
     }
   }
 
-  /* Section Styling */
-  h2 {
-    margin-top: 40px;
-    font-size: 24px;
-    color: #4CAF50;
-  }
-
-  /* Responsive Styling */
   @media (max-width: 768px) {
     table {
       width: 100%;
@@ -138,7 +131,6 @@
   }
 </style>
 
-
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
@@ -155,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(data => {
       const rows = data.split("\n").map(row => row.split(","));
       const headers = rows.shift().map(header => header.trim()); // Clean up headers
-      console.log("Headers:", headers); // Debugging: Log headers
 
       // Find indexes for required columns
       const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
@@ -204,6 +195,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+      // Add comma formatting to numbers
+      function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
       // Function to create a table
       function createTable(aggregates, title) {
         const section = document.createElement("div");
@@ -242,8 +238,8 @@ document.addEventListener("DOMContentLoaded", function () {
               : "N/A";
 
           sponsorCell.textContent = sponsor;
-          quotaCell.textContent = sponsorData.totalQuota;
-          matchedCell.textContent = sponsorData.totalMatched;
+          quotaCell.textContent = formatNumber(sponsorData.totalQuota);
+          matchedCell.textContent = formatNumber(sponsorData.totalMatched);
           matchPercentCell.textContent = matchPercent;
 
           tr.appendChild(sponsorCell);
@@ -258,14 +254,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add total row
         const totalRow = document.createElement("tr");
+        totalRow.classList.add("total-row");
         const totalLabelCell = document.createElement("td");
         const totalQuotaCell = document.createElement("td");
         const totalMatchedCell = document.createElement("td");
         const totalMatchPercentCell = document.createElement("td");
 
         totalLabelCell.textContent = "Total";
-        totalQuotaCell.textContent = totalQuota;
-        totalMatchedCell.textContent = totalMatched;
+        totalQuotaCell.textContent = formatNumber(totalQuota);
+        totalMatchedCell.textContent = formatNumber(totalMatched);
         totalMatchPercentCell.textContent =
           totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) + "%" : "N/A";
 
@@ -288,7 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(error => console.error("Error loading CSV:", error));
 });
-</script>
 
+</script>
 
 </html>
