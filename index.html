@@ -6,137 +6,115 @@
   <title>NRMP Data</title>
 
   <style>
-    /* General Page Styling */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 20px;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
+  /* General Page Styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: 28px;
+    color: #2c3e50;
+  }
+
+  h2 {
+    font-size: 22px;
+    color: #003366;
+  }
+
+  table {
+    width: auto; /* Auto-resize based on content */
+    max-width: 80%; /* Limit the maximum width */
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    table-layout: auto; /* Allow column sizes to adjust based on content */
+  }
+
+  /* Table Headers */
+  th {
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 16px;
+    padding: 12px; /* Reduced padding */
+    letter-spacing: 0.5px;
+  }
+
+  /* Table Rows */
+  td {
+    padding: 10px; /* Reduced padding */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+    color: #555;
+  }
+
+  td:last-child {
+    text-align: center; /* Center align Match % column */
+    font-weight: bold;
+  }
+
+  /* Row Alternation */
+  tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+
+  tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Total Row Styling */
+  .total-row {
+    background-color: #d9edf7; /* Highlight for Total Row */
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .total-row td {
+    font-size: 16px;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    table {
+      width: 100%; /* Allow table to stretch fully on small screens */
     }
 
-    h1, h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
-      font-weight: 700;
+    th, td {
+      font-size: 13px;
+      padding: 8px;
     }
 
     h1 {
-      font-size: 28px;
-      color: #2c3e50;
+      font-size: 22px;
     }
 
     h2 {
-      font-size: 22px;
-      color: #003366;
+      font-size: 18px;
     }
+  }
+</style>
 
-    table {
-      width: 90%;
-      border-collapse: collapse;
-      margin: 30px auto;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      table-layout: fixed;
-    }
-
-    /* Table 1 (SNHAF) Styling */
-    .table1 th {
-      background-color: #4CAF50; /* Green Header */
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 16px;
-      padding: 16px;
-      letter-spacing: 0.5px;
-    }
-
-    .table1 tr:nth-child(even) {
-      background-color: #eaf7ea; /* Light Green */
-    }
-
-    .table1 tr:nth-child(odd) {
-      background-color: #ffffff; /* White */
-    }
-
-    .table1 .total-row {
-      background-color: #c8e6c9; /* Highlighted Total Row in Green */
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    /* Table 2 (Non-SNHAF) Styling */
-    .table2 th {
-      background-color: #2196F3; /* Blue Header */
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 16px;
-      padding: 16px;
-      letter-spacing: 0.5px;
-    }
-
-    .table2 tr:nth-child(even) {
-      background-color: #e3f2fd; /* Light Blue */
-    }
-
-    .table2 tr:nth-child(odd) {
-      background-color: #ffffff; /* White */
-    }
-
-    .table2 .total-row {
-      background-color: #bbdefb; /* Highlighted Total Row in Blue */
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    td {
-      padding: 14px 18px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-      font-size: 15px;
-      color: #555;
-    }
-
-    td:last-child {
-      font-weight: bold;
-      text-align: center;
-      color: #333;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-      transform: scale(1.01);
-      transition: all 0.2s ease-in-out;
-    }
-
-    table {
-      border-radius: 12px;
-      border-spacing: 0;
-      overflow: hidden;
-    }
-
-    @media (max-width: 768px) {
-      table {
-        width: 100%;
-      }
-
-      th, td {
-        font-size: 13px;
-        padding: 10px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      h2 {
-        font-size: 18px;
-      }
-    }
-  </style>
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
