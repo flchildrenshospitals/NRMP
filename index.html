@@ -50,13 +50,14 @@ tr:nth-child(even) {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv"; // Use your actual GitHub Pages URL
+  const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
   
   fetch(csvUrl)
     .then(response => response.text())
     .then(data => {
       const rows = data.split("\n").map(row => row.split(","));
-      const headers = rows.shift(); // Extract headers
+      const headers = rows.shift().map(header => header.trim()); // Clean up headers
+      console.log("Headers:", headers); // Debugging: Log headers
 
       // Find indexes for required columns
       const sponsorIndex = headers.indexOf("Sponsoring Institution");
@@ -74,6 +75,10 @@ document.addEventListener("DOMContentLoaded", function () {
         headers.indexOf("2021 Matched"),
         headers.indexOf("2020 Matched"),
       ];
+
+      console.log("Sponsor Index:", sponsorIndex);
+      console.log("Quota Indexes:", quotaIndexes);
+      console.log("Matched Indexes:", matchedIndexes);
 
       if (sponsorIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
         console.error("Missing required columns");
@@ -137,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(error => console.error("Error loading CSV:", error));
 });
+
 </script>
 
 </html>
