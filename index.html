@@ -121,139 +121,157 @@
   <div id="content"></div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+  document.addEventListener("DOMContentLoaded", function () {
+    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
 
-      fetch(csvUrl)
-        .then(response => response.text())
-        .then(data => {
-          const rows = data.split("\n").map(row => row.split(","));
-          const headers = rows.shift().map(header => header.trim());
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split("\n").map(row => row.split(","));
+        const headers = rows.shift().map(header => header.trim());
 
-          // Find column indexes
-          const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
-          const snhafIndex = headers.indexOf("SNHAF");
-          const quotaIndexes = [
-            headers.indexOf("2024 Quota"),
-            headers.indexOf("2023 Quota"),
-            headers.indexOf("2022 Quota"),
-            headers.indexOf("2021 Quota"),
-            headers.indexOf("2020 Quota"),
-          ];
-          const matchedIndexes = [
-            headers.indexOf("2024 Matched"),
-            headers.indexOf("2023 Matched"),
-            headers.indexOf("2022 Matched"),
-            headers.indexOf("2021 Matched"),
-            headers.indexOf("2020 Matched"),
-          ];
+        // Find column indexes
+        const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+        const snhafIndex = headers.indexOf("SNHAF");
+        const quotaIndexes = [
+          headers.indexOf("2024 Quota"),
+          headers.indexOf("2023 Quota"),
+          headers.indexOf("2022 Quota"),
+          headers.indexOf("2021 Quota"),
+          headers.indexOf("2020 Quota"),
+        ];
+        const matchedIndexes = [
+          headers.indexOf("2024 Matched"),
+          headers.indexOf("2023 Matched"),
+          headers.indexOf("2022 Matched"),
+          headers.indexOf("2021 Matched"),
+          headers.indexOf("2020 Matched"),
+        ];
 
-          if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
-            console.error("Missing required columns");
-            return;
-          }
+        if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
+          console.error("Missing required columns");
+          return;
+        }
 
-          // Aggregate data
-          const snhafAggregates = {};
-          const notAggregates = {};
+        // Aggregate data
+        const snhafAggregates = {};
+        const notAggregates = {};
 
-          rows.forEach(row => {
-            const sponsor = row[sponsorIndex]?.trim();
-            const snhaf = row[snhafIndex]?.trim();
-            if (sponsor && snhaf) {
-              const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+        rows.forEach(row => {
+          const sponsor = row[sponsorIndex]?.trim();
+          const snhaf = row[snhafIndex]?.trim();
+          if (sponsor && snhaf) {
+            const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
 
-              if (!targetAggregates[sponsor]) {
-                targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-              }
-
-              quotaIndexes.forEach(index => {
-                targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
-              });
-
-              matchedIndexes.forEach(index => {
-                targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
-              });
+            if (!targetAggregates[sponsor]) {
+              targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
             }
-          });
 
-          // Create tables
-          const contentDiv = document.getElementById("content");
-
-          function createTable(aggregates, title, className) {
-            const section = document.createElement("div");
-            const titleElement = document.createElement("h2");
-            titleElement.textContent = title;
-            section.appendChild(titleElement);
-
-            const table = document.createElement("table");
-            table.classList.add(className);
-            const thead = document.createElement("thead");
-            const tbody = document.createElement("tbody");
-
-            // Add headers
-            const headerRow = document.createElement("tr");
-            ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
-              const th = document.createElement("th");
-              th.textContent = header;
-              headerRow.appendChild(th);
+            quotaIndexes.forEach(index => {
+              targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
             });
-            thead.appendChild(headerRow);
 
-            // Add rows
-            let totalQuota = 0;
-            let totalMatched = 0;
+            matchedIndexes.forEach(index => {
+              targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
+            });
+          }
+        });
 
-            Object.keys(aggregates).forEach(sponsor => {
-              const tr = document.createElement("tr");
-              const sponsorCell = document.createElement("td");
-              const quotaCell = document.createElement("td");
-              const matchedCell = document.createElement("td");
-              const matchPercentCell = document.createElement("td");
+        // Function to create a table
+        function createTable(aggregates, title, className) {
+          const section = document.createElement("div");
+          const titleElement = document.createElement("h2");
+          titleElement.textContent = title;
+          section.appendChild(titleElement);
 
+          const table = document.createElement("table");
+          table.classList.add(className);
+          const thead = document.createElement("thead");
+          const tbody = document.createElement("tbody");
+
+          // Add headers
+          const headerRow = document.createElement("tr");
+          ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
+            const th = document.createElement("th");
+            th.textContent = header;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+
+          // Sort aggregates by Match % and then Total Matched
+          const sortedData = Object.keys(aggregates)
+            .map(sponsor => {
               const sponsorData = aggregates[sponsor];
               const matchPercent =
                 sponsorData.totalQuota > 0
-                  ? ((sponsorData.totalMatched / sponsorData.totalQuota) * 100).toFixed(2) + "%"
-                  : "N/A";
-
-              sponsorCell.textContent = sponsor;
-              quotaCell.textContent = sponsorData.totalQuota.toLocaleString();
-              matchedCell.textContent = sponsorData.totalMatched.toLocaleString();
-              matchPercentCell.textContent = matchPercent;
-
-              tr.appendChild(sponsorCell);
-              tr.appendChild(quotaCell);
-              tr.appendChild(matchedCell);
-              tr.appendChild(matchPercentCell);
-              tbody.appendChild(tr);
-
-              totalQuota += sponsorData.totalQuota;
-              totalMatched += sponsorData.totalMatched;
+                  ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+                  : 0;
+              return {
+                sponsor,
+                totalQuota: sponsorData.totalQuota,
+                totalMatched: sponsorData.totalMatched,
+                matchPercent,
+              };
+            })
+            .sort((a, b) => {
+              // Sort by Match % (descending) and then Total Matched (descending)
+              if (b.matchPercent !== a.matchPercent) {
+                return b.matchPercent - a.matchPercent;
+              }
+              return b.totalMatched - a.totalMatched;
             });
 
-            // Add total row
-            const totalRow = document.createElement("tr");
-            totalRow.classList.add("total-row");
-            totalRow.innerHTML = `
-              <td>Total</td>
-              <td>${totalQuota.toLocaleString()}</td>
-              <td>${totalMatched.toLocaleString()}</td>
-              <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
-            `;
-            tbody.appendChild(totalRow);
+          // Add rows
+          let totalQuota = 0;
+          let totalMatched = 0;
 
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            section.appendChild(table);
-            return section;
-          }
+          sortedData.forEach(data => {
+            const tr = document.createElement("tr");
+            const sponsorCell = document.createElement("td");
+            const quotaCell = document.createElement("td");
+            const matchedCell = document.createElement("td");
+            const matchPercentCell = document.createElement("td");
 
-          contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
-          contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
-        })
-        .catch(error => console.error("Error loading CSV:", error));
-    });
-  </script>
+            sponsorCell.textContent = data.sponsor;
+            quotaCell.textContent = data.totalQuota.toLocaleString();
+            matchedCell.textContent = data.totalMatched.toLocaleString();
+            matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
+
+            tr.appendChild(sponsorCell);
+            tr.appendChild(quotaCell);
+            tr.appendChild(matchedCell);
+            tr.appendChild(matchPercentCell);
+            tbody.appendChild(tr);
+
+            totalQuota += data.totalQuota;
+            totalMatched += data.totalMatched;
+          });
+
+          // Add total row
+          const totalRow = document.createElement("tr");
+          totalRow.classList.add("total-row");
+          totalRow.innerHTML = `
+            <td>Total</td>
+            <td>${totalQuota.toLocaleString()}</td>
+            <td>${totalMatched.toLocaleString()}</td>
+            <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
+          `;
+          tbody.appendChild(totalRow);
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+          section.appendChild(table);
+          return section;
+        }
+
+        // Create tables
+        const contentDiv = document.getElementById("content");
+        contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+        contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+      })
+      .catch(error => console.error("Error loading CSV:", error));
+  });
+</script>
+
 </body>
 </html>
