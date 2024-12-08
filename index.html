@@ -161,6 +161,7 @@
   </select>
 </div>
 
+  <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
   <div id="content"></div>
 
   <script>
@@ -271,6 +272,12 @@
             }
           });
 
+          // Update the header above the tables
+          const contentHeader = document.getElementById("content-header");
+          contentHeader.textContent = `Displaying data for ${yearRange[0]}–${yearRange[1]} ${
+            specialtyFilter === "ALL" ? "" : `(${specialtyFilter})`
+          }`;
+
           const contentDiv = document.getElementById("content");
           contentDiv.innerHTML = ""; // Clear previous tables
 
@@ -376,7 +383,6 @@
       .catch(error => console.error("Error loading CSV:", error));
   });
 </script>
-
 
 </body>
 </html>
