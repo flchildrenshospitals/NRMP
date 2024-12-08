@@ -6,78 +6,138 @@
   <title>NRMP Data</title>
 
   <style>
+  /* General Page Styling */
   body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 20px;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: #f4f4f9;
     color: #333;
   }
 
   h1, h2 {
     text-align: center;
     color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: capitalize;
   }
 
+  h1 {
+    font-size: 28px;
+    color: #2c3e50;
+  }
+
+  h2 {
+    font-size: 22px;
+    color: #4CAF50;
+  }
+
+  /* Table Styling */
   table {
     width: 90%;
     border-collapse: collapse;
-    margin: 20px auto;
-    border-radius: 10px;
+    margin: 30px auto;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   }
 
   th, td {
-    border: 1px solid #ddd;
-    padding: 12px;
+    padding: 14px 18px;
     text-align: left;
+    border-bottom: 1px solid #ddd;
   }
 
   th {
-    background-color: #4CAF50;
+    background: linear-gradient(to right, #4CAF50, #45A049);
     color: white;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 14px;
-    border-bottom: 2px solid #ddd;
+    letter-spacing: 0.5px;
   }
 
   tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #f7f7f7;
   }
 
   tr:hover {
-    background-color: #dff0d8;
+    background-color: #eafaf1;
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
   }
 
   td {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
+    vertical-align: middle;
   }
 
   td:last-child {
     font-weight: bold;
     text-align: center;
+    font-size: 14px;
   }
 
+  /* Total Row Styling */
   .total-row {
     font-weight: bold;
-    background-color: #ffeeba;
+    background-color: #ffefc5;
+    color: #333;
     border-top: 2px solid #ddd;
   }
 
   .total-row td {
     font-size: 16px;
-    color: #333;
+    text-transform: uppercase;
   }
 
+  /* Table Animation */
+  table {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Section Styling */
   h2 {
-    margin-top: 30px;
-    font-size: 20px;
+    margin-top: 40px;
+    font-size: 24px;
     color: #4CAF50;
   }
+
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    table {
+      width: 100%;
+    }
+
+    th, td {
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+  }
 </style>
+
 
 </head>
 <body>
