@@ -6,41 +6,79 @@
   <title>NRMP Data</title>
 
   <style>
-    body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  padding: 0;
-  background-color: #f9f9f9;
-}
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+  }
 
-h1 {
-  text-align: center;
-  color: #333;
-}
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+  table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
 
-th {
-  background-color: #4CAF50;
-  color: white;
-}
+  th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-bottom: 2px solid #ddd;
+  }
 
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
 
-  </style>
+  tr:hover {
+    background-color: #dff0d8;
+  }
+
+  td {
+    font-size: 14px;
+    color: #555;
+  }
+
+  td:last-child {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .total-row {
+    font-weight: bold;
+    background-color: #ffeeba;
+    border-top: 2px solid #ddd;
+  }
+
+  .total-row td {
+    font-size: 16px;
+    color: #333;
+  }
+
+  h2 {
+    margin-top: 30px;
+    font-size: 20px;
+    color: #4CAF50;
+  }
+</style>
+
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
