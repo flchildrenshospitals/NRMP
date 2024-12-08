@@ -118,11 +118,33 @@
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
+  <div style="text-align: center; margin-bottom: 20px;">
+  <label for="year-filter">Year: </label>
+  <input id="year-filter" type="range" min="2020" max="2024" value="2024" step="1">
+  <span id="year-value">ALL</span>
+
+  <label for="specialty-filter" style="margin-left: 20px;">Specialty: </label>
+  <select id="specialty-filter">
+    <option value="ALL">ALL</option>
+  </select>
+</div>
+
   <div id="content"></div>
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
     const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+    let yearFilter = "ALL"; // Default Year (ALL)
+    let specialtyFilter = "ALL"; // Default Specialty (ALL)
+
+    // Function to filter rows based on the year and specialty
+    function filterRows(rows, yearColumnIndex, specialtyColumnIndex) {
+      return rows.filter(row => {
+        const yearMatch = yearFilter === "ALL" || row[yearColumnIndex]?.trim() === yearFilter;
+        const specialtyMatch = specialtyFilter === "ALL" || row[specialtyColumnIndex]?.trim() === specialtyFilter;
+        return yearMatch && specialtyMatch;
+      });
+    }
 
     fetch(csvUrl)
       .then(response => response.text())
@@ -133,6 +155,8 @@
         // Find column indexes
         const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
         const snhafIndex = headers.indexOf("SNHAF");
+        const specialtyIndex = headers.indexOf("Specialty Cleaned");
+        const yearColumnIndex = headers.indexOf("Year");
         const quotaIndexes = [
           headers.indexOf("2024 Quota"),
           headers.indexOf("2023 Quota"),
@@ -148,34 +172,62 @@
           headers.indexOf("2020 Matched"),
         ];
 
-        if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
+        if (
+          sponsorIndex === -1 ||
+          snhafIndex === -1 ||
+          specialtyIndex === -1 ||
+          yearColumnIndex === -1 ||
+          quotaIndexes.includes(-1) ||
+          matchedIndexes.includes(-1)
+        ) {
           console.error("Missing required columns");
           return;
         }
 
-        // Aggregate data
-        const snhafAggregates = {};
-        const notAggregates = {};
-
-        rows.forEach(row => {
-          const sponsor = row[sponsorIndex]?.trim();
-          const snhaf = row[snhafIndex]?.trim();
-          if (sponsor && snhaf) {
-            const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
-
-            if (!targetAggregates[sponsor]) {
-              targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-            }
-
-            quotaIndexes.forEach(index => {
-              targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
-            });
-
-            matchedIndexes.forEach(index => {
-              targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
-            });
-          }
+        // Populate Specialty Dropdown
+        const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
+        const specialtyDropdown = document.getElementById("specialty-filter");
+        specialtyDropdown.innerHTML = `<option value="ALL">ALL</option>`;
+        uniqueSpecialties.forEach(specialty => {
+          const option = document.createElement("option");
+          option.value = specialty;
+          option.textContent = specialty;
+          specialtyDropdown.appendChild(option);
         });
+
+        // Update Tables Based on Filters
+        function updateTables() {
+          const filteredRows = filterRows(rows, yearColumnIndex, specialtyIndex);
+
+          const snhafAggregates = {};
+          const notAggregates = {};
+
+          filteredRows.forEach(row => {
+            const sponsor = row[sponsorIndex]?.trim();
+            const snhaf = row[snhafIndex]?.trim();
+            if (sponsor && snhaf) {
+              const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+
+              if (!targetAggregates[sponsor]) {
+                targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+              }
+
+              quotaIndexes.forEach(index => {
+                targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
+              });
+
+              matchedIndexes.forEach(index => {
+                targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
+              });
+            }
+          });
+
+          const contentDiv = document.getElementById("content");
+          contentDiv.innerHTML = ""; // Clear previous tables
+
+          contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+          contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+        }
 
         // Function to create a table
         function createTable(aggregates, title, className) {
@@ -214,7 +266,6 @@
               };
             })
             .sort((a, b) => {
-              // Sort by Match % (descending) and then Total Matched (descending)
               if (b.matchPercent !== a.matchPercent) {
                 return b.matchPercent - a.matchPercent;
               }
@@ -264,10 +315,19 @@
           return section;
         }
 
-        // Create tables
-        const contentDiv = document.getElementById("content");
-        contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
-        contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+        // Event Listeners for Filters
+        document.getElementById("year-filter").addEventListener("input", function (event) {
+          yearFilter = event.target.value === "ALL" ? "ALL" : event.target.value;
+          updateTables();
+        });
+
+        document.getElementById("specialty-filter").addEventListener("change", function (event) {
+          specialtyFilter = event.target.value;
+          updateTables();
+        });
+
+        // Initialize Tables
+        updateTables();
       })
       .catch(error => console.error("Error loading CSV:", error));
   });
