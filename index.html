@@ -29,7 +29,7 @@
 
   h2 {
     font-size: 22px;
-    color: #003366; /* Consistent Blue for Section Titles */
+    color: #003366;
   }
 
   table {
@@ -39,17 +39,57 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    table-layout: fixed; /* Equal column widths */
-    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    table-layout: fixed;
   }
 
-  th {
+  /* Table 1 Styling */
+  .table1 th {
     background-color: #003366; /* Dark Blue Header */
     color: white;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 16px; /* Thicker header font */
+    padding: 16px; /* Thicker padding for headers */
     letter-spacing: 0.5px;
+  }
+
+  .table1 tr:nth-child(even) {
+    background-color: #f5f5f5; /* Light Gray for Even Rows */
+  }
+
+  .table1 tr:nth-child(odd) {
+    background-color: #ffffff; /* White for Odd Rows */
+  }
+
+  .table1 .total-row {
+    background-color: #d9edf7; /* Light Blue for Total Row */
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  /* Table 2 Styling (Slightly Different Shades) */
+  .table2 th {
+    background-color: #00284d; /* Slightly Darker Blue */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 16px; /* Thicker header font */
+    padding: 16px; /* Thicker padding for headers */
+    letter-spacing: 0.5px;
+  }
+
+  .table2 tr:nth-child(even) {
+    background-color: #e8f4f9; /* Soft Blue for Even Rows */
+  }
+
+  .table2 tr:nth-child(odd) {
+    background-color: #ffffff; /* White for Odd Rows */
+  }
+
+  .table2 .total-row {
+    background-color: #b8e0ef; /* Slightly Darker Blue for Total Row */
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   td {
@@ -58,21 +98,6 @@
     border-bottom: 1px solid #ddd;
     font-size: 15px;
     color: #555;
-    word-wrap: break-word; /* Prevent overflow */
-  }
-
-  tr:nth-child(even) {
-    background-color: #f5f5f5; /* Light Gray for Even Rows */
-  }
-
-  tr:nth-child(odd) {
-    background-color: #ffffff; /* White for Odd Rows */
-  }
-
-  tr:hover {
-    background-color: #eafaf1; /* Subtle Hover Effect */
-    transform: scale(1.01);
-    transition: all 0.2s ease-in-out;
   }
 
   td:last-child {
@@ -81,18 +106,17 @@
     color: #333; /* Stronger contrast for Match % */
   }
 
-  /* Total Row Styling */
-  .total-row {
-    font-weight: bold;
-    background-color: #d9edf7; /* Light Blue Total Row */
-    color: #333;
-    border-top: 2px solid #003366;
-    text-transform: uppercase;
+  tr:hover {
+    background-color: #eafaf1; /* Subtle Hover Effect */
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
   }
 
-  .total-row td {
-    font-size: 16px;
-    color: #000; /* Darker Text for Emphasis */
+  /* Rounded Corners and Consistency */
+  table {
+    border-radius: 12px;
+    border-spacing: 0;
+    overflow: hidden;
   }
 
   @media (max-width: 768px) {
