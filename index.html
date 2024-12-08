@@ -51,7 +51,7 @@ tr:nth-child(even) {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-  
+
   fetch(csvUrl)
     .then(response => response.text())
     .then(data => {
@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Find indexes for required columns
       const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+      const snhafIndex = headers.indexOf("SNHAF");
       const quotaIndexes = [
         headers.indexOf("2024 Quota"),
         headers.indexOf("2023 Quota"),
@@ -77,72 +78,89 @@ document.addEventListener("DOMContentLoaded", function () {
       ];
 
       console.log("Sponsor Index:", sponsorIndex);
+      console.log("SNHAF Index:", snhafIndex);
       console.log("Quota Indexes:", quotaIndexes);
       console.log("Matched Indexes:", matchedIndexes);
 
-      if (sponsorIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
+      if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
         console.error("Missing required columns");
         return;
       }
 
-      // Aggregate data by sponsoring institution
-      const aggregates = {};
+      // Aggregate data by sponsoring institution and SNHAF group
+      const snhafAggregates = {};
+      const notAggregates = {};
+
       rows.forEach(row => {
         const sponsor = row[sponsorIndex]?.trim();
-        if (sponsor) {
-          if (!aggregates[sponsor]) {
-            aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+        const snhaf = row[snhafIndex]?.trim();
+        if (sponsor && snhaf) {
+          const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+
+          if (!targetAggregates[sponsor]) {
+            targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
           }
 
           quotaIndexes.forEach(index => {
-            aggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
+            targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
           });
 
           matchedIndexes.forEach(index => {
-            aggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
+            targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
           });
         }
       });
 
-      // Create the table dynamically
+      // Function to create a table
+      function createTable(aggregates, title) {
+        const section = document.createElement("div");
+        const titleElement = document.createElement("h2");
+        titleElement.textContent = title;
+        section.appendChild(titleElement);
+
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const tbody = document.createElement("tbody");
+
+        // Add headers
+        const headerRow = document.createElement("tr");
+        ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
+          const th = document.createElement("th");
+          th.textContent = header;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        // Add rows
+        Object.keys(aggregates).forEach(sponsor => {
+          const tr = document.createElement("tr");
+          const sponsorCell = document.createElement("td");
+          const quotaCell = document.createElement("td");
+          const matchedCell = document.createElement("td");
+
+          sponsorCell.textContent = sponsor;
+          quotaCell.textContent = aggregates[sponsor].totalQuota;
+          matchedCell.textContent = aggregates[sponsor].totalMatched;
+
+          tr.appendChild(sponsorCell);
+          tr.appendChild(quotaCell);
+          tr.appendChild(matchedCell);
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        section.appendChild(table);
+        return section;
+      }
+
+      // Create tables
       const contentDiv = document.getElementById("content");
-      const table = document.createElement("table");
-      const thead = document.createElement("thead");
-      const tbody = document.createElement("tbody");
-
-      // Add headers
-      const headerRow = document.createElement("tr");
-      ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-      });
-      thead.appendChild(headerRow);
-
-      // Add aggregated rows
-      Object.keys(aggregates).forEach(sponsor => {
-        const tr = document.createElement("tr");
-        const sponsorCell = document.createElement("td");
-        const quotaCell = document.createElement("td");
-        const matchedCell = document.createElement("td");
-
-        sponsorCell.textContent = sponsor;
-        quotaCell.textContent = aggregates[sponsor].totalQuota;
-        matchedCell.textContent = aggregates[sponsor].totalMatched;
-
-        tr.appendChild(sponsorCell);
-        tr.appendChild(quotaCell);
-        tr.appendChild(matchedCell);
-        tbody.appendChild(tr);
-      });
-
-      table.appendChild(thead);
-      table.appendChild(tbody);
-      contentDiv.appendChild(table);
+      contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions"));
+      contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions"));
     })
     .catch(error => console.error("Error loading CSV:", error));
 });
-
 </script>
 
 </html>
