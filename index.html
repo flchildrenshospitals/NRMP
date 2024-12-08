@@ -47,79 +47,95 @@
   <div id="content"></div>
   
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const csvUrl = "NRMP_2020_2024_Main.csv"; // Update with your actual CSV URL
-    
-    fetch(csvUrl)
-      .then(response => response.text())
-      .then(data => {
-        const rows = data.split("\n").map(row => row.split(","));
-        const headers = rows.shift(); // Extract headers
+document.addEventListener("DOMContentLoaded", function () {
+  const csvUrl = "NRMP_2020_2024_Main.csv"; // Use your actual GitHub Pages URL
+  
+  fetch(csvUrl)
+    .then(response => response.text())
+    .then(data => {
+      const rows = data.split("\n").map(row => row.split(","));
+      const headers = rows.shift(); // Extract headers
 
-        // Indexes of columns
-        const sponsorIndex = headers.indexOf("Sponsoring Institution");
-        const quotaIndex = headers.indexOf("Quota");
-        const matchedIndex = headers.indexOf("Matched");
+      // Find indexes for required columns
+      const sponsorIndex = headers.indexOf("Sponsoring Institution");
+      const quotaIndexes = [
+        headers.indexOf("2024 Quota"),
+        headers.indexOf("2023 Quota"),
+        headers.indexOf("2022 Quota"),
+        headers.indexOf("2021 Quota"),
+        headers.indexOf("2020 Quota"),
+      ];
+      const matchedIndexes = [
+        headers.indexOf("2024 Matched"),
+        headers.indexOf("2023 Matched"),
+        headers.indexOf("2022 Matched"),
+        headers.indexOf("2021 Matched"),
+        headers.indexOf("2020 Matched"),
+      ];
 
-        if (sponsorIndex === -1 || quotaIndex === -1 || matchedIndex === -1) {
-          console.error("Missing required columns: 'Sponsoring Institution', 'Quota', or 'Matched'");
-          return;
-        }
+      if (sponsorIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
+        console.error("Missing required columns");
+        return;
+      }
 
-        // Aggregate data
-        const aggregates = {};
-        rows.forEach(row => {
-          const sponsor = row[sponsorIndex]?.trim();
-          const quota = parseInt(row[quotaIndex]?.trim() || 0, 10);
-          const matched = parseInt(row[matchedIndex]?.trim() || 0, 10);
-
-          if (sponsor) {
-            if (!aggregates[sponsor]) {
-              aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-            }
-            aggregates[sponsor].totalQuota += quota;
-            aggregates[sponsor].totalMatched += matched;
+      // Aggregate data by sponsoring institution
+      const aggregates = {};
+      rows.forEach(row => {
+        const sponsor = row[sponsorIndex]?.trim();
+        if (sponsor) {
+          if (!aggregates[sponsor]) {
+            aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
           }
-        });
 
-        // Create the table dynamically
-        const contentDiv = document.getElementById("content");
-        const table = document.createElement("table");
-        const thead = document.createElement("thead");
-        const tbody = document.createElement("tbody");
+          quotaIndexes.forEach(index => {
+            aggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
+          });
 
-        // Add headers
-        const headerRow = document.createElement("tr");
-        ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
-          const th = document.createElement("th");
-          th.textContent = header;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
+          matchedIndexes.forEach(index => {
+            aggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
+          });
+        }
+      });
 
-        // Add aggregated rows
-        Object.keys(aggregates).forEach(sponsor => {
-          const tr = document.createElement("tr");
-          const sponsorCell = document.createElement("td");
-          const quotaCell = document.createElement("td");
-          const matchedCell = document.createElement("td");
+      // Create the table dynamically
+      const contentDiv = document.getElementById("content");
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const tbody = document.createElement("tbody");
 
-          sponsorCell.textContent = sponsor;
-          quotaCell.textContent = aggregates[sponsor].totalQuota;
-          matchedCell.textContent = aggregates[sponsor].totalMatched;
+      // Add headers
+      const headerRow = document.createElement("tr");
+      ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
 
-          tr.appendChild(sponsorCell);
-          tr.appendChild(quotaCell);
-          tr.appendChild(matchedCell);
-          tbody.appendChild(tr);
-        });
+      // Add aggregated rows
+      Object.keys(aggregates).forEach(sponsor => {
+        const tr = document.createElement("tr");
+        const sponsorCell = document.createElement("td");
+        const quotaCell = document.createElement("td");
+        const matchedCell = document.createElement("td");
 
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        contentDiv.appendChild(table);
-      })
-      .catch(error => console.error("Error loading CSV:", error));
-  });
-  </script>
+        sponsorCell.textContent = sponsor;
+        quotaCell.textContent = aggregates[sponsor].totalQuota;
+        matchedCell.textContent = aggregates[sponsor].totalMatched;
+
+        tr.appendChild(sponsorCell);
+        tr.appendChild(quotaCell);
+        tr.appendChild(matchedCell);
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+      contentDiv.appendChild(table);
+    })
+    .catch(error => console.error("Error loading CSV:", error));
+});
+</script>
+
 </body>
 </html>
