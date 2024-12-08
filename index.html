@@ -6,294 +6,276 @@
   <title>NRMP Data</title>
 
   <style>
-  /* General Page Styling */
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 20px;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-  }
-
-  h1, h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: 700;
-  }
-
-  h1 {
-    font-size: 28px;
-    color: #2c3e50;
-  }
-
-  h2 {
-    font-size: 22px;
-    color: #003366;
-  }
-
-  table {
-    width: 90%;
-    border-collapse: collapse;
-    margin: 30px auto;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    table-layout: fixed;
-  }
-
-  /* Table 1 (SNHAF) Styling */
-  .table1 th {
-    background-color: #4CAF50; /* Green Header */
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 16px; /* Thicker header font */
-    padding: 16px; /* Thicker padding for headers */
-    letter-spacing: 0.5px;
-  }
-
-  .table1 tr:nth-child(even) {
-    background-color: #eaf7ea; /* Light Green */
-  }
-
-  .table1 tr:nth-child(odd) {
-    background-color: #ffffff; /* White */
-  }
-
-  .table1 .total-row {
-    background-color: #c8e6c9; /* Highlighted Total Row in Green */
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  /* Table 2 (Non-SNHAF) Styling */
-  .table2 th {
-    background-color: #2196F3; /* Blue Header */
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 16px; /* Thicker header font */
-    padding: 16px; /* Thicker padding for headers */
-    letter-spacing: 0.5px;
-  }
-
-  .table2 tr:nth-child(even) {
-    background-color: #e3f2fd; /* Light Blue */
-  }
-
-  .table2 tr:nth-child(odd) {
-    background-color: #ffffff; /* White */
-  }
-
-  .table2 .total-row {
-    background-color: #bbdefb; /* Highlighted Total Row in Blue */
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  td {
-    padding: 14px 18px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 15px;
-    color: #555;
-  }
-
-  td:last-child {
-    font-weight: bold;
-    text-align: center;
-    color: #333; /* Stronger contrast for Match % */
-  }
-
-  tr:hover {
-    background-color: #f1f1f1; /* Subtle Hover Effect */
-    transform: scale(1.01);
-    transition: all 0.2s ease-in-out;
-  }
-
-  /* Rounded Corners and Consistency */
-  table {
-    border-radius: 12px;
-    border-spacing: 0;
-    overflow: hidden;
-  }
-
-  @media (max-width: 768px) {
-    table {
-      width: 100%;
+    /* General Page Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
     }
 
-    th, td {
-      font-size: 13px;
-      padding: 10px;
+    h1, h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 700;
     }
 
     h1 {
-      font-size: 22px;
+      font-size: 28px;
+      color: #2c3e50;
     }
 
     h2 {
-      font-size: 18px;
+      font-size: 22px;
+      color: #003366;
     }
-  }
-</style>
 
+    table {
+      width: 90%;
+      border-collapse: collapse;
+      margin: 30px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      table-layout: fixed;
+    }
+
+    /* Table 1 (SNHAF) Styling */
+    .table1 th {
+      background-color: #4CAF50; /* Green Header */
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 16px;
+      padding: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .table1 tr:nth-child(even) {
+      background-color: #eaf7ea; /* Light Green */
+    }
+
+    .table1 tr:nth-child(odd) {
+      background-color: #ffffff; /* White */
+    }
+
+    .table1 .total-row {
+      background-color: #c8e6c9; /* Highlighted Total Row in Green */
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    /* Table 2 (Non-SNHAF) Styling */
+    .table2 th {
+      background-color: #2196F3; /* Blue Header */
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 16px;
+      padding: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .table2 tr:nth-child(even) {
+      background-color: #e3f2fd; /* Light Blue */
+    }
+
+    .table2 tr:nth-child(odd) {
+      background-color: #ffffff; /* White */
+    }
+
+    .table2 .total-row {
+      background-color: #bbdefb; /* Highlighted Total Row in Blue */
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 15px;
+      color: #555;
+    }
+
+    td:last-child {
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+      transform: scale(1.01);
+      transition: all 0.2s ease-in-out;
+    }
+
+    table {
+      border-radius: 12px;
+      border-spacing: 0;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        width: 100%;
+      }
+
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
   <div id="content"></div>
-  <script src="script.js"></script>
-</body>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
 
-  fetch(csvUrl)
-    .then(response => response.text())
-    .then(data => {
-      const rows = data.split("\n").map(row => row.split(","));
-      const headers = rows.shift().map(header => header.trim()); // Clean up headers
+      fetch(csvUrl)
+        .then(response => response.text())
+        .then(data => {
+          const rows = data.split("\n").map(row => row.split(","));
+          const headers = rows.shift().map(header => header.trim());
 
-      // Find indexes for required columns
-      const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
-      const snhafIndex = headers.indexOf("SNHAF");
-      const quotaIndexes = [
-        headers.indexOf("2024 Quota"),
-        headers.indexOf("2023 Quota"),
-        headers.indexOf("2022 Quota"),
-        headers.indexOf("2021 Quota"),
-        headers.indexOf("2020 Quota"),
-      ];
-      const matchedIndexes = [
-        headers.indexOf("2024 Matched"),
-        headers.indexOf("2023 Matched"),
-        headers.indexOf("2022 Matched"),
-        headers.indexOf("2021 Matched"),
-        headers.indexOf("2020 Matched"),
-      ];
+          // Find column indexes
+          const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+          const snhafIndex = headers.indexOf("SNHAF");
+          const quotaIndexes = [
+            headers.indexOf("2024 Quota"),
+            headers.indexOf("2023 Quota"),
+            headers.indexOf("2022 Quota"),
+            headers.indexOf("2021 Quota"),
+            headers.indexOf("2020 Quota"),
+          ];
+          const matchedIndexes = [
+            headers.indexOf("2024 Matched"),
+            headers.indexOf("2023 Matched"),
+            headers.indexOf("2022 Matched"),
+            headers.indexOf("2021 Matched"),
+            headers.indexOf("2020 Matched"),
+          ];
 
-      if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
-        console.error("Missing required columns");
-        return;
-      }
-
-      // Aggregate data by sponsoring institution and SNHAF group
-      const snhafAggregates = {};
-      const notAggregates = {};
-
-      rows.forEach(row => {
-        const sponsor = row[sponsorIndex]?.trim();
-        const snhaf = row[snhafIndex]?.trim();
-        if (sponsor && snhaf) {
-          const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
-
-          if (!targetAggregates[sponsor]) {
-            targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+          if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
+            console.error("Missing required columns");
+            return;
           }
 
-          quotaIndexes.forEach(index => {
-            targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
+          // Aggregate data
+          const snhafAggregates = {};
+          const notAggregates = {};
+
+          rows.forEach(row => {
+            const sponsor = row[sponsorIndex]?.trim();
+            const snhaf = row[snhafIndex]?.trim();
+            if (sponsor && snhaf) {
+              const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+
+              if (!targetAggregates[sponsor]) {
+                targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+              }
+
+              quotaIndexes.forEach(index => {
+                targetAggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
+              });
+
+              matchedIndexes.forEach(index => {
+                targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
+              });
+            }
           });
 
-          matchedIndexes.forEach(index => {
-            targetAggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
-          });
-        }
-      });
+          // Create tables
+          const contentDiv = document.getElementById("content");
 
-      // Add comma formatting to numbers
-      function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
+          function createTable(aggregates, title, className) {
+            const section = document.createElement("div");
+            const titleElement = document.createElement("h2");
+            titleElement.textContent = title;
+            section.appendChild(titleElement);
 
-      // Function to create a table
-      function createTable(aggregates, title) {
-        const section = document.createElement("div");
-        const titleElement = document.createElement("h2");
-        titleElement.textContent = title;
-        section.appendChild(titleElement);
+            const table = document.createElement("table");
+            table.classList.add(className);
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
 
-        const table = document.createElement("table");
-        const thead = document.createElement("thead");
-        const tbody = document.createElement("tbody");
+            // Add headers
+            const headerRow = document.createElement("tr");
+            ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
+              const th = document.createElement("th");
+              th.textContent = header;
+              headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
 
-        // Add headers
-        const headerRow = document.createElement("tr");
-        ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
-          const th = document.createElement("th");
-          th.textContent = header;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
+            // Add rows
+            let totalQuota = 0;
+            let totalMatched = 0;
 
-        // Add rows
-        let totalQuota = 0;
-        let totalMatched = 0;
+            Object.keys(aggregates).forEach(sponsor => {
+              const tr = document.createElement("tr");
+              const sponsorCell = document.createElement("td");
+              const quotaCell = document.createElement("td");
+              const matchedCell = document.createElement("td");
+              const matchPercentCell = document.createElement("td");
 
-        Object.keys(aggregates).forEach(sponsor => {
-          const tr = document.createElement("tr");
-          const sponsorCell = document.createElement("td");
-          const quotaCell = document.createElement("td");
-          const matchedCell = document.createElement("td");
-          const matchPercentCell = document.createElement("td");
+              const sponsorData = aggregates[sponsor];
+              const matchPercent =
+                sponsorData.totalQuota > 0
+                  ? ((sponsorData.totalMatched / sponsorData.totalQuota) * 100).toFixed(2) + "%"
+                  : "N/A";
 
-          const sponsorData = aggregates[sponsor];
-          const matchPercent =
-            sponsorData.totalQuota > 0
-              ? ((sponsorData.totalMatched / sponsorData.totalQuota) * 100).toFixed(2) + "%"
-              : "N/A";
+              sponsorCell.textContent = sponsor;
+              quotaCell.textContent = sponsorData.totalQuota.toLocaleString();
+              matchedCell.textContent = sponsorData.totalMatched.toLocaleString();
+              matchPercentCell.textContent = matchPercent;
 
-          sponsorCell.textContent = sponsor;
-          quotaCell.textContent = formatNumber(sponsorData.totalQuota);
-          matchedCell.textContent = formatNumber(sponsorData.totalMatched);
-          matchPercentCell.textContent = matchPercent;
+              tr.appendChild(sponsorCell);
+              tr.appendChild(quotaCell);
+              tr.appendChild(matchedCell);
+              tr.appendChild(matchPercentCell);
+              tbody.appendChild(tr);
 
-          tr.appendChild(sponsorCell);
-          tr.appendChild(quotaCell);
-          tr.appendChild(matchedCell);
-          tr.appendChild(matchPercentCell);
-          tbody.appendChild(tr);
+              totalQuota += sponsorData.totalQuota;
+              totalMatched += sponsorData.totalMatched;
+            });
 
-          totalQuota += sponsorData.totalQuota;
-          totalMatched += sponsorData.totalMatched;
-        });
+            // Add total row
+            const totalRow = document.createElement("tr");
+            totalRow.classList.add("total-row");
+            totalRow.innerHTML = `
+              <td>Total</td>
+              <td>${totalQuota.toLocaleString()}</td>
+              <td>${totalMatched.toLocaleString()}</td>
+              <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
+            `;
+            tbody.appendChild(totalRow);
 
-        // Add total row
-        const totalRow = document.createElement("tr");
-        totalRow.classList.add("total-row");
-        const totalLabelCell = document.createElement("td");
-        const totalQuotaCell = document.createElement("td");
-        const totalMatchedCell = document.createElement("td");
-        const totalMatchPercentCell = document.createElement("td");
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(table);
+            return section;
+          }
 
-        totalLabelCell.textContent = "Total";
-        totalQuotaCell.textContent = formatNumber(totalQuota);
-        totalMatchedCell.textContent = formatNumber(totalMatched);
-        totalMatchPercentCell.textContent =
-          totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) + "%" : "N/A";
-
-        totalRow.appendChild(totalLabelCell);
-        totalRow.appendChild(totalQuotaCell);
-        totalRow.appendChild(totalMatchedCell);
-        totalRow.appendChild(totalMatchPercentCell);
-        tbody.appendChild(totalRow);
-
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        section.appendChild(table);
-        return section;
-      }
-
-      // Create tables
-      const contentDiv = document.getElementById("content");
-      contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions"));
-      contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions"));
-    })
-    .catch(error => console.error("Error loading CSV:", error));
-});
-
-</script>
-
+          contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+          contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+        })
+        .catch(error => console.error("Error loading CSV:", error));
+    });
+  </script>
+</body>
 </html>
