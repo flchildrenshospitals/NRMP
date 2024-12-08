@@ -77,11 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
         headers.indexOf("2020 Matched"),
       ];
 
-      console.log("Sponsor Index:", sponsorIndex);
-      console.log("SNHAF Index:", snhafIndex);
-      console.log("Quota Indexes:", quotaIndexes);
-      console.log("Matched Indexes:", matchedIndexes);
-
       if (sponsorIndex === -1 || snhafIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
         console.error("Missing required columns");
         return;
@@ -124,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add headers
         const headerRow = document.createElement("tr");
-        ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
+        ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
           const th = document.createElement("th");
           th.textContent = header;
           headerRow.appendChild(th);
@@ -132,21 +127,55 @@ document.addEventListener("DOMContentLoaded", function () {
         thead.appendChild(headerRow);
 
         // Add rows
+        let totalQuota = 0;
+        let totalMatched = 0;
+
         Object.keys(aggregates).forEach(sponsor => {
           const tr = document.createElement("tr");
           const sponsorCell = document.createElement("td");
           const quotaCell = document.createElement("td");
           const matchedCell = document.createElement("td");
+          const matchPercentCell = document.createElement("td");
+
+          const sponsorData = aggregates[sponsor];
+          const matchPercent =
+            sponsorData.totalQuota > 0
+              ? ((sponsorData.totalMatched / sponsorData.totalQuota) * 100).toFixed(2) + "%"
+              : "N/A";
 
           sponsorCell.textContent = sponsor;
-          quotaCell.textContent = aggregates[sponsor].totalQuota;
-          matchedCell.textContent = aggregates[sponsor].totalMatched;
+          quotaCell.textContent = sponsorData.totalQuota;
+          matchedCell.textContent = sponsorData.totalMatched;
+          matchPercentCell.textContent = matchPercent;
 
           tr.appendChild(sponsorCell);
           tr.appendChild(quotaCell);
           tr.appendChild(matchedCell);
+          tr.appendChild(matchPercentCell);
           tbody.appendChild(tr);
+
+          totalQuota += sponsorData.totalQuota;
+          totalMatched += sponsorData.totalMatched;
         });
+
+        // Add total row
+        const totalRow = document.createElement("tr");
+        const totalLabelCell = document.createElement("td");
+        const totalQuotaCell = document.createElement("td");
+        const totalMatchedCell = document.createElement("td");
+        const totalMatchPercentCell = document.createElement("td");
+
+        totalLabelCell.textContent = "Total";
+        totalQuotaCell.textContent = totalQuota;
+        totalMatchedCell.textContent = totalMatched;
+        totalMatchPercentCell.textContent =
+          totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) + "%" : "N/A";
+
+        totalRow.appendChild(totalLabelCell);
+        totalRow.appendChild(totalQuotaCell);
+        totalRow.appendChild(totalMatchedCell);
+        totalRow.appendChild(totalMatchPercentCell);
+        tbody.appendChild(totalRow);
 
         table.appendChild(thead);
         table.appendChild(tbody);
@@ -162,5 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Error loading CSV:", error));
 });
 </script>
+
 
 </html>
