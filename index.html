@@ -8,47 +8,50 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 0;
+  background-color: #f9f9f9;
+}
 
-    h1 {
-      text-align: center;
-      color: #333;
-    }
+h1 {
+  text-align: center;
+  color: #333;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
 
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
+th {
+  background-color: #4CAF50;
+  color: white;
+}
 
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
   </style>
 </head>
 <body>
   <h1>NRMP Data Viewer</h1>
   <div id="content"></div>
-  
-  <script>
+  <script src="script.js"></script>
+</body>
+
+<script>
 document.addEventListener("DOMContentLoaded", function () {
-  const csvUrl = "NRMP_2020_2024_Main.csv"; // Use your actual GitHub Pages URL
+  const csvUrl = "NRMP_2020_2024_Main.csv"; // Update this to your GitHub raw file URL
   
   fetch(csvUrl)
     .then(response => response.text())
@@ -56,76 +59,30 @@ document.addEventListener("DOMContentLoaded", function () {
       const rows = data.split("\n").map(row => row.split(","));
       const headers = rows.shift(); // Extract headers
 
-      // Find indexes for required columns
-      const sponsorIndex = headers.indexOf("Sponsoring Institution");
-      const quotaIndexes = [
-        headers.indexOf("2024 Quota"),
-        headers.indexOf("2023 Quota"),
-        headers.indexOf("2022 Quota"),
-        headers.indexOf("2021 Quota"),
-        headers.indexOf("2020 Quota"),
-      ];
-      const matchedIndexes = [
-        headers.indexOf("2024 Matched"),
-        headers.indexOf("2023 Matched"),
-        headers.indexOf("2022 Matched"),
-        headers.indexOf("2021 Matched"),
-        headers.indexOf("2020 Matched"),
-      ];
-
-      if (sponsorIndex === -1 || quotaIndexes.includes(-1) || matchedIndexes.includes(-1)) {
-        console.error("Missing required columns");
-        return;
-      }
-
-      // Aggregate data by sponsoring institution
-      const aggregates = {};
-      rows.forEach(row => {
-        const sponsor = row[sponsorIndex]?.trim();
-        if (sponsor) {
-          if (!aggregates[sponsor]) {
-            aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-          }
-
-          quotaIndexes.forEach(index => {
-            aggregates[sponsor].totalQuota += parseInt(row[index]?.trim() || 0, 10);
-          });
-
-          matchedIndexes.forEach(index => {
-            aggregates[sponsor].totalMatched += parseInt(row[index]?.trim() || 0, 10);
-          });
-        }
-      });
-
-      // Create the table dynamically
       const contentDiv = document.getElementById("content");
+
+      // Create a table dynamically
       const table = document.createElement("table");
       const thead = document.createElement("thead");
       const tbody = document.createElement("tbody");
 
       // Add headers
       const headerRow = document.createElement("tr");
-      ["Sponsoring Institution", "Total Quota", "Total Matched"].forEach(header => {
+      headers.forEach(header => {
         const th = document.createElement("th");
-        th.textContent = header;
+        th.textContent = header.trim();
         headerRow.appendChild(th);
       });
       thead.appendChild(headerRow);
 
-      // Add aggregated rows
-      Object.keys(aggregates).forEach(sponsor => {
+      // Add rows
+      rows.forEach(row => {
         const tr = document.createElement("tr");
-        const sponsorCell = document.createElement("td");
-        const quotaCell = document.createElement("td");
-        const matchedCell = document.createElement("td");
-
-        sponsorCell.textContent = sponsor;
-        quotaCell.textContent = aggregates[sponsor].totalQuota;
-        matchedCell.textContent = aggregates[sponsor].totalMatched;
-
-        tr.appendChild(sponsorCell);
-        tr.appendChild(quotaCell);
-        tr.appendChild(matchedCell);
+        row.forEach(cell => {
+          const td = document.createElement("td");
+          td.textContent = cell.trim();
+          tr.appendChild(td);
+        });
         tbody.appendChild(tr);
       });
 
@@ -136,6 +93,4 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Error loading CSV:", error));
 });
 </script>
-
-</body>
 </html>
