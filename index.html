@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NRMP Data</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+
 
   <style>
   /* General Page Styling */
@@ -119,10 +122,7 @@
 <body>
   <h1>NRMP Data Viewer</h1>
   <div style="text-align: center; margin-bottom: 20px;">
-  <label for="year-filter">Year: </label>
-  <input id="year-filter" type="range" min="2020" max="2024" value="ALL" step="1">
-  <span id="year-value">ALL</span>
-
+  <div id="year-slider" style="margin: 20px auto; width: 80%;"></div>
   <label for="specialty-filter" style="margin-left: 20px;">Specialty: </label>
   <select id="specialty-filter">
     <option value="ALL">ALL</option>
@@ -134,7 +134,7 @@
   <script>
   document.addEventListener("DOMContentLoaded", function () {
     const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-    let yearFilter = "ALL"; // Default Year (ALL)
+    let yearRange = [2020, 2024]; // Default Year Range
     let specialtyFilter = "ALL"; // Default Specialty (ALL)
 
     fetch(csvUrl)
@@ -146,7 +146,7 @@
         // Extract years dynamically from headers
         const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
         const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
-        const years = quotaYearColumns.map(col => col.split(" ")[0]); // Extract year from "2024 Quota"
+        const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
 
         // Find other column indexes
         const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
@@ -165,13 +165,28 @@
           return;
         }
 
-        // Populate Year Slider
-        const yearSlider = document.getElementById("year-filter");
-        const yearValueSpan = document.getElementById("year-value");
-        yearSlider.min = Math.min(...years);
-        yearSlider.max = Math.max(...years);
-        yearSlider.value = "ALL";
-        yearValueSpan.textContent = "ALL";
+        // Create Year Range Slider
+        const yearSlider = document.getElementById("year-slider");
+        noUiSlider.create(yearSlider, {
+          start: [Math.min(...years), Math.max(...years)],
+          connect: true,
+          range: {
+            min: Math.min(...years),
+            max: Math.max(...years),
+          },
+          step: 1,
+          tooltips: true,
+          format: {
+            to: value => Math.round(value),
+            from: value => Math.round(value),
+          },
+        });
+
+        // Update Year Range and Trigger Table Update
+        yearSlider.noUiSlider.on("update", function (values) {
+          yearRange = values.map(v => parseInt(v, 10));
+          updateTables();
+        });
 
         // Populate Specialty Dropdown
         const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
@@ -187,12 +202,16 @@
         // Update Tables Based on Filters
         function updateTables() {
           const filteredRows = rows.filter(row => {
-            const yearMatch =
-              yearFilter === "ALL" ||
-              years.some(
-                year => year === yearFilter && parseInt(row[headers.indexOf(`${year} Quota`)] || 0, 10) > 0
-              );
+            // Check year range
+            const yearMatch = years.some(year => {
+              const inRange = year >= yearRange[0] && year <= yearRange[1];
+              const quotaColumn = headers.indexOf(`${year} Quota`);
+              return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
+            });
+
+            // Check specialty filter
             const specialtyMatch = specialtyFilter === "ALL" || row[specialtyIndex]?.trim() === specialtyFilter;
+
             return yearMatch && specialtyMatch;
           });
 
@@ -210,10 +229,12 @@
               }
 
               years.forEach(year => {
-                const quotaColumn = headers.indexOf(`${year} Quota`);
-                const matchedColumn = headers.indexOf(`${year} Matched`);
-                targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
-                targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
+                if (year >= yearRange[0] && year <= yearRange[1]) {
+                  const quotaColumn = headers.indexOf(`${year} Quota`);
+                  const matchedColumn = headers.indexOf(`${year} Matched`);
+                  targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
+                  targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
+                }
               });
             }
           });
@@ -311,13 +332,7 @@
           return section;
         }
 
-        // Event Listeners for Filters
-        document.getElementById("year-filter").addEventListener("input", function (event) {
-          yearFilter = event.target.value === "ALL" ? "ALL" : event.target.value;
-          document.getElementById("year-value").textContent = yearFilter;
-          updateTables();
-        });
-
+        // Event Listener for Specialty Filter
         document.getElementById("specialty-filter").addEventListener("change", function (event) {
           specialtyFilter = event.target.value;
           updateTables();
