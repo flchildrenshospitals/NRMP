@@ -29,6 +29,7 @@
 
   h2 {
     font-size: 22px;
+    color: #003366; /* Consistent Blue for Section Titles */
   }
 
   table {
@@ -38,79 +39,60 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    table-layout: fixed;
+    table-layout: fixed; /* Equal column widths */
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   }
 
-  /* Consistent Colors (Option 1) */
-  .consistent th {
-    background-color: #003366; /* Dark Blue */
+  th {
+    background-color: #003366; /* Dark Blue Header */
     color: white;
-  }
-
-  .consistent tr:nth-child(even) {
-    background-color: #f5f5f5; /* Light Gray */
-  }
-
-  .consistent tr:nth-child(odd) {
-    background-color: #ffffff; /* White */
-  }
-
-  .consistent .total-row {
-    background-color: #d9edf7; /* Light Blue */
     font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
 
-  /* Differentiated Colors (Option 2) */
-  .snhaf th {
-    background-color: #2E7D32; /* Dark Green */
-    color: white;
-  }
-
-  .snhaf tr:nth-child(even) {
-    background-color: #eaf7ea; /* Light Green */
-  }
-
-  .snhaf tr:nth-child(odd) {
-    background-color: #ffffff; /* White */
-  }
-
-  .snhaf .total-row {
-    background-color: #c8e6c9; /* Muted Green */
-    font-weight: bold;
-  }
-
-  .non-snhaf th {
-    background-color: #d84315; /* Deep Orange */
-    color: white;
-  }
-
-  .non-snhaf tr:nth-child(even) {
-    background-color: #fde0dc; /* Soft Orange */
-  }
-
-  .non-snhaf tr:nth-child(odd) {
-    background-color: #ffffff; /* White */
-  }
-
-  .non-snhaf .total-row {
-    background-color: #f9bdbb; /* Muted Orange */
-    font-weight: bold;
-  }
-
-  th, td {
+  td {
     padding: 14px 18px;
     text-align: left;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
+    color: #555;
+    word-wrap: break-word; /* Prevent overflow */
+  }
+
+  tr:nth-child(even) {
+    background-color: #f5f5f5; /* Light Gray for Even Rows */
+  }
+
+  tr:nth-child(odd) {
+    background-color: #ffffff; /* White for Odd Rows */
+  }
+
+  tr:hover {
+    background-color: #eafaf1; /* Subtle Hover Effect */
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out;
   }
 
   td:last-child {
     font-weight: bold;
     text-align: center;
+    color: #333; /* Stronger contrast for Match % */
   }
 
-  tr:hover {
-    background-color: #eafaf1; /* Subtle hover effect */
+  /* Total Row Styling */
+  .total-row {
+    font-weight: bold;
+    background-color: #d9edf7; /* Light Blue Total Row */
+    color: #333;
+    border-top: 2px solid #003366;
+    text-transform: uppercase;
+  }
+
+  .total-row td {
+    font-size: 16px;
+    color: #000; /* Darker Text for Emphasis */
   }
 
   @media (max-width: 768px) {
