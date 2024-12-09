@@ -67,6 +67,7 @@ h1 {
   flex: none; /* Prevent flexbox from stretching this container */
   max-height: fit-content; /* Ensure the height is just enough to fit the content */
   height: auto;
+  min-height: 0; /* Ensure no stretching in Firefox */
   border: 1px solid #ddd;
   background-color: #fff;
   padding: 15px;
@@ -356,9 +357,6 @@ tr:hover {
         // Function to create a table
         function createTable(aggregates, title, className) {
           const section = document.createElement("div");
-          const titleElement = document.createElement("h2");
-          titleElement.textContent = title;
-          section.appendChild(titleElement);
 
           const table = document.createElement("table");
           table.classList.add(className);
