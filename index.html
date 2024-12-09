@@ -50,6 +50,15 @@
     padding: 5px 10px;
   }
 
+  #specialty-checkboxes {
+  text-align: left;
+  margin-right: 20px;
+  display: inline-block;
+  vertical-align: top;
+  max-height: 400px;
+  overflow-y: auto; /* Add scroll for many checkboxes */
+}
+
   h1, h2 {
     text-align: center;
     color: #333;
@@ -194,7 +203,6 @@
           matchedYearColumns.length === 0
         ) {
           console.error("Missing required columns. Please check your CSV file.");
-          console.log("Detected Headers:", headers); // Log headers for troubleshooting
           return;
         }
 
@@ -248,7 +256,7 @@
             });
           }
 
-          // If any other specialty is selected, deselect "ALL"
+          // If any other specialty is selected, uncheck "ALL"
           else {
             const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
             allCheckbox.checked = false;
