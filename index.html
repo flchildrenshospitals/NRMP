@@ -503,6 +503,10 @@ yearSlider.noUiSlider.on("update", function () {
   // Export SNHAF Table with custom styling
   const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
   if (snhafTable) {
+    // Add title for SNHAF table
+    doc.setFontSize(14);
+    doc.text("SNHAF Sponsoring Institutions", 10, currentY);
+    currentY += 10; // Add spacing below the title
     doc.autoTable({
       html: snhafTable,
       startY: currentY,
@@ -519,6 +523,12 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245], // Alternating row background (matching web table style)
       },
+      idDrawCell: (data) => {
+    if (data.row.raw[0]?.toLowerCase() === "total") {
+      doc.setFillColor(218, 233, 248); // Light blue for total row
+      doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+    }
+  },
       margin: { top: 20 },
     });
     currentY = doc.lastAutoTable.finalY + 20;
@@ -527,6 +537,9 @@ yearSlider.noUiSlider.on("update", function () {
   // Export Non-SNHAF Table with custom styling
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
+    // Add title for Non-SNHAF table
+    doc.text("Non-SNHAF Sponsoring Institutions", 10, currentY);
+    currentY += 10; // Add spacing below the title
     doc.autoTable({
       html: nonSnhafTable,
       startY: currentY,
@@ -543,6 +556,12 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
+      didDrawCell: (data) => {
+    if (data.row.raw[0]?.toLowerCase() === "total") {
+      doc.setFillColor(218, 233, 248); // Light blue for total row
+      doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+    }
+  },
       margin: { top: 20 },
     });
   }
