@@ -534,6 +534,7 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
 
   // Wrap and add filters text
+  doc.setFont("helvetica", "normal"); // Reset font to normal
   const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
   const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
   doc.text(wrappedFiltersText, 10, 20);
