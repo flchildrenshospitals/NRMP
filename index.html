@@ -293,22 +293,6 @@ tr:hover {
 
         // Update Tables Based on Filters
         function updateTables() {
-          const contentDiv = document.getElementById("content");
-contentDiv.innerHTML = ""; // Clear previous content
-
-const snhafContainer = document.createElement("div");
-snhafContainer.classList.add("table-container");
-snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions</h2>`;
-snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
-
-const nonSnhafContainer = document.createElement("div");
-nonSnhafContainer.classList.add("table-container");
-nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions</h2>`;
-nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
-
-contentDiv.appendChild(snhafContainer);
-contentDiv.appendChild(nonSnhafContainer);
-
           const filteredRows = rows.filter(row => {
             // Check year range
             const yearMatch = years.some(year => {
