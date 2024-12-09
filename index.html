@@ -52,16 +52,15 @@
 
   /* Wrapper for checkboxes and tables */
 div[style*="display: flex"] {
-  gap: 20px; /* Space between checkboxes and tables */
+  gap: 10px; /* Reduce space between checkboxes and tables */
+  align-items: flex-start;
 }
 
 /* Specialty Checkboxes Styling */
 #specialty-checkboxes {
   text-align: left;
-  margin-right: 20px;
-  display: block; /* Ensure block layout */
-  max-height: 500px; /* Limit height with scroll */
-  overflow-y: auto; /* Scroll if needed */
+  margin-right: 10px; /* Reduce space between checkboxes and tables */
+  display: block; /* Ensure checkboxes are stacked vertically */
   border: 1px solid #ddd;
   background-color: #f9f9f9;
   padding: 10px;
@@ -182,8 +181,8 @@ div[style*="display: flex"] {
   <label for="specialty-filter" style="margin-left: 20px;">Specialty: </label>
 </div>
   <div style="display: flex; align-items: flex-start;">
-  <div id="specialty-checkboxes" style="text-align: left; margin-right: 20px; display: block;"></div>
-  <div style="flex-grow: 1;">
+  <div id="specialty-checkboxes"></div>
+  <div style="flex-grow: 1; margin-left: 10px;"> <!-- Adjust margin-left -->
     <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
     <div id="content"></div>
   </div>
