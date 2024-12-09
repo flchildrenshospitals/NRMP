@@ -523,7 +523,7 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245], // Alternating row background (matching web table style)
       },
-      idDrawCell: (data) => {
+      didDrawCell: (data) => {
     if (data.row.raw[0]?.toLowerCase() === "total") {
       doc.setFillColor(218, 233, 248); // Light blue for total row
       doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
