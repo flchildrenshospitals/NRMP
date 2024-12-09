@@ -254,10 +254,6 @@ div[style*="display: flex"] {
           checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
           specialtyCheckboxContainer.appendChild(checkbox);
         });
-
-        // Handle Specialty Selection Changes
-        specialtyCheckboxContainer.addEventListener("change", function () {
-  const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
   
   // Determine selected specialties
   specialtyCheckboxContainer.addEventListener("change", function () {
