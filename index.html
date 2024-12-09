@@ -505,7 +505,6 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
 
-  // Function to configure autoTable options
   function generateTable(title, tableElement, startY) {
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
@@ -530,11 +529,17 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didParseCell: (data) => {
-        // Check if this row should be styled as a totals row
-        if (data.row?.raw && data.row.raw.some(val => typeof val === 'string' && val.toLowerCase().includes("total"))) {
-          data.cell.styles.fillColor = [218, 233, 248]; // Light blue background
-          data.cell.styles.textColor = [0, 0, 0];       // Black text
-          data.cell.styles.fontStyle = 'bold';          // Bold text
+        if (data.row.section === 'body') {
+          // Join all lines of cell text and convert to lowercase
+          const cellText = (data.cell.text || []).join(' ').toLowerCase();
+          if (cellText.includes('total')) {
+            // If this cell contains 'total', style the entire row
+            Object.values(data.row.cells).forEach(cell => {
+              cell.styles.fillColor = [218, 233, 248]; // Light blue
+              cell.styles.textColor = [0, 0, 0];       // Black text
+              cell.styles.fontStyle = 'bold';          // Bold text
+            });
+          }
         }
       },
       margin: { top: 20 },
