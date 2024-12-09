@@ -534,7 +534,7 @@ yearSlider.noUiSlider.on("update", function () {
         console.log("didDrawCell fired for SNHAF table");
         console.log(data.row.raw); // Debugging row data
         const rowString = Object.values(data.row.raw || {}).join(" ").toLowerCase();
-        if (rowString.includes("total")) {
+        if (rowString.includes("Total")) {
           doc.setFillColor(218, 233, 248); // Light blue for total row
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
         }
