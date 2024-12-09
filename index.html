@@ -551,7 +551,7 @@ yearSlider.noUiSlider.on("update", function () {
   if (nonSnhafTable) {
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("helvetica");
     doc.text("Non-SNHAF Sponsoring Institutions", 10, currentY);
     currentY += 10;
 
@@ -579,7 +579,7 @@ yearSlider.noUiSlider.on("update", function () {
 
           // Set text color and font for totals row
           doc.setTextColor(0, 0, 0); // Black text
-          doc.setFont("helvetica", "bold"); // Bold font
+          doc.setFont("helvetica"); // Bold font
         }
       },
       margin: { top: 20 },
