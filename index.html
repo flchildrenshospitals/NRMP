@@ -255,27 +255,39 @@ div[style*="display: flex"] {
         });
 
         // Handle Specialty Selection Changes
-        specialtyCheckboxContainer.addEventListener("change", function () {
-          const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+        specialtyCheckboxContainer.addEventListener("change", function (event) {
+    const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+    const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
 
-          selectedSpecialties = checkboxes
+    if (event.target.value === "ALL") {
+        // If "ALL" is checked, deselect all others
+        if (event.target.checked) {
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value !== "ALL") checkbox.checked = false;
+            });
+            selectedSpecialties = ["ALL"];
+        } else {
+            selectedSpecialties = [];
+        }
+    } else {
+        // If any specific checkbox is checked, uncheck "ALL"
+        if (event.target.checked) {
+            allCheckbox.checked = false;
+        }
+
+        // Update selected specialties
+        selectedSpecialties = checkboxes
             .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value);
 
-          if (selectedSpecialties.includes("ALL")) {
-            // If "ALL" is checked, deselect all other checkboxes
-            checkboxes.forEach(checkbox => {
-              if (checkbox.value !== "ALL") checkbox.checked = false;
-            });
-            selectedSpecialties = ["ALL"];
-          } else {
-            // If any specific checkbox is checked, uncheck "ALL"
-            const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
-            if (allCheckbox) allCheckbox.checked = false;
-          }
+        // Ensure "ALL" is deselected if other boxes are selected
+        if (selectedSpecialties.includes("ALL")) {
+            selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
+        }
+    }
 
-          updateTables(); // Call table update function
-        });
+    updateTables(); // Update table based on the new selection
+});
 
         // Update Tables Based on Filters
         function updateTables() {
