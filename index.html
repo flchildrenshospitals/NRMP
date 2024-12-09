@@ -512,23 +512,24 @@ yearSlider.noUiSlider.on("update", function () {
       startY: currentY,
       theme: "grid",
       headStyles: {
-        fillColor: [0, 51, 102], // Header background (matching your web table header color)
-        textColor: [255, 255, 255], // Header text color
-        fontSize: 12, // Header font size
+        fillColor: [0, 51, 102],
+        textColor: [255, 255, 255],
+        fontSize: 12,
       },
       bodyStyles: {
-        fontSize: 10, // Row font size
-        textColor: [33, 33, 33], // Row text color
+        fontSize: 10,
+        textColor: [33, 33, 33],
       },
       alternateRowStyles: {
-        fillColor: [245, 245, 245], // Alternating row background (matching web table style)
+        fillColor: [245, 245, 245],
       },
       didDrawCell: (data) => {
-    if (data.row.raw[0]?.toLowerCase() === "total") {
-      doc.setFillColor(218, 233, 248); // Light blue for total row
-      doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
-    }
-  },
+        const cellValue = data.row.raw[0];
+        if (typeof cellValue === "string" && cellValue.toLowerCase() === "total") {
+          doc.setFillColor(218, 233, 248); // Light blue for total row
+          doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+        }
+      },
       margin: { top: 20 },
     });
     currentY = doc.lastAutoTable.finalY + 20;
@@ -557,11 +558,12 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didDrawCell: (data) => {
-    if (data.row.raw[0]?.toLowerCase() === "total") {
-      doc.setFillColor(218, 233, 248); // Light blue for total row
-      doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
-    }
-  },
+        const cellValue = data.row.raw[0];
+        if (typeof cellValue === "string" && cellValue.toLowerCase() === "total") {
+          doc.setFillColor(218, 233, 248); // Light blue for total row
+          doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+        }
+      },
       margin: { top: 20 },
     });
   }
@@ -569,6 +571,7 @@ yearSlider.noUiSlider.on("update", function () {
   // Save the PDF
   doc.save("NRMP_Data.pdf");
 });
+
 
   });
 </script>
