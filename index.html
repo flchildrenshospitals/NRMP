@@ -187,12 +187,10 @@ div[style*="display: flex"] {
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-      const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-      if (!specialtyCheckboxContainer) { console.error("Specialty container not found."); return; }
-      let yearRange = [2020, 2024]; // Default Year Range
-      let selectedSpecialties = ["ALL"]; // Default: All specialties
+  document.addEventListener("DOMContentLoaded", function () {
+    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+    let yearRange = [2020, 2024]; // Default Year Range
+    let selectedSpecialties = ["ALL"]; // Default: All specialties
 
     fetch(csvUrl)
       .then(response => response.text())
@@ -255,30 +253,29 @@ div[style*="display: flex"] {
           checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
           specialtyCheckboxContainer.appendChild(checkbox);
         });
-  
-  // Determine selected specialties
-  specialtyCheckboxContainer.addEventListener("change", function () {
-  const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
 
-  // Determine selected specialties
-  selectedSpecialties = checkboxes
-    .filter(checkbox => checkbox.checked)
-    .map(checkbox => checkbox.value);
+        // Handle Specialty Selection Changes
+        specialtyCheckboxContainer.addEventListener("change", function () {
+          const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
 
-  if (selectedSpecialties.includes("ALL")) {
-    // If "ALL" is checked, deselect all other checkboxes
-    checkboxes.forEach(checkbox => {
-      if (checkbox.value !== "ALL") checkbox.checked = false;
-    });
-    selectedSpecialties = ["ALL"]; // Reset selectedSpecialties to only "ALL"
-  } else {
-    // If any specific checkbox is checked, uncheck "ALL"
-    const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
-    if (allCheckbox) allCheckbox.checked = false;
-  }
+          selectedSpecialties = checkboxes
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
 
-  updateTables(); // Call table update function
-});
+          if (selectedSpecialties.includes("ALL")) {
+            // If "ALL" is checked, deselect all other checkboxes
+            checkboxes.forEach(checkbox => {
+              if (checkbox.value !== "ALL") checkbox.checked = false;
+            });
+            selectedSpecialties = ["ALL"];
+          } else {
+            // If any specific checkbox is checked, uncheck "ALL"
+            const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
+            if (allCheckbox) allCheckbox.checked = false;
+          }
+
+          updateTables(); // Call table update function
+        });
 
         // Update Tables Based on Filters
         function updateTables() {
