@@ -533,7 +533,7 @@ yearSlider.noUiSlider.on("update", function () {
       didDrawCell: (data) => {
         if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
           // Draw light blue rectangle first
-          doc.setFillColor(218, 233, 248);
+          // doc.setFillColor(218, 233, 248);
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
 
           // Set text color and font for totals row
@@ -577,7 +577,7 @@ yearSlider.noUiSlider.on("update", function () {
           doc.setTextColor(0, 0, 0); // Black text
           doc.setFont("helvetica", "bold"); // Bold font
            // Draw light blue rectangle first
-          doc.setFillColor(218, 233, 248);
+          // doc.setFillColor(218, 233, 248);
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
         }
       },
