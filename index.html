@@ -262,23 +262,27 @@ div[style*="display: flex"] {
   const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
   
   // Determine selected specialties
+  specialtyCheckboxContainer.addEventListener("change", function () {
+  const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+
+  // Determine selected specialties
   selectedSpecialties = checkboxes
     .filter(checkbox => checkbox.checked)
     .map(checkbox => checkbox.value);
 
   if (selectedSpecialties.includes("ALL")) {
-    // If "ALL" is checked, deselect all others
-    selectedSpecialties = ["ALL"];
+    // If "ALL" is checked, deselect all other checkboxes
     checkboxes.forEach(checkbox => {
       if (checkbox.value !== "ALL") checkbox.checked = false;
     });
+    selectedSpecialties = ["ALL"]; // Reset selectedSpecialties to only "ALL"
   } else {
-    // If any other specialty is checked, uncheck "ALL"
+    // If any specific checkbox is checked, uncheck "ALL"
     const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
     if (allCheckbox) allCheckbox.checked = false;
   }
 
-  updateTables(); // Call table update
+  updateTables(); // Call table update function
 });
 
         // Update Tables Based on Filters
