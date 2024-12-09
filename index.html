@@ -56,6 +56,18 @@ h1 {
   background-color: #003366; /* Updated to preferred blue */
 }
 
+.dynamic-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dynamic-title h2 {
+  font-size: 24px;
+  color: #003366;
+  margin: 0;
+  font-weight: bold;
+}
+
 /* Main Layout */
 .main-layout {
   display: flex;
@@ -182,6 +194,11 @@ tr:hover {
   <!-- Slider Section -->
   <div class="slider-section">
     <div id="year-slider"></div>
+  </div>
+
+    <!-- Dynamic Title -->
+  <div class="dynamic-title">
+    <h2 id="dynamic-title-text"></h2>
   </div>
 
   <!-- Main Layout -->
@@ -357,6 +374,29 @@ tr:hover {
   contentDiv.appendChild(snhafContainer);
   contentDiv.appendChild(nonSnhafContainer);
 }
+        function updateDynamicTitle() {
+  const titleElement = document.getElementById("dynamic-title-text");
+
+  // Generate title based on selected filters
+  let title = "NRMP Data"; // Default title
+  if (selectedSpecialties.length === 1 && selectedSpecialties[0] === "ALL") {
+    title = "NRMP Data for All Specialties";
+  } else if (selectedSpecialties.length > 0) {
+    title = `NRMP Data for ${selectedSpecialties.join(", ")}`;
+  }
+
+  // Add year range to the title
+  title += ` (${yearRange[0]} - ${yearRange[1]})`;
+
+  // Update the DOM
+  titleElement.textContent = title;
+}
+
+// Call this function whenever filters are updated
+specialtyCheckboxContainer.addEventListener("change", updateDynamicTitle);
+yearSlider.noUiSlider.on("update", function () {
+  updateDynamicTitle();
+});
 
         // Function to create a table
         function createTable(aggregates, title, className) {
