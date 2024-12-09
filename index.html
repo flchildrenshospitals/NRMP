@@ -490,35 +490,60 @@ yearSlider.noUiSlider.on("update", function () {
       .catch(error => console.error("Error loading CSV:", error));
 
     document.getElementById("export-pdf").addEventListener("click", function () {
-  // Import jsPDF (needed for newer versions)
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
   // Add title to the PDF
   doc.setFontSize(16);
-  doc.text("NRMP Data Export", 10, 10); // Title at 10px margin
+  doc.text("NRMP Data Export", 10, 10);
   doc.text(`Filters: ${document.getElementById("dynamic-title-text").textContent}`, 10, 20);
 
-  let currentY = 30; // Initial vertical position for the first table
+  let currentY = 30;
 
-  // Export SNHAF Table
+  // Export SNHAF Table with custom styling
   const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
   if (snhafTable) {
     doc.autoTable({
-      html: snhafTable, // Use the table's HTML
-      startY: currentY, // Start below the title
-      theme: "grid", // Optional: choose table theme
+      html: snhafTable,
+      startY: currentY,
+      theme: "grid",
+      headStyles: {
+        fillColor: [0, 51, 102], // Header background (matching your web table header color)
+        textColor: [255, 255, 255], // Header text color
+        fontSize: 12, // Header font size
+      },
+      bodyStyles: {
+        fontSize: 10, // Row font size
+        textColor: [33, 33, 33], // Row text color
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245], // Alternating row background (matching web table style)
+      },
+      margin: { top: 20 },
     });
-    currentY = doc.lastAutoTable.finalY + 20; // Update Y for next table
+    currentY = doc.lastAutoTable.finalY + 20;
   }
 
-  // Export Non-SNHAF Table
+  // Export Non-SNHAF Table with custom styling
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
     doc.autoTable({
       html: nonSnhafTable,
       startY: currentY,
       theme: "grid",
+      headStyles: {
+        fillColor: [0, 51, 102],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: [33, 33, 33],
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      margin: { top: 20 },
     });
   }
 
