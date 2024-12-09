@@ -293,51 +293,64 @@ tr:hover {
 
         // Update Tables Based on Filters
         function updateTables() {
-          const filteredRows = rows.filter(row => {
-            // Check year range
-            const yearMatch = years.some(year => {
-              const inRange = year >= yearRange[0] && year <= yearRange[1];
-              const quotaColumn = headers.indexOf(`${year} Quota`);
-              return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
-            });
+  const filteredRows = rows.filter(row => {
+    // Check year range
+    const yearMatch = years.some(year => {
+      const inRange = year >= yearRange[0] && year <= yearRange[1];
+      const quotaColumn = headers.indexOf(`${year} Quota`);
+      return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
+    });
 
-            // Check specialty filter
-            const specialtyMatch =
-              selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
+    // Check specialty filter
+    const specialtyMatch =
+      selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
 
-            return yearMatch && specialtyMatch;
-          });
+    return yearMatch && specialtyMatch;
+  });
 
-          const snhafAggregates = {};
-          const notAggregates = {};
+  const snhafAggregates = {};
+  const notAggregates = {};
 
-          filteredRows.forEach(row => {
-            const sponsor = row[sponsorIndex]?.trim();
-            const snhaf = row[snhafIndex]?.trim();
-            if (sponsor && snhaf) {
-              const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+  filteredRows.forEach(row => {
+    const sponsor = row[sponsorIndex]?.trim();
+    const snhaf = row[snhafIndex]?.trim();
+    if (sponsor && snhaf) {
+      const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
 
-              if (!targetAggregates[sponsor]) {
-                targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-              }
+      if (!targetAggregates[sponsor]) {
+        targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+      }
 
-              years.forEach(year => {
-                if (year >= yearRange[0] && year <= yearRange[1]) {
-                  const quotaColumn = headers.indexOf(`${year} Quota`);
-                  const matchedColumn = headers.indexOf(`${year} Matched`);
-                  targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
-                  targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
-                }
-              });
-            }
-          });
-
-          const contentDiv = document.getElementById("content");
-          contentDiv.innerHTML = ""; // Clear previous tables
-
-          contentDiv.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
-          contentDiv.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+      years.forEach(year => {
+        if (year >= yearRange[0] && year <= yearRange[1]) {
+          const quotaColumn = headers.indexOf(`${year} Quota`);
+          const matchedColumn = headers.indexOf(`${year} Matched`);
+          targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
+          targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
         }
+      });
+    }
+  });
+
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = ""; // Clear previous content
+
+  // Create container for SNHAF table
+  const snhafContainer = document.createElement("div");
+  snhafContainer.classList.add("table-container");
+  snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions</h2>`;
+  snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+
+  // Create container for Non-SNHAF table
+  const nonSnhafContainer = document.createElement("div");
+  nonSnhafContainer.classList.add("table-container");
+  nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions</h2>`;
+  nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+
+  // Append both containers to the content div
+  contentDiv.appendChild(snhafContainer);
+  contentDiv.appendChild(nonSnhafContainer);
+}
 
         // Function to create a table
         function createTable(aggregates, title, className) {
