@@ -50,22 +50,21 @@
     padding: 5px 10px;
   }
 
-  /* Wrapper for checkboxes and tables */
-div[style*="display: flex"] {
-  gap: 10px; /* Reduce space between checkboxes and tables */
-  align-items: flex-start;
-}
-
 /* Specialty Checkboxes Styling */
 #specialty-checkboxes {
   text-align: left;
-  margin-right: 10px; /* Reduce space between checkboxes and tables */
-  display: block; /* Ensure checkboxes are stacked vertically */
+  margin-right: 5px;
+  display: block;
+  width: 200px; /* Fixed width for better alignment */
   border: 1px solid #ddd;
   background-color: #f9f9f9;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+div[style*="display: flex"] {
+  gap: 20px; /* Increased gap for better spacing */
 }
 
 #specialty-checkboxes label {
@@ -180,18 +179,20 @@ div[style*="display: flex"] {
   <div id="year-slider" style="margin: 20px auto; width: 80%;"></div>
 </div>
   <div style="display: flex; align-items: flex-start;">
-  <div id="specialty-checkboxes"></div>
-  <div style="flex-grow: 1; margin-left: 10px;"> <!-- Adjust margin-left -->
-    <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
-    <div id="content"></div>
+    <div id="specialty-checkboxes"></div>
+    <div style="flex-grow: 1; margin-left: 10px;">
+      <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
+      <div id="content"></div>
+    </div>
   </div>
-</div>
 
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-    let yearRange = [2020, 2024]; // Default Year Range
-    let selectedSpecialties = ["ALL"]; // Default: All specialties
+    document.addEventListener("DOMContentLoaded", function () {
+      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+      const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
+      if (!specialtyCheckboxContainer) { console.error("Specialty container not found."); return; }
+      let yearRange = [2020, 2024]; // Default Year Range
+      let selectedSpecialties = ["ALL"]; // Default: All specialties
 
     fetch(csvUrl)
       .then(response => response.text())
