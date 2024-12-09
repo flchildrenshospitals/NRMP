@@ -6,7 +6,7 @@
   <title>NRMP Data</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
   <style>
   /* General Styling */
@@ -211,6 +211,7 @@ tr:hover {
     <main id="content"></main>
   </div>
 </div>
+  <button id="export-pdf" style="margin: 20px auto; display: block;">Export to PDF</button>
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -486,6 +487,44 @@ yearSlider.noUiSlider.on("update", function () {
         updateTables();
       })
       .catch(error => console.error("Error loading CSV:", error));
+
+    document.getElementById("export-pdf").addEventListener("click", function () {
+  // Import jsPDF (needed for newer versions)
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Add title to the PDF
+  doc.setFontSize(16);
+  doc.text("NRMP Data Export", 10, 10); // Title at 10px margin
+  doc.text(`Filters: ${document.getElementById("dynamic-title-text").textContent}`, 10, 20);
+
+  let currentY = 30; // Initial vertical position for the first table
+
+  // Export SNHAF Table
+  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
+  if (snhafTable) {
+    doc.autoTable({
+      html: snhafTable, // Use the table's HTML
+      startY: currentY, // Start below the title
+      theme: "grid", // Optional: choose table theme
+    });
+    currentY = doc.lastAutoTable.finalY + 20; // Update Y for next table
+  }
+
+  // Export Non-SNHAF Table
+  const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
+  if (nonSnhafTable) {
+    doc.autoTable({
+      html: nonSnhafTable,
+      startY: currentY,
+      theme: "grid",
+    });
+  }
+
+  // Save the PDF
+  doc.save("NRMP_Data.pdf");
+});
+
   });
 </script>
 
