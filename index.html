@@ -57,13 +57,21 @@ div[style*="display: flex"] {
 
 /* Specialty Checkboxes Styling */
 #specialty-checkboxes {
+  text-align: left;
+  margin-right: 20px;
+  display: block; /* Ensure block layout */
+  max-height: 500px; /* Limit height with scroll */
+  overflow-y: auto; /* Scroll if needed */
   border: 1px solid #ddd;
-  background: #f9f9f9;
+  background-color: #f9f9f9;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-height: 500px;
-  overflow-y: auto; /* Scroll for many specialties */
+}
+
+#specialty-checkboxes label {
+  display: block; /* Stack each checkbox vertically */
+  margin-bottom: 5px; /* Add spacing between checkboxes */
 }
 
   h1, h2 {
@@ -174,7 +182,7 @@ div[style*="display: flex"] {
   <label for="specialty-filter" style="margin-left: 20px;">Specialty: </label>
 </div>
   <div style="display: flex; align-items: flex-start;">
-  <div id="specialty-checkboxes" style="margin-right: 20px; text-align: left; width: 20%;"></div>
+  <div id="specialty-checkboxes" style="text-align: left; margin-right: 20px; display: block;"></div>
   <div style="flex-grow: 1;">
     <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
     <div id="content"></div>
@@ -252,18 +260,20 @@ div[style*="display: flex"] {
         // Handle Specialty Selection Changes
         specialtyCheckboxContainer.addEventListener("change", function () {
   const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+  
+  // Determine selected specialties
   selectedSpecialties = checkboxes
     .filter(checkbox => checkbox.checked)
     .map(checkbox => checkbox.value);
 
   if (selectedSpecialties.includes("ALL")) {
-    // If "ALL" is checked, uncheck all others
+    // If "ALL" is checked, deselect all others
     selectedSpecialties = ["ALL"];
     checkboxes.forEach(checkbox => {
       if (checkbox.value !== "ALL") checkbox.checked = false;
     });
   } else {
-    // If any other is checked, uncheck "ALL"
+    // If any other specialty is checked, uncheck "ALL"
     const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
     if (allCheckbox) allCheckbox.checked = false;
   }
