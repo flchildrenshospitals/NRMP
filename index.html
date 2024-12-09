@@ -530,15 +530,17 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
-      didDrawCell: (data) => {
-        if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
+      willDrawCell: (data) => {
+        // Check if this row contains a cell with the text "total" (case-insensitive)
+        if (data.row?.raw && data.row.raw.some(val => typeof val === 'string' && val.toLowerCase().includes("total"))) {
+          const { doc, cell } = data;
           // Draw light blue rectangle first
           doc.setFillColor(218, 233, 248);
-          doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+          doc.rect(cell.x, cell.y, cell.width, cell.height, "F");
 
           // Set text color and font for totals row
-          doc.setTextColor(0, 0, 0); // Black text
-          doc.setFont("helvetica", "bold"); // Bold font
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "bold");
         }
       },
       margin: { top: 20 },
@@ -551,7 +553,7 @@ yearSlider.noUiSlider.on("update", function () {
   if (nonSnhafTable) {
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
-    doc.setFont("helvetica");
+    doc.setFont("helvetica", "bold");
     doc.text("Non-SNHAF Sponsoring Institutions", 10, currentY);
     currentY += 10;
 
@@ -571,15 +573,16 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
-      didDrawCell: (data) => {
-        if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
+      willDrawCell: (data) => {
+        if (data.row?.raw && data.row.raw.some(val => typeof val === 'string' && val.toLowerCase().includes("total"))) {
+          const { doc, cell } = data;
           // Draw light blue rectangle first
           doc.setFillColor(218, 233, 248);
-          doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+          doc.rect(cell.x, cell.y, cell.width, cell.height, "F");
 
           // Set text color and font for totals row
-          doc.setTextColor(0, 0, 0); // Black text
-          doc.setFont("helvetica"); // Bold font
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "bold");
         }
       },
       margin: { top: 20 },
