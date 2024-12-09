@@ -532,8 +532,13 @@ yearSlider.noUiSlider.on("update", function () {
       },
       didDrawCell: (data) => {
         if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
-          doc.setFillColor(218, 233, 248); // Light blue for total row
+          // Light blue fill for total row
+          doc.setFillColor(218, 233, 248);
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+
+          // Set text color and font for better visibility
+          doc.setTextColor(0, 0, 0); // Black text
+          doc.setFont("helvetica", "bold"); // Bold font
         }
       },
       margin: { top: 20 },
@@ -568,8 +573,13 @@ yearSlider.noUiSlider.on("update", function () {
       },
       didDrawCell: (data) => {
         if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
-          doc.setFillColor(218, 233, 248); // Light blue for total row
+          // Light blue fill for total row
+          doc.setFillColor(218, 233, 248);
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
+
+          // Set text color and font for better visibility
+          doc.setTextColor(0, 0, 0); // Black text
+          doc.setFont("helvetica", "bold"); // Bold font
         }
       },
       margin: { top: 20 },
