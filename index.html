@@ -503,7 +503,7 @@ yearSlider.noUiSlider.on("update", function () {
   const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
   const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
   doc.text(wrappedFiltersText, 10, 20);
-  let currentY = 20 + wrappedFiltersText.length * 10; // Adjust vertical position dynamically
+  let currentY = 20 + wrappedFiltersText.length * 10;
 
   // Export SNHAF Table
   const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
@@ -531,10 +531,7 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didDrawCell: (data) => {
-        console.log("didDrawCell fired for SNHAF table");
-        console.log(data.row.raw); // Debugging row data
-        const rowString = Object.values(data.row.raw || {}).join(" ").toLowerCase();
-        if (rowString.includes("Total")) {
+        if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
           doc.setFillColor(218, 233, 248); // Light blue for total row
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
         }
@@ -570,10 +567,7 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didDrawCell: (data) => {
-        console.log("didDrawCell fired for Non-SNHAF table");
-        console.log(data.row.raw); // Debugging row data
-        const rowString = Object.values(data.row.raw || {}).join(" ").toLowerCase();
-        if (rowString.includes("Total")) {
+        if (data.row.raw?.some(cell => cell.content?.toLowerCase() === "total")) {
           doc.setFillColor(218, 233, 248); // Light blue for total row
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
         }
