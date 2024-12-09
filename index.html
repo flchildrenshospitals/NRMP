@@ -528,6 +528,7 @@ yearSlider.noUiSlider.on("update", function () {
   const doc = new jsPDF();
 
   // Add title to the PDF
+  doc.setFont("helvetica", "bold"); // Set font to bold
   doc.setFontSize(16);
   doc.setTextColor(0, 0, 0);
   doc.setFont("helvetica", "normal");
