@@ -9,195 +9,138 @@
 
 
   <style>
-  /* General Page Styling */
+  /* General Styling */
 body {
   font-family: 'Arial', sans-serif;
-  margin: 20px;
+  margin: 0;
   padding: 0;
   background-color: #f4f4f9;
   color: #333;
+  line-height: 1.6;
 }
 
-/* Custom noUiSlider Styling */
-.noUi-target {
-  background-color: #e0e0e0; /* Background track color */
-  border-radius: 10px; /* Rounded corners */
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.noUi-connect {
-  background-color: #003366; /* Match table header blue */
-  border-radius: 10px; /* Rounded corners for the filled range */
+/* Header Styling */
+h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
 }
 
-.noUi-handle {
-  background-color: #003366; /* Handle color */
-  border: 2px solid white; /* White border for better visibility */
-  height: 18px; /* Adjust size */
-  width: 18px;
-  border-radius: 50%; /* Rounded handle */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-}
-
-.noUi-handle:hover {
-  background-color: #00509e; /* Slightly lighter blue on hover */
-}
-
-.noUi-tooltip {
-  background-color: #003366; /* Tooltip background */
-  color: white; /* Tooltip text */
-  font-size: 14px; /* Adjust font size */
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-
-/* Specialty Checkboxes Styling */
-#specialty-checkboxes {
-  text-align: left;
-  margin-right: 5px; /* Bring the checkboxes closer to the table */
-  display: inline-block; /* Ensure the checkboxes stack in a block */
-  width: auto;
+/* Slider Section */
+.slider-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #fff;
   border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  padding: 10px 15px; /* Compact padding for a cleaner look */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Checkbox Labels Styling */
+#year-slider {
+  width: 90%;
+}
+
+/* Main Layout */
+.main-layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* Specialty Checkboxes */
+#specialty-checkboxes {
+  flex: 1;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+}
+
 #specialty-checkboxes label {
-  display: flex; /* Use flex for proper alignment */
-  align-items: center; /* Vertically align checkbox and label */
-  margin-bottom: 8px; /* Compact spacing for labels */
-  white-space: nowrap; /* Prevent text wrapping */
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  white-space: nowrap; /* Prevent wrapping */
 }
 
 #specialty-checkboxes input[type="checkbox"] {
-  margin-right: 6px; /* Space between checkbox and label */
+  margin-right: 8px;
 }
 
-/* General Layout Adjustments */
-div[style*="display: flex"] {
-  gap: 5px; /* Minimal gap between checkboxes and tables */
-  align-items: flex-start; /* Align top edges of checkboxes and tables */
-}
-
-/* Content Styling */
-div[style*="flex-grow: 1"] {
-  flex-grow: 0; /* Disable automatic width expansion */
-  margin-left: 5px; /* Reduce space between checkboxes and tables */
-}
-
-#content {
-  flex-grow: 1; /* Ensure tables take up available space */
-}
-
-/* Headings */
-h1, h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
-h1 {
-  font-size: 28px;
-  color: #2c3e50;
-}
-
-h2 {
-  font-size: 22px;
-  color: #003366;
+/* Content Section */
+main#content {
+  flex: 2;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Table Styling */
 table {
-  width: auto; /* Auto-resize based on content */
-  max-width: 80%; /* Limit the maximum width */
-  margin: 20px auto; /* Center the table */
+  width: 100%;
   border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  table-layout: auto; /* Allow column sizes to adjust based on content */
+  margin: 20px 0;
+  border: 1px solid #ddd;
 }
 
-/* Table Headers */
-th {
-  background-color: #003366;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 16px;
-  padding: 12px; /* Reduced padding */
-  letter-spacing: 0.5px;
-}
-
-/* Table Rows */
-td {
-  padding: 10px; /* Reduced padding */
+th, td {
+  padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  font-size: 15px;
-  color: #555;
 }
 
-td:last-child {
-  text-align: center; /* Center align Match % column */
-  font-weight: bold;
+th {
+  background-color: #003366;
+  color: #fff;
+  text-transform: uppercase;
 }
 
-/* Row Alternation */
 tr:nth-child(even) {
-  background-color: #f5f5f5;
-}
-
-tr:nth-child(odd) {
-  background-color: #ffffff;
+  background-color: #f9f9f9;
 }
 
 tr:hover {
   background-color: #f1f1f1;
-  transform: scale(1.01);
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
-/* Total Row Styling */
+/* Total Row */
 .total-row {
-  background-color: #d9edf7; /* Highlight for Total Row */
+  background-color: #e0f7fa;
   font-weight: bold;
-  text-transform: uppercase;
 }
 
 .total-row td {
   font-size: 16px;
 }
 
-/* Responsive Adjustments */
+/* Responsive Layout */
 @media (max-width: 768px) {
-  div[style*="display: flex"] {
-    flex-direction: column; /* Stack checkboxes and tables */
-    gap: 10px; /* Add spacing between stacked sections */
+  .main-layout {
+    flex-direction: column;
   }
 
   #specialty-checkboxes {
-    margin-bottom: 10px; /* Add spacing for stacked layout */
+    max-width: 100%;
   }
 
-  table {
-    width: 100%; /* Allow table to stretch fully on small screens */
-  }
-
-  th, td {
-    font-size: 13px;
-    padding: 8px;
-  }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  h2 {
-    font-size: 18px;
+  #content {
+    margin-top: 20px;
   }
 }
 
@@ -205,17 +148,23 @@ tr:hover {
 
 </head>
 <body>
+  <div class="container">
   <h1>NRMP Data Viewer</h1>
-  <div style="text-align: center; margin-bottom: 20px;">
-  <div id="year-slider" style="margin: 20px auto; width: 80%;"></div>
-</div>
-  <div style="display: flex; align-items: flex-start;">
-    <div id="specialty-checkboxes"></div>
-    <div style="flex-grow: 1; margin-left: 10px;">
-      <div id="content-header" style="text-align: center; font-size: 18px; margin-bottom: 20px;"></div>
-      <div id="content"></div>
-    </div>
+
+  <!-- Slider Section -->
+  <div class="slider-section">
+    <div id="year-slider"></div>
   </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Specialty Checkboxes -->
+    <aside id="specialty-checkboxes"></aside>
+
+    <!-- Content Section -->
+    <main id="content"></main>
+  </div>
+</div>
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
