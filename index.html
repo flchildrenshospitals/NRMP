@@ -51,15 +51,14 @@
   }
 
 /* Specialty Checkboxes Styling */
-/* Specialty Checkboxes Styling */
 #specialty-checkboxes {
   text-align: left;
-  margin-right: 20px; /* Increased spacing to align with the table */
+  margin-right: 10px; /* Reduce the gap between checkboxes and tables */
   display: inline-block; /* Ensure the checkboxes stack in a block */
-  width: auto; /* Auto width for better alignment */
+  width: auto;
   border: 1px solid #ddd;
   background-color: #f9f9f9;
-  padding: 10px 20px; /* Added padding for better spacing */
+  padding: 10px 15px; /* Adjust padding for a compact look */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -68,29 +67,22 @@
 #specialty-checkboxes label {
   display: flex; /* Use flex for proper alignment */
   align-items: center; /* Vertically align checkbox and label */
-  margin-bottom: 10px; /* Add consistent spacing */
+  margin-bottom: 8px; /* Reduce spacing for compact layout */
   white-space: nowrap; /* Prevent text wrapping */
 }
 
 #specialty-checkboxes input[type="checkbox"] {
-  margin-right: 8px; /* Space between checkbox and label */
+  margin-right: 6px; /* Space between checkbox and label */
 }
 
 /* General Layout Adjustments */
 div[style*="display: flex"] {
-  gap: 40px; /* Reduced the gap for closer alignment */
+  gap: 15px; /* Reduce horizontal space between checkboxes and tables */
+  align-items: flex-start; /* Align top edges of checkboxes and tables */
 }
 
-@media (max-width: 768px) {
-  #specialty-checkboxes {
-    margin-right: 10px; /* Adjust spacing on smaller screens */
-    padding: 10px; /* Adjust padding for smaller screens */
-  }
-
-  div[style*="display: flex"] {
-    flex-direction: column; /* Stack the layout on smaller screens */
-    gap: 10px;
-  }
+#content {
+  flex-grow: 1; /* Ensure tables take up available space */
 }
 
   h1, h2 {
