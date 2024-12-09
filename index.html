@@ -503,6 +503,7 @@ yearSlider.noUiSlider.on("update", function () {
   const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
   const wrappedFiltersText = doc.splitTextToSize(filtersText, 180); // Adjust width as needed
   doc.text(wrappedFiltersText, 10, 20);
+  currentY = 20 + wrappedFiltersText.length * 10; // Update currentY based on number of lines
 
   let currentY = 30;
 
