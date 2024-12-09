@@ -495,8 +495,14 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Add title to the PDF
   doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0); // Black color for the main title
+  doc.setFont("helvetica", "normal"); // Normal font weight
   doc.text("NRMP Data Export", 10, 10);
-  doc.text(`Filters: ${document.getElementById("dynamic-title-text").textContent}`, 10, 20);
+
+  // Wrap and add filters text
+  const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
+  const wrappedFiltersText = doc.splitTextToSize(filtersText, 180); // Adjust width as needed
+  doc.text(wrappedFiltersText, 10, 20);
 
   let currentY = 30;
 
@@ -505,8 +511,11 @@ yearSlider.noUiSlider.on("update", function () {
   if (snhafTable) {
     // Add title for SNHAF table
     doc.setFontSize(14);
+    doc.setTextColor(0, 51, 102); // Blue color
+    doc.setFont("helvetica", "bold"); // Bold font
     doc.text("SNHAF Sponsoring Institutions", 10, currentY);
-    currentY += 10; // Add spacing below the title
+    currentY += 10;
+
     doc.autoTable({
       html: snhafTable,
       startY: currentY,
@@ -539,8 +548,12 @@ yearSlider.noUiSlider.on("update", function () {
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
     // Add title for Non-SNHAF table
+    doc.setFontSize(14);
+    doc.setTextColor(0, 51, 102);
+    doc.setFont("helvetica", "bold");
     doc.text("Non-SNHAF Sponsoring Institutions", 10, currentY);
-    currentY += 10; // Add spacing below the title
+    currentY += 10;
+
     doc.autoTable({
       html: nonSnhafTable,
       startY: currentY,
@@ -560,7 +573,7 @@ yearSlider.noUiSlider.on("update", function () {
       didDrawCell: (data) => {
         const cellValue = data.row.raw[0];
         if (typeof cellValue === "string" && cellValue.toLowerCase() === "total") {
-          doc.setFillColor(218, 233, 248); // Light blue for total row
+          doc.setFillColor(218, 233, 248);
           doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, "F");
         }
       },
@@ -571,7 +584,6 @@ yearSlider.noUiSlider.on("update", function () {
   // Save the PDF
   doc.save("NRMP_Data.pdf");
 });
-
 
   });
 </script>
