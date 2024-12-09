@@ -505,18 +505,17 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
 
-  // Export SNHAF Table
-  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
-  if (snhafTable) {
+  // Function to configure autoTable options
+  function generateTable(title, tableElement, startY) {
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
     doc.setFont("helvetica", "bold");
-    doc.text("SNHAF Sponsoring Institutions", 10, currentY);
-    currentY += 10;
+    doc.text(title, 10, startY);
+    startY += 10;
 
     doc.autoTable({
-      html: snhafTable,
-      startY: currentY,
+      html: tableElement,
+      startY: startY,
       theme: "grid",
       headStyles: {
         fillColor: [0, 51, 102],
@@ -530,69 +529,36 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
-      willDrawCell: (data) => {
-        // Check if this row contains a cell with the text "total" (case-insensitive)
+      didParseCell: (data) => {
+        // Check if this row should be styled as a totals row
         if (data.row?.raw && data.row.raw.some(val => typeof val === 'string' && val.toLowerCase().includes("total"))) {
-          const { doc, cell } = data;
-          // Draw light blue rectangle first
-          doc.setFillColor(218, 233, 248);
-          doc.rect(cell.x, cell.y, cell.width, cell.height, "F");
-
-          // Set text color and font for totals row
-          doc.setTextColor(0, 0, 0);
-          doc.setFont("helvetica", "bold");
+          data.cell.styles.fillColor = [218, 233, 248]; // Light blue background
+          data.cell.styles.textColor = [0, 0, 0];       // Black text
+          data.cell.styles.fontStyle = 'bold';          // Bold text
         }
       },
       margin: { top: 20 },
     });
-    currentY = doc.lastAutoTable.finalY + 20;
+
+    return doc.lastAutoTable.finalY + 20;
+  }
+
+  // Export SNHAF Table
+  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
+  if (snhafTable) {
+    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
   }
 
   // Export Non-SNHAF Table
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
-    doc.setFontSize(14);
-    doc.setTextColor(0, 51, 102);
-    doc.setFont("helvetica", "bold");
-    doc.text("Non-SNHAF Sponsoring Institutions", 10, currentY);
-    currentY += 10;
-
-    doc.autoTable({
-      html: nonSnhafTable,
-      startY: currentY,
-      theme: "grid",
-      headStyles: {
-        fillColor: [0, 51, 102],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-      },
-      bodyStyles: {
-        fontSize: 10,
-        textColor: [33, 33, 33],
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-      willDrawCell: (data) => {
-        if (data.row?.raw && data.row.raw.some(val => typeof val === 'string' && val.toLowerCase().includes("total"))) {
-          const { doc, cell } = data;
-          // Draw light blue rectangle first
-          doc.setFillColor(218, 233, 248);
-          doc.rect(cell.x, cell.y, cell.width, cell.height, "F");
-
-          // Set text color and font for totals row
-          doc.setTextColor(0, 0, 0);
-          doc.setFont("helvetica", "bold");
-        }
-      },
-      margin: { top: 20 },
-    });
+    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
   }
 
   // Save the PDF
   doc.save("NRMP_Data.pdf");
 });
-
+    
   });
 </script>
 
