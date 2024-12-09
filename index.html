@@ -103,6 +103,23 @@ table {
   border: 1px solid #ddd;
 }
 
+.table-container {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px; /* Add space between table boxes */
+}
+
+.table-container h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #003366;
+  text-align: left;
+}
+
 th, td {
   padding: 12px;
   text-align: left;
@@ -276,6 +293,22 @@ tr:hover {
 
         // Update Tables Based on Filters
         function updateTables() {
+          const contentDiv = document.getElementById("content");
+contentDiv.innerHTML = ""; // Clear previous content
+
+const snhafContainer = document.createElement("div");
+snhafContainer.classList.add("table-container");
+snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions</h2>`;
+snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+
+const nonSnhafContainer = document.createElement("div");
+nonSnhafContainer.classList.add("table-container");
+nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions</h2>`;
+nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+
+contentDiv.appendChild(snhafContainer);
+contentDiv.appendChild(nonSnhafContainer);
+
           const filteredRows = rows.filter(row => {
             // Check year range
             const yearMatch = years.some(year => {
