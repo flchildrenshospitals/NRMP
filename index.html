@@ -158,6 +158,16 @@ tr:hover {
   transition: background-color 0.3s ease;
 }
 
+.average-row {
+  background-color: rgba(240, 240, 240, 0.8);
+  font-weight: bold;
+}
+
+.median-row {
+  background-color: rgba(220, 220, 220, 0.8);
+  font-weight: bold;
+}
+
 /* Total Row */
 .total-row {
   background-color: rgba(218, 233, 248, 0.5) !important; /* Updated to preferred color */
@@ -484,7 +494,30 @@ yearSlider.noUiSlider.on("update", function () {
       return b.totalMatched - a.totalMatched;
     });
 
-  // Add rows with the new column
+  // Extract column data for Average and Median calculations
+  const quotas = sortedData.map(data => data.totalQuota);
+  const matched = sortedData.map(data => data.totalMatched);
+  const notMatched = sortedData.map(data => data.notMatched);
+
+  // Helper functions for average and median
+  const calculateAverage = arr => arr.reduce((a, b) => a + b, 0) / arr.length || 0;
+  const calculateMedian = arr => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0
+      ? sorted[mid]
+      : (sorted[mid - 1] + sorted[mid]) / 2;
+  };
+
+  const averageQuota = calculateAverage(quotas);
+  const averageMatched = calculateAverage(matched);
+  const averageNotMatched = calculateAverage(notMatched);
+
+  const medianQuota = calculateMedian(quotas);
+  const medianMatched = calculateMedian(matched);
+  const medianNotMatched = calculateMedian(notMatched);
+
+  // Add rows for sponsors
   let totalQuota = 0;
   let totalMatched = 0;
 
@@ -525,12 +558,35 @@ yearSlider.noUiSlider.on("update", function () {
   `;
   tbody.appendChild(totalRow);
 
+  // Add average row
+  const averageRow = document.createElement("tr");
+  averageRow.classList.add("average-row");
+  averageRow.innerHTML = `
+    <td>Average</td>
+    <td>${averageQuota.toFixed(2)}</td>
+    <td>${averageMatched.toFixed(2)}</td>
+    <td>${averageNotMatched.toFixed(2)}</td>
+    <td>-</td>
+  `;
+  tbody.appendChild(averageRow);
+
+  // Add median row
+  const medianRow = document.createElement("tr");
+  medianRow.classList.add("median-row");
+  medianRow.innerHTML = `
+    <td>Median</td>
+    <td>${medianQuota.toFixed(2)}</td>
+    <td>${medianMatched.toFixed(2)}</td>
+    <td>${medianNotMatched.toFixed(2)}</td>
+    <td>-</td>
+  `;
+  tbody.appendChild(medianRow);
+
   table.appendChild(thead);
   table.appendChild(tbody);
   section.appendChild(table);
   return section;
 }
-
 
         // Initialize Tables
         updateTables();
