@@ -437,86 +437,94 @@ yearSlider.noUiSlider.on("update", function () {
 
         // Function to create a table
         function createTable(aggregates, title, className) {
-          const section = document.createElement("div");
+  const section = document.createElement("div");
 
-          const table = document.createElement("table");
-          table.classList.add(className);
-          const thead = document.createElement("thead");
-          const tbody = document.createElement("tbody");
+  const table = document.createElement("table");
+  table.classList.add(className);
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
 
-          // Add headers
-          const headerRow = document.createElement("tr");
-          ["Sponsoring Institution", "Total Quota", "Total Matched", "Match %"].forEach(header => {
-            const th = document.createElement("th");
-            th.textContent = header;
-            headerRow.appendChild(th);
-          });
-          thead.appendChild(headerRow);
+  // Add updated headers
+  const headerRow = document.createElement("tr");
+  ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
 
-          // Sort aggregates by Match % and then Total Matched
-          const sortedData = Object.keys(aggregates)
-            .map(sponsor => {
-              const sponsorData = aggregates[sponsor];
-              const matchPercent =
-                sponsorData.totalQuota > 0
-                  ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-                  : 0;
-              return {
-                sponsor,
-                totalQuota: sponsorData.totalQuota,
-                totalMatched: sponsorData.totalMatched,
-                matchPercent,
-              };
-            })
-            .sort((a, b) => {
-              if (b.matchPercent !== a.matchPercent) {
-                return b.matchPercent - a.matchPercent;
-              }
-              return b.totalMatched - a.totalMatched;
-            });
+  // Sort aggregates by Match % and then Total Matched
+  const sortedData = Object.keys(aggregates)
+    .map(sponsor => {
+      const sponsorData = aggregates[sponsor];
+      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched; // Calculate Not Matched
+      const matchPercent =
+        sponsorData.totalQuota > 0
+          ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+          : 0;
 
-          // Add rows
-          let totalQuota = 0;
-          let totalMatched = 0;
+      return {
+        sponsor,
+        totalQuota: sponsorData.totalQuota,
+        totalMatched: sponsorData.totalMatched,
+        notMatched,
+        matchPercent,
+      };
+    })
+    .sort((a, b) => {
+      if (b.matchPercent !== a.matchPercent) {
+        return b.matchPercent - a.matchPercent;
+      }
+      return b.totalMatched - a.totalMatched;
+    });
 
-          sortedData.forEach(data => {
-            const tr = document.createElement("tr");
-            const sponsorCell = document.createElement("td");
-            const quotaCell = document.createElement("td");
-            const matchedCell = document.createElement("td");
-            const matchPercentCell = document.createElement("td");
+  // Add rows with the new column
+  let totalQuota = 0;
+  let totalMatched = 0;
 
-            sponsorCell.textContent = data.sponsor;
-            quotaCell.textContent = data.totalQuota.toLocaleString();
-            matchedCell.textContent = data.totalMatched.toLocaleString();
-            matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
+  sortedData.forEach(data => {
+    const tr = document.createElement("tr");
+    const sponsorCell = document.createElement("td");
+    const quotaCell = document.createElement("td");
+    const matchedCell = document.createElement("td");
+    const notMatchedCell = document.createElement("td");
+    const matchPercentCell = document.createElement("td");
 
-            tr.appendChild(sponsorCell);
-            tr.appendChild(quotaCell);
-            tr.appendChild(matchedCell);
-            tr.appendChild(matchPercentCell);
-            tbody.appendChild(tr);
+    sponsorCell.textContent = data.sponsor;
+    quotaCell.textContent = data.totalQuota.toLocaleString();
+    matchedCell.textContent = data.totalMatched.toLocaleString();
+    notMatchedCell.textContent = data.notMatched.toLocaleString();
+    matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
 
-            totalQuota += data.totalQuota;
-            totalMatched += data.totalMatched;
-          });
+    tr.appendChild(sponsorCell);
+    tr.appendChild(quotaCell);
+    tr.appendChild(matchedCell);
+    tr.appendChild(notMatchedCell);
+    tr.appendChild(matchPercentCell);
+    tbody.appendChild(tr);
 
-          // Add total row
-          const totalRow = document.createElement("tr");
-          totalRow.classList.add("total-row");
-          totalRow.innerHTML = `
-            <td>Total</td>
-            <td>${totalQuota.toLocaleString()}</td>
-            <td>${totalMatched.toLocaleString()}</td>
-            <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
-          `;
-          tbody.appendChild(totalRow);
+    totalQuota += data.totalQuota;
+    totalMatched += data.totalMatched;
+  });
 
-          table.appendChild(thead);
-          table.appendChild(tbody);
-          section.appendChild(table);
-          return section;
-        }
+  // Add total row
+  const totalRow = document.createElement("tr");
+  totalRow.classList.add("total-row");
+  totalRow.innerHTML = `
+    <td>Total</td>
+    <td>${totalQuota.toLocaleString()}</td>
+    <td>${totalMatched.toLocaleString()}</td>
+    <td>${(totalQuota - totalMatched).toLocaleString()}</td>
+    <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
+  `;
+  tbody.appendChild(totalRow);
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  section.appendChild(table);
+  return section;
+}
+
 
         // Initialize Tables
         updateTables();
