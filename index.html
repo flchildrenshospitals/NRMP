@@ -604,60 +604,75 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
 
-  function generateTable(title, tableElement, startY) {
-    doc.setFontSize(14);
-    doc.setTextColor(0, 51, 102);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, 10, startY);
-    startY += 10;
+  function generateTable(title, tableElement, startY, median) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    doc.autoTable({
-      html: tableElement,
-      startY: startY,
-      theme: "grid",
-      headStyles: {
-        fillColor: [0, 51, 102],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-      },
-      bodyStyles: {
-        fontSize: 10,
-        textColor: [33, 33, 33],
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-      didParseCell: (data) => {
-        if (data.row.section === 'body') {
-          // Join all lines of cell text and convert to lowercase
-          const cellText = (data.cell.text || []).join(' ').toLowerCase();
-          if (cellText.includes('total')) {
-            // If this cell contains 'total', style the entire row
-            Object.values(data.row.cells).forEach(cell => {
-              cell.styles.fillColor = [218, 233, 248]; // Light blue
-              cell.styles.textColor = [0, 0, 0];       // Black text
-              cell.styles.fontStyle = 'bold';          // Bold text
-            });
-          }
+  // Add Median Subtitle
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Median Match Rate: ${median === "N/A" ? "N/A" : `${median}%`}`, 10, startY);
+  startY += 10;
+
+  // Configure autoTable for rows and median border
+  doc.autoTable({
+    html: tableElement,
+    startY: startY,
+    theme: "grid",
+    headStyles: {
+      fillColor: [0, 51, 102],
+      textColor: [255, 255, 255],
+      fontSize: 12,
+    },
+    bodyStyles: {
+      fontSize: 10,
+      textColor: [33, 33, 33],
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245],
+    },
+    didDrawCell: (data) => {
+      // Check if this row is the first row below the median
+      const row = data.row;
+      if (row.index !== undefined) {
+        const rowMatchPercent = parseFloat(row.cells["Match %"].text.replace("%", "")) || 0;
+
+        if (
+          !data.row.hasMedianBorder &&
+          rowMatchPercent < parseFloat(median) &&
+          median !== "N/A"
+        ) {
+          // Draw a dashed border
+          const { table } = data;
+          const x = table.startX;
+          const y = data.cell.y + data.cell.height;
+          const width = table.width;
+          doc.setLineDash([5, 5]); // Dashed line
+          doc.setDrawColor(0, 51, 102); // Dark blue
+          doc.line(x, y, x + width, y);
+          row.hasMedianBorder = true; // Prevent multiple dashed borders
         }
-      },
-      margin: { top: 20 },
-    });
+      }
+    },
+  });
 
-    return doc.lastAutoTable.finalY + 20;
-  }
+  // Reset dashed lines for future use
+  doc.setLineDash([]);
 
-  // Export SNHAF Table
-  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
-  if (snhafTable) {
-    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
-  }
+  return doc.lastAutoTable.finalY + 20;
+}
 
-  // Export Non-SNHAF Table
-  const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
-  if (nonSnhafTable) {
-    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
-  }
+// Export SNHAF Table
+const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
+if (snhafTable) {
+  currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY, median);
+}
+
+// Export Non-SNHAF Table
+const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
+if (nonSnhafTable) {
+  generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY, median);
+}
 
   // Save the PDF
   doc.save("NRMP_Data.pdf");
