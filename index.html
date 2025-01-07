@@ -404,16 +404,16 @@ tr:hover {
   const totalNonSnhafSponsors = Object.keys(notAggregates).length;
 
   // Create container for SNHAF table
-  const snhafContainer = document.createElement("div");
-  snhafContainer.classList.add("table-container");
-  snhafContainer.innerHTML = <h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>;
-  snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+const snhafContainer = document.createElement("div");
+snhafContainer.classList.add("table-container");
+snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
+snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
 
-  // Create container for Non-SNHAF table
-  const nonSnhafContainer = document.createElement("div");
-  nonSnhafContainer.classList.add("table-container");
-  nonSnhafContainer.innerHTML = <h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>;
-  nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+// Create container for Non-SNHAF table
+const nonSnhafContainer = document.createElement("div");
+nonSnhafContainer.classList.add("table-container");
+nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
+nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
 
   // Append both containers to the content div
   contentDiv.appendChild(snhafContainer);
