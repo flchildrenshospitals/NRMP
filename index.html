@@ -199,33 +199,6 @@ tr:hover {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Subtle shadow on focus */
 }
 
-/* Add these new styles for the markers */
-    .median-row {
-      position: relative;
-      background-color: rgba(255, 235, 205, 0.3) !important;
-    }
-
-    .average-row {
-      position: relative;
-      background-color: rgba(230, 244, 255, 0.3) !important;
-    }
-
-    .marker-indicator {
-      position: absolute;
-      right: 10px;
-      font-size: 12px;
-      font-style: italic;
-      color: #666;
-    }
-
-    /* Style for the statistics summary */
-    .stats-summary {
-      margin: 10px 0;
-      font-size: 14px;
-      color: #666;
-      font-style: italic;
-    }
-
 /* Responsive Layout */
 @media (max-width: 768px) {
   .main-layout {
@@ -471,12 +444,13 @@ yearSlider.noUiSlider.on("update", function () {
         // Function to create a table
         function createTable(aggregates, title, className) {
   const section = document.createElement("div");
+
   const table = document.createElement("table");
   table.classList.add(className);
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  // Add headers (same as before)
+  // Add updated headers
   const headerRow = document.createElement("tr");
   ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
     const th = document.createElement("th");
@@ -485,14 +459,15 @@ yearSlider.noUiSlider.on("update", function () {
   });
   thead.appendChild(headerRow);
 
-  // Process and sort data
+  // Sort aggregates by Match % and then Total Matched
   const sortedData = Object.keys(aggregates)
     .map(sponsor => {
       const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
-      const matchPercent = sponsorData.totalQuota > 0
-        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-        : 0;
+      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched; // Calculate Not Matched
+      const matchPercent =
+        sponsorData.totalQuota > 0
+          ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+          : 0;
 
       return {
         sponsor,
@@ -502,69 +477,43 @@ yearSlider.noUiSlider.on("update", function () {
         matchPercent,
       };
     })
-    .sort((a, b) => b.matchPercent - a.matchPercent);
+    .sort((a, b) => {
+      if (b.matchPercent !== a.matchPercent) {
+        return b.matchPercent - a.matchPercent;
+      }
+      return b.totalMatched - a.totalMatched;
+    });
 
-  // Calculate median and average
-  const matchPercentages = sortedData.map(data => data.matchPercent);
-  const average = matchPercentages.reduce((a, b) => a + b, 0) / matchPercentages.length;
-  
-  // Calculate median
-  const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
-  const middle = Math.floor(sortedPercentages.length / 2);
-  const median = sortedPercentages.length % 2 === 0
-    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-    : sortedPercentages[middle];
-
-  // Add statistics summary
-  const statsSummary = document.createElement("div");
-  statsSummary.classList.add("stats-summary");
-  statsSummary.textContent = `Statistics: Median Match Rate: ${median.toFixed(2)}% | Average Match Rate: ${average.toFixed(2)}%`;
-  section.appendChild(statsSummary);
-
-  // Track running totals
+  // Add rows with the new column
   let totalQuota = 0;
   let totalMatched = 0;
 
-  // Add rows with markers for median and average
-  sortedData.forEach((data, index) => {
+  sortedData.forEach(data => {
     const tr = document.createElement("tr");
-    
-    // Add marker classes if this row's percentage is closest to median or average
-    const isMedianRow = Math.abs(data.matchPercent - median) < 0.01;
-    const isAverageRow = Math.abs(data.matchPercent - average) < 0.01;
-    
-    if (isMedianRow) tr.classList.add("median-row");
-    if (isAverageRow) tr.classList.add("average-row");
+    const sponsorCell = document.createElement("td");
+    const quotaCell = document.createElement("td");
+    const matchedCell = document.createElement("td");
+    const notMatchedCell = document.createElement("td");
+    const matchPercentCell = document.createElement("td");
 
-    // Create cells
-    const cells = [
-      data.sponsor,
-      data.totalQuota.toLocaleString(),
-      data.totalMatched.toLocaleString(),
-      data.notMatched.toLocaleString(),
-      data.matchPercent.toFixed(2) + "%"
-    ].map(text => {
-      const td = document.createElement("td");
-      td.textContent = text;
-      return td;
-    });
+    sponsorCell.textContent = data.sponsor;
+    quotaCell.textContent = data.totalQuota.toLocaleString();
+    matchedCell.textContent = data.totalMatched.toLocaleString();
+    notMatchedCell.textContent = data.notMatched.toLocaleString();
+    matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
 
-    // Add marker indicators if needed
-    if (isMedianRow) {
-      cells[4].innerHTML += '<span class="marker-indicator">(Median)</span>';
-    }
-    if (isAverageRow) {
-      cells[4].innerHTML += '<span class="marker-indicator">(Average)</span>';
-    }
-
-    cells.forEach(cell => tr.appendChild(cell));
+    tr.appendChild(sponsorCell);
+    tr.appendChild(quotaCell);
+    tr.appendChild(matchedCell);
+    tr.appendChild(notMatchedCell);
+    tr.appendChild(matchPercentCell);
     tbody.appendChild(tr);
 
     totalQuota += data.totalQuota;
     totalMatched += data.totalMatched;
   });
 
-  // Add total row (same as before)
+  // Add total row
   const totalRow = document.createElement("tr");
   totalRow.classList.add("total-row");
   totalRow.innerHTML = `
@@ -581,6 +530,7 @@ yearSlider.noUiSlider.on("update", function () {
   section.appendChild(table);
   return section;
 }
+
 
         // Initialize Tables
         updateTables();
