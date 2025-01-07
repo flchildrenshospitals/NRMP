@@ -361,7 +361,7 @@ tr:hover {
     // Check year range
     const yearMatch = years.some(year => {
       const inRange = year >= yearRange[0] && year <= yearRange[1];
-      const quotaColumn = headers.indexOf(${year} Quota);
+      const quotaColumn = headers.indexOf(`${year} Quota`);
       return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
     });
 
@@ -387,7 +387,7 @@ tr:hover {
 
       years.forEach(year => {
         if (year >= yearRange[0] && year <= yearRange[1]) {
-          const quotaColumn = headers.indexOf(${year} Quota);
+          const quotaColumn = headers.indexOf(`${year} Quota`);
           const matchedColumn = headers.indexOf(${year} Matched);
           targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
           targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
