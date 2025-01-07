@@ -253,6 +253,8 @@ tr:hover {
 </div>
   
   <script>
+    let globalMedian = "N/A"; // Default to "N/A" to avoid early usage issues
+
   document.addEventListener("DOMContentLoaded", function () {
     const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
     let yearRange = [2020, 2024]; // Default Year Range
@@ -512,15 +514,16 @@ yearSlider.noUiSlider.on("update", function () {
   let median;
 
   if (validPercentages.length === 0) {
-    median = "N/A"; // No valid data
-  } else {
+    globalMedian = "N/A"; // No valid data
+} else {
     const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
     const middle = Math.floor(sortedPercentages.length / 2);
-    median = sortedPercentages.length % 2 === 0
-      ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-      : sortedPercentages[middle];
-    median = median.toFixed(2); // Format as percentage
-  }
+    globalMedian = sortedPercentages.length % 2 === 0
+        ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+        : sortedPercentages[middle];
+    globalMedian = globalMedian.toFixed(2); // Format as percentage
+}
+
 
   // Create stats summary with the adjusted median
   const statsSummary = document.createElement("div");
