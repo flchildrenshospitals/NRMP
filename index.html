@@ -316,7 +316,7 @@ tr:hover {
         `;
         uniqueSpecialties.forEach(specialty => {
           const checkbox = document.createElement("label");
-          checkbox.innerHTML = <input type="checkbox" value="${specialty}"> ${specialty};
+          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
           specialtyCheckboxContainer.appendChild(checkbox);
         });
 
