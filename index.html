@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Previous head section remains the same -->
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NRMP Data</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
+  <!-- Add this to your existing styles -->
   <style>
-  /* General Styling */
+    /* General Styling */
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -217,9 +211,34 @@ tr:hover {
   }
 
 }
+    
+    /* Add these new styles for the markers */
+    .median-row {
+      position: relative;
+      background-color: rgba(255, 235, 205, 0.3) !important;
+    }
 
-</style>
+    .average-row {
+      position: relative;
+      background-color: rgba(230, 244, 255, 0.3) !important;
+    }
 
+    .marker-indicator {
+      position: absolute;
+      right: 10px;
+      font-size: 12px;
+      font-style: italic;
+      color: #666;
+    }
+
+    /* Style for the statistics summary */
+    .stats-summary {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -247,210 +266,17 @@ tr:hover {
   <div style="text-align: center; margin-top: 20px;">
   <button id="export-pdf" class="btn-export">Export to PDF</button>
 </div>
-  
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-    let yearRange = [2020, 2024]; // Default Year Range
-    let selectedSpecialties = ["ALL"]; // Default: All specialties
 
-    fetch(csvUrl)
-      .then(response => response.text())
-      .then(data => {
-        const rows = data.split("\n").map(row => row.split(","));
-        const headers = rows.shift().map(header => header.trim());
-
-        // Extract years dynamically from headers
-        const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
-        const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
-        const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
-
-        // Find other column indexes
-        const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
-        const snhafIndex = headers.indexOf("SNHAF");
-        const specialtyIndex = headers.indexOf("Specialty Cleaned");
-
-        if (
-          sponsorIndex === -1 ||
-          snhafIndex === -1 ||
-          specialtyIndex === -1 ||
-          quotaYearColumns.length === 0 ||
-          matchedYearColumns.length === 0
-        ) {
-          console.error("Missing required columns. Please check your CSV file.");
-          return;
-        }
-
-        // Create Year Range Slider
-        const yearSlider = document.getElementById("year-slider");
-        noUiSlider.create(yearSlider, {
-          start: [Math.min(...years), Math.max(...years)],
-          connect: true,
-          range: {
-            min: Math.min(...years),
-            max: Math.max(...years),
-          },
-          step: 1,
-          tooltips: true,
-          format: {
-            to: value => Math.round(value),
-            from: value => Math.round(value),
-          },
-        });
-
-        // Update Year Range and Trigger Table Update
-        yearSlider.noUiSlider.on("update", function (values) {
-          yearRange = values.map(v => parseInt(v, 10));
-          updateTables();
-        });
-
-        // Populate Specialty Checkboxes
-        const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
-        const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-        specialtyCheckboxContainer.innerHTML = `
-          <label><input type="checkbox" value="ALL" checked> ALL</label>
-        `;
-        uniqueSpecialties.forEach(specialty => {
-          const checkbox = document.createElement("label");
-          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
-          specialtyCheckboxContainer.appendChild(checkbox);
-        });
-
-        // Handle Specialty Selection Changes
-        specialtyCheckboxContainer.addEventListener("change", function (event) {
-    const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
-    const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
-
-    if (event.target.value === "ALL") {
-        // If "ALL" is checked, deselect all others
-        if (event.target.checked) {
-            checkboxes.forEach(checkbox => {
-                if (checkbox.value !== "ALL") checkbox.checked = false;
-            });
-            selectedSpecialties = ["ALL"];
-        } else {
-            selectedSpecialties = [];
-        }
-    } else {
-        // If any specific checkbox is checked, uncheck "ALL"
-        if (event.target.checked) {
-            allCheckbox.checked = false;
-        }
-
-        // Update selected specialties
-        selectedSpecialties = checkboxes
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.value);
-
-        // Ensure "ALL" is deselected if other boxes are selected
-        if (selectedSpecialties.includes("ALL")) {
-            selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
-        }
-    }
-
-    updateTables(); // Update table based on the new selection
-});
-
-        // Update Tables Based on Filters
-        function updateTables() {
-  const filteredRows = rows.filter(row => {
-    // Check year range
-    const yearMatch = years.some(year => {
-      const inRange = year >= yearRange[0] && year <= yearRange[1];
-      const quotaColumn = headers.indexOf(`${year} Quota`);
-      return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
-    });
-
-    // Check specialty filter
-    const specialtyMatch =
-      selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
-
-    return yearMatch && specialtyMatch;
-  });
-
-  const snhafAggregates = {};
-  const notAggregates = {};
-
-  filteredRows.forEach(row => {
-    const sponsor = row[sponsorIndex]?.trim();
-    const snhaf = row[snhafIndex]?.trim();
-    if (sponsor && snhaf) {
-      const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
-
-      if (!targetAggregates[sponsor]) {
-        targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-      }
-
-      years.forEach(year => {
-        if (year >= yearRange[0] && year <= yearRange[1]) {
-          const quotaColumn = headers.indexOf(`${year} Quota`);
-          const matchedColumn = headers.indexOf(`${year} Matched`);
-          targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
-          targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
-        }
-      });
-    }
-  });
-
-  const contentDiv = document.getElementById("content");
-  contentDiv.innerHTML = ""; // Clear previous content
-
-  // Count the total number of sponsors for each category
-  const totalSnhafSponsors = Object.keys(snhafAggregates).length;
-  const totalNonSnhafSponsors = Object.keys(notAggregates).length;
-
-  // Create container for SNHAF table
-  const snhafContainer = document.createElement("div");
-  snhafContainer.classList.add("table-container");
-  snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
-  snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
-
-  // Create container for Non-SNHAF table
-  const nonSnhafContainer = document.createElement("div");
-  nonSnhafContainer.classList.add("table-container");
-  nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
-  nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
-
-  // Append both containers to the content div
-  contentDiv.appendChild(snhafContainer);
-  contentDiv.appendChild(nonSnhafContainer);
-}
-
-
-        function updateDynamicTitle() {
-  const titleElement = document.getElementById("dynamic-title-text");
-
-  // Generate title based on selected filters
-  let title = "NRMP Data"; // Default title
-  if (selectedSpecialties.length === 1 && selectedSpecialties[0] === "ALL") {
-    title = "NRMP Data for All Specialties";
-  } else if (selectedSpecialties.length > 0) {
-    title = `NRMP Data for ${selectedSpecialties.join(", ")}`;
-  }
-
-  // Add year range to the title
-  title += ` (${yearRange[0]} - ${yearRange[1]})`;
-
-  // Update the DOM
-  titleElement.textContent = title;
-}
-
-// Call this function whenever filters are updated
-specialtyCheckboxContainer.addEventListener("change", updateDynamicTitle);
-yearSlider.noUiSlider.on("update", function () {
-  updateDynamicTitle();
-});
-
-        // Function to create a table
-        function createTable(aggregates, title, className) {
+<script>
+// Modify the createTable function to include median and average markers
+function createTable(aggregates, title, className) {
   const section = document.createElement("div");
-
   const table = document.createElement("table");
   table.classList.add(className);
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  // Add updated headers
+  // Add headers (same as before)
   const headerRow = document.createElement("tr");
   ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
     const th = document.createElement("th");
@@ -459,15 +285,14 @@ yearSlider.noUiSlider.on("update", function () {
   });
   thead.appendChild(headerRow);
 
-  // Sort aggregates by Match % and then Total Matched
+  // Process and sort data
   const sortedData = Object.keys(aggregates)
     .map(sponsor => {
       const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched; // Calculate Not Matched
-      const matchPercent =
-        sponsorData.totalQuota > 0
-          ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-          : 0;
+      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+      const matchPercent = sponsorData.totalQuota > 0
+        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+        : 0;
 
       return {
         sponsor,
@@ -477,43 +302,69 @@ yearSlider.noUiSlider.on("update", function () {
         matchPercent,
       };
     })
-    .sort((a, b) => {
-      if (b.matchPercent !== a.matchPercent) {
-        return b.matchPercent - a.matchPercent;
-      }
-      return b.totalMatched - a.totalMatched;
-    });
+    .sort((a, b) => b.matchPercent - a.matchPercent);
 
-  // Add rows with the new column
+  // Calculate median and average
+  const matchPercentages = sortedData.map(data => data.matchPercent);
+  const average = matchPercentages.reduce((a, b) => a + b, 0) / matchPercentages.length;
+  
+  // Calculate median
+  const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
+  const middle = Math.floor(sortedPercentages.length / 2);
+  const median = sortedPercentages.length % 2 === 0
+    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+    : sortedPercentages[middle];
+
+  // Add statistics summary
+  const statsSummary = document.createElement("div");
+  statsSummary.classList.add("stats-summary");
+  statsSummary.textContent = `Statistics: Median Match Rate: ${median.toFixed(2)}% | Average Match Rate: ${average.toFixed(2)}%`;
+  section.appendChild(statsSummary);
+
+  // Track running totals
   let totalQuota = 0;
   let totalMatched = 0;
 
-  sortedData.forEach(data => {
+  // Add rows with markers for median and average
+  sortedData.forEach((data, index) => {
     const tr = document.createElement("tr");
-    const sponsorCell = document.createElement("td");
-    const quotaCell = document.createElement("td");
-    const matchedCell = document.createElement("td");
-    const notMatchedCell = document.createElement("td");
-    const matchPercentCell = document.createElement("td");
+    
+    // Add marker classes if this row's percentage is closest to median or average
+    const isMedianRow = Math.abs(data.matchPercent - median) < 0.01;
+    const isAverageRow = Math.abs(data.matchPercent - average) < 0.01;
+    
+    if (isMedianRow) tr.classList.add("median-row");
+    if (isAverageRow) tr.classList.add("average-row");
 
-    sponsorCell.textContent = data.sponsor;
-    quotaCell.textContent = data.totalQuota.toLocaleString();
-    matchedCell.textContent = data.totalMatched.toLocaleString();
-    notMatchedCell.textContent = data.notMatched.toLocaleString();
-    matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
+    // Create cells
+    const cells = [
+      data.sponsor,
+      data.totalQuota.toLocaleString(),
+      data.totalMatched.toLocaleString(),
+      data.notMatched.toLocaleString(),
+      data.matchPercent.toFixed(2) + "%"
+    ].map(text => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      return td;
+    });
 
-    tr.appendChild(sponsorCell);
-    tr.appendChild(quotaCell);
-    tr.appendChild(matchedCell);
-    tr.appendChild(notMatchedCell);
-    tr.appendChild(matchPercentCell);
+    // Add marker indicators if needed
+    if (isMedianRow) {
+      cells[4].innerHTML += '<span class="marker-indicator">(Median)</span>';
+    }
+    if (isAverageRow) {
+      cells[4].innerHTML += '<span class="marker-indicator">(Average)</span>';
+    }
+
+    cells.forEach(cell => tr.appendChild(cell));
     tbody.appendChild(tr);
 
     totalQuota += data.totalQuota;
     totalMatched += data.totalMatched;
   });
 
-  // Add total row
+  // Add total row (same as before)
   const totalRow = document.createElement("tr");
   totalRow.classList.add("total-row");
   totalRow.innerHTML = `
@@ -530,91 +381,6 @@ yearSlider.noUiSlider.on("update", function () {
   section.appendChild(table);
   return section;
 }
-
-
-        // Initialize Tables
-        updateTables();
-      })
-      .catch(error => console.error("Error loading CSV:", error));
-
-    document.getElementById("export-pdf").addEventListener("click", function () {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  // Add title to the PDF
-  doc.setFont("helvetica", "bold"); // Set font to bold
-  doc.setFontSize(16);
-  doc.setTextColor(0, 0, 0);
-  doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
-
-  // Wrap and add filters text
-  doc.setFont("helvetica", "normal"); // Reset font to normal
-  const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
-  const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
-  doc.text(wrappedFiltersText, 10, 20);
-  let currentY = 20 + wrappedFiltersText.length * 10;
-
-  function generateTable(title, tableElement, startY) {
-    doc.setFontSize(14);
-    doc.setTextColor(0, 51, 102);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, 10, startY);
-    startY += 10;
-
-    doc.autoTable({
-      html: tableElement,
-      startY: startY,
-      theme: "grid",
-      headStyles: {
-        fillColor: [0, 51, 102],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-      },
-      bodyStyles: {
-        fontSize: 10,
-        textColor: [33, 33, 33],
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-      didParseCell: (data) => {
-        if (data.row.section === 'body') {
-          // Join all lines of cell text and convert to lowercase
-          const cellText = (data.cell.text || []).join(' ').toLowerCase();
-          if (cellText.includes('total')) {
-            // If this cell contains 'total', style the entire row
-            Object.values(data.row.cells).forEach(cell => {
-              cell.styles.fillColor = [218, 233, 248]; // Light blue
-              cell.styles.textColor = [0, 0, 0];       // Black text
-              cell.styles.fontStyle = 'bold';          // Bold text
-            });
-          }
-        }
-      },
-      margin: { top: 20 },
-    });
-
-    return doc.lastAutoTable.finalY + 20;
-  }
-
-  // Export SNHAF Table
-  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
-  if (snhafTable) {
-    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
-  }
-
-  // Export Non-SNHAF Table
-  const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
-  if (nonSnhafTable) {
-    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
-  }
-
-  // Save the PDF
-  doc.save("NRMP_Data.pdf");
-});
-    
-  });
 </script>
-
 </body>
 </html>
