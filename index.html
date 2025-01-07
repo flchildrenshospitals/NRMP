@@ -398,45 +398,39 @@ function updateTables() {
     }
   });
 
-  const contentDiv = document.getElementById("content");
-  contentDiv.innerHTML = ""; // Clear previous content
-
-  // Count the total number of sponsors for each category
-  const totalSnhafSponsors = Object.keys(snhafAggregates).length;
-  const totalNonSnhafSponsors = Object.keys(notAggregates).length;
-
-  // Calculate Global Median
+  // Calculate globalMedian
   const allData = [...Object.values(snhafAggregates), ...Object.values(notAggregates)];
   const matchPercentages = allData
     .map(data => (data.totalQuota > 0 ? (data.totalMatched / data.totalQuota) * 100 : null))
     .filter(percent => percent !== null); // Filter out invalid percentages
 
-  if (matchPercentages.length > 0) {
-    const sortedPercentages = matchPercentages.sort((a, b) => a - b);
-    const middle = Math.floor(sortedPercentages.length / 2);
-    globalMedian = sortedPercentages.length % 2 === 0
-      ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-      : sortedPercentages[middle];
-    globalMedian = globalMedian.toFixed(2); // Format to two decimal places
-  } else {
-    globalMedian = "N/A"; // No data to calculate median
-  }
+  globalMedian = matchPercentages.length
+    ? (() => {
+        const sortedPercentages = matchPercentages.sort((a, b) => a - b);
+        const middle = Math.floor(sortedPercentages.length / 2);
+        return sortedPercentages.length % 2 === 0
+          ? ((sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2).toFixed(2)
+          : sortedPercentages[middle].toFixed(2);
+      })()
+    : "N/A";
 
-  // Create and append tables
+  // Clear content and append tables
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = "";
+
   const snhafContainer = document.createElement("div");
   snhafContainer.classList.add("table-container");
-  snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
+  snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${Object.keys(snhafAggregates).length})</h2>`;
   snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1", globalMedian));
 
   const nonSnhafContainer = document.createElement("div");
   nonSnhafContainer.classList.add("table-container");
-  nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
+  nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${Object.keys(notAggregates).length})</h2>`;
   nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2", globalMedian));
 
   contentDiv.appendChild(snhafContainer);
   contentDiv.appendChild(nonSnhafContainer);
 }
-
 
 
         function updateDynamicTitle() {
@@ -487,102 +481,39 @@ yearSlider.noUiSlider.on("update", function () {
       const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
       const matchPercent = sponsorData.totalQuota > 0
         ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-        : "N/A"; // Handle "N/A" for no data
-
-      return {
-        sponsor,
-        totalQuota: sponsorData.totalQuota,
-        totalMatched: sponsorData.totalMatched,
-        notMatched,
-        matchPercent,
-      };
+        : "N/A";
+      return { sponsor, totalQuota: sponsorData.totalQuota, totalMatched: sponsorData.totalMatched, notMatched, matchPercent };
     })
-    .sort((a, b) => {
-      if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
-      if (b.matchPercent === "N/A") return -1;
-      return b.matchPercent - a.matchPercent;
-    });
+    .sort((a, b) => (b.matchPercent - a.matchPercent));
 
-  // Create stats summary with the provided median
+  // Add median stats
   const statsSummary = document.createElement("div");
   statsSummary.classList.add("stats-summary");
   statsSummary.innerHTML = `
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="15"
-      viewBox="0 0 120 15"
-      style="margin-right: 10px; vertical-align: middle;"
-    >
-      <line
-        x1="0"
-        y1="7.5"
-        x2="120"
-        y2="7.5"
-        stroke="#003366"
-        stroke-width="5"
-        stroke-dasharray="10,5"
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="15" viewBox="0 0 120 15" style="margin-right: 10px; vertical-align: middle;">
+      <line x1="0" y1="7.5" x2="120" y2="7.5" stroke="#003366" stroke-width="5" stroke-dasharray="10,5" />
     </svg>
     Median Match Rate: ${median === "N/A" ? "N/A" : `${median}%`}
   `;
   section.appendChild(statsSummary);
 
-  // Add rows and insert a border at the median
-  let addedMedianBorder = false;
-
+  // Add rows
   sortedData.forEach(data => {
     const tr = document.createElement("tr");
-
-    // Create cells
-    const cells = [
-      data.sponsor,
-      data.totalQuota.toLocaleString(),
-      data.totalMatched.toLocaleString(),
-      data.notMatched.toLocaleString(),
-      data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`,
-    ].map(text => {
+    ["sponsor", "totalQuota", "totalMatched", "notMatched", "matchPercent"].forEach(key => {
       const td = document.createElement("td");
-      td.textContent = text;
-      return td;
+      td.textContent = key === "matchPercent" ? (data[key] === "N/A" ? "N/A" : `${data[key].toFixed(2)}%`) : data[key].toLocaleString();
+      tr.appendChild(td);
     });
-
-    cells.forEach(cell => tr.appendChild(cell));
-
-    // Add median border if not already added
-    if (!addedMedianBorder && data.matchPercent !== "N/A" && parseFloat(data.matchPercent) < parseFloat(median)) {
-      tr.classList.add("median-border-row");
-      addedMedianBorder = true;
-    }
 
     tbody.appendChild(tr);
   });
-
-  // Add total row
-  const totalRow = document.createElement("tr");
-  totalRow.classList.add("total-row");
-  const totalQuota = sortedData.reduce((sum, row) => sum + row.totalQuota, 0);
-  const totalMatched = sortedData.reduce((sum, row) => sum + row.totalMatched, 0);
-  const totalNotMatched = sortedData.reduce((sum, row) => sum + row.notMatched, 0);
-  const totalMatchPercent =
-    totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) : "N/A";
-
-  totalRow.innerHTML = `
-    <td>Total</td>
-    <td>${totalQuota.toLocaleString()}</td>
-    <td>${totalMatched.toLocaleString()}</td>
-    <td>${totalNotMatched.toLocaleString()}</td>
-    <td>${totalMatchPercent === "N/A" ? "N/A" : `${totalMatchPercent}%`}</td>
-  `;
-  tbody.appendChild(totalRow);
 
   table.appendChild(thead);
   table.appendChild(tbody);
   section.appendChild(table);
   return section;
 }
-
-
 
         // Initialize Tables
         updateTables();
