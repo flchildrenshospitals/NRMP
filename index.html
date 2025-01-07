@@ -422,22 +422,21 @@ function updateTables() {
     globalMedian = "N/A"; // No data to calculate median
   }
 
-  // Create container for SNHAF table
+  // Create and append tables
   const snhafContainer = document.createElement("div");
   snhafContainer.classList.add("table-container");
   snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
-  snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+  snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1", globalMedian));
 
-  // Create container for Non-SNHAF table
   const nonSnhafContainer = document.createElement("div");
   nonSnhafContainer.classList.add("table-container");
   nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
-  nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+  nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2", globalMedian));
 
-  // Append both containers to the content div
   contentDiv.appendChild(snhafContainer);
   contentDiv.appendChild(nonSnhafContainer);
 }
+
 
 
         function updateDynamicTitle() {
@@ -465,7 +464,7 @@ yearSlider.noUiSlider.on("update", function () {
 });
 
         // Function to create a table
-        function createTable(aggregates, title, className) {
+        function createTable(aggregates, title, className, median) {
   const section = document.createElement("div");
   const table = document.createElement("table");
   table.classList.add(className);
@@ -504,25 +503,7 @@ yearSlider.noUiSlider.on("update", function () {
       return b.matchPercent - a.matchPercent;
     });
 
-  // Calculate median
-  const validPercentages = sortedData
-    .filter(data => data.matchPercent !== "N/A")
-    .map(data => data.matchPercent);
-  let median;
-
-  if (validPercentages.length === 0) {
-    globalMedian = "N/A"; // No valid data
-} else {
-    const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
-    const middle = Math.floor(sortedPercentages.length / 2);
-    globalMedian = sortedPercentages.length % 2 === 0
-        ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-        : sortedPercentages[middle];
-    globalMedian = globalMedian.toFixed(2); // Format as percentage
-}
-
-
-  // Create stats summary with the adjusted median
+  // Create stats summary with the provided median
   const statsSummary = document.createElement("div");
   statsSummary.classList.add("stats-summary");
   statsSummary.innerHTML = `
@@ -550,7 +531,7 @@ yearSlider.noUiSlider.on("update", function () {
   // Add rows and insert a border at the median
   let addedMedianBorder = false;
 
-  sortedData.forEach((data, index) => {
+  sortedData.forEach(data => {
     const tr = document.createElement("tr");
 
     // Create cells
@@ -559,7 +540,7 @@ yearSlider.noUiSlider.on("update", function () {
       data.totalQuota.toLocaleString(),
       data.totalMatched.toLocaleString(),
       data.notMatched.toLocaleString(),
-      data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`
+      data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`,
     ].map(text => {
       const td = document.createElement("td");
       td.textContent = text;
@@ -569,7 +550,7 @@ yearSlider.noUiSlider.on("update", function () {
     cells.forEach(cell => tr.appendChild(cell));
 
     // Add median border if not already added
-    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < median) {
+    if (!addedMedianBorder && data.matchPercent !== "N/A" && parseFloat(data.matchPercent) < parseFloat(median)) {
       tr.classList.add("median-border-row");
       addedMedianBorder = true;
     }
@@ -600,6 +581,7 @@ yearSlider.noUiSlider.on("update", function () {
   section.appendChild(table);
   return section;
 }
+
 
 
         // Initialize Tables
