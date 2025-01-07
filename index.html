@@ -356,7 +356,10 @@ tr:hover {
 });
 
         // Update Tables Based on Filters
-        function updateTables() {
+        
+        let globalMedian = "N/A"; // Declare global variable for median
+
+function updateTables() {
   const filteredRows = rows.filter(row => {
     // Check year range
     const yearMatch = years.some(year => {
@@ -402,6 +405,23 @@ tr:hover {
   // Count the total number of sponsors for each category
   const totalSnhafSponsors = Object.keys(snhafAggregates).length;
   const totalNonSnhafSponsors = Object.keys(notAggregates).length;
+
+  // Calculate Global Median
+  const allData = [...Object.values(snhafAggregates), ...Object.values(notAggregates)];
+  const matchPercentages = allData
+    .map(data => (data.totalQuota > 0 ? (data.totalMatched / data.totalQuota) * 100 : null))
+    .filter(percent => percent !== null); // Filter out invalid percentages
+
+  if (matchPercentages.length > 0) {
+    const sortedPercentages = matchPercentages.sort((a, b) => a - b);
+    const middle = Math.floor(sortedPercentages.length / 2);
+    globalMedian = sortedPercentages.length % 2 === 0
+      ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+      : sortedPercentages[middle];
+    globalMedian = globalMedian.toFixed(2); // Format to two decimal places
+  } else {
+    globalMedian = "N/A"; // No data to calculate median
+  }
 
   // Create container for SNHAF table
   const snhafContainer = document.createElement("div");
