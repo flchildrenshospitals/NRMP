@@ -312,8 +312,8 @@ tr:hover {
         const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
         const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
         specialtyCheckboxContainer.innerHTML = `
-          <label><input type="checkbox" value="ALL" checked> ALL</label>
-        `;
+  <label><input type="checkbox" value="ALL" checked>ALL</label>
+`;
         uniqueSpecialties.forEach(specialty => {
           const checkbox = document.createElement("label");
           checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
@@ -433,7 +433,7 @@ tr:hover {
   }
 
   // Add year range to the title
-  title +=  (${yearRange[0]} - ${yearRange[1]});
+  title += ` (${yearRange[0]} - ${yearRange[1]})`;
 
   // Update the DOM
   titleElement.textContent = title;
