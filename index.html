@@ -199,6 +199,30 @@ tr:hover {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Subtle shadow on focus */
 }
 
+/* Add these new styles for the markers */
+    .median-border-row td {
+  border-top: 4px solid #003366; /* Dark blue border */
+  background-color: #f9f9f9; /* Optional: slight background for visibility */
+  height: 10px; /* Height to make the border more prominent */
+}
+
+
+    .marker-indicator {
+      position: absolute;
+      right: 10px;
+      font-size: 12px;
+      font-style: italic;
+      color: #666;
+    }
+
+    /* Style for the statistics summary */
+    .stats-summary {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+    }
+
 /* Responsive Layout */
 @media (max-width: 768px) {
   .main-layout {
@@ -307,12 +331,12 @@ tr:hover {
         // Populate Specialty Checkboxes
         const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
         const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-        specialtyCheckboxContainer.innerHTML = `
+        specialtyCheckboxContainer.innerHTML = 
           <label><input type="checkbox" value="ALL" checked> ALL</label>
-        `;
+        ;
         uniqueSpecialties.forEach(specialty => {
           const checkbox = document.createElement("label");
-          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
+          checkbox.innerHTML = <input type="checkbox" value="${specialty}"> ${specialty};
           specialtyCheckboxContainer.appendChild(checkbox);
         });
 
@@ -357,7 +381,7 @@ tr:hover {
     // Check year range
     const yearMatch = years.some(year => {
       const inRange = year >= yearRange[0] && year <= yearRange[1];
-      const quotaColumn = headers.indexOf(`${year} Quota`);
+      const quotaColumn = headers.indexOf(${year} Quota);
       return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
     });
 
@@ -383,8 +407,8 @@ tr:hover {
 
       years.forEach(year => {
         if (year >= yearRange[0] && year <= yearRange[1]) {
-          const quotaColumn = headers.indexOf(`${year} Quota`);
-          const matchedColumn = headers.indexOf(`${year} Matched`);
+          const quotaColumn = headers.indexOf(${year} Quota);
+          const matchedColumn = headers.indexOf(${year} Matched);
           targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
           targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
         }
@@ -402,13 +426,13 @@ tr:hover {
   // Create container for SNHAF table
   const snhafContainer = document.createElement("div");
   snhafContainer.classList.add("table-container");
-  snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
+  snhafContainer.innerHTML = <h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>;
   snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
 
   // Create container for Non-SNHAF table
   const nonSnhafContainer = document.createElement("div");
   nonSnhafContainer.classList.add("table-container");
-  nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
+  nonSnhafContainer.innerHTML = <h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>;
   nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
 
   // Append both containers to the content div
@@ -425,11 +449,11 @@ tr:hover {
   if (selectedSpecialties.length === 1 && selectedSpecialties[0] === "ALL") {
     title = "NRMP Data for All Specialties";
   } else if (selectedSpecialties.length > 0) {
-    title = `NRMP Data for ${selectedSpecialties.join(", ")}`;
+    title = NRMP Data for ${selectedSpecialties.join(", ")};
   }
 
   // Add year range to the title
-  title += ` (${yearRange[0]} - ${yearRange[1]})`;
+  title +=  (${yearRange[0]} - ${yearRange[1]});
 
   // Update the DOM
   titleElement.textContent = title;
@@ -444,13 +468,12 @@ yearSlider.noUiSlider.on("update", function () {
         // Function to create a table
         function createTable(aggregates, title, className) {
   const section = document.createElement("div");
-
   const table = document.createElement("table");
   table.classList.add(className);
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  // Add updated headers
+  // Add headers
   const headerRow = document.createElement("tr");
   ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
     const th = document.createElement("th");
@@ -459,15 +482,14 @@ yearSlider.noUiSlider.on("update", function () {
   });
   thead.appendChild(headerRow);
 
-  // Sort aggregates by Match % and then Total Matched
+  // Process and sort data
   const sortedData = Object.keys(aggregates)
     .map(sponsor => {
       const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched; // Calculate Not Matched
-      const matchPercent =
-        sponsorData.totalQuota > 0
-          ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-          : 0;
+      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+      const matchPercent = sponsorData.totalQuota > 0
+        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+        : 0;
 
       return {
         sponsor,
@@ -477,40 +499,55 @@ yearSlider.noUiSlider.on("update", function () {
         matchPercent,
       };
     })
-    .sort((a, b) => {
-      if (b.matchPercent !== a.matchPercent) {
-        return b.matchPercent - a.matchPercent;
-      }
-      return b.totalMatched - a.totalMatched;
-    });
+    .sort((a, b) => b.matchPercent - a.matchPercent);
 
-  // Add rows with the new column
-  let totalQuota = 0;
-  let totalMatched = 0;
+  // Calculate median
+  const matchPercentages = sortedData.map(data => data.matchPercent);
+  const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
+  const middle = Math.floor(sortedPercentages.length / 2);
+  const median = sortedPercentages.length % 2 === 0
+    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+    : sortedPercentages[middle];
+
+  // Add statistics summary
+  const statsSummary = document.createElement("div");
+  statsSummary.classList.add("stats-summary");
+  statsSummary.textContent = `Median Match Rate: ${median.toFixed(2)}%`;
+  section.appendChild(statsSummary);
+
+  // Add rows and insert a border at the median
+  let addedMedianBorder = false;
 
   sortedData.forEach(data => {
     const tr = document.createElement("tr");
-    const sponsorCell = document.createElement("td");
-    const quotaCell = document.createElement("td");
-    const matchedCell = document.createElement("td");
-    const notMatchedCell = document.createElement("td");
-    const matchPercentCell = document.createElement("td");
 
-    sponsorCell.textContent = data.sponsor;
-    quotaCell.textContent = data.totalQuota.toLocaleString();
-    matchedCell.textContent = data.totalMatched.toLocaleString();
-    notMatchedCell.textContent = data.notMatched.toLocaleString();
-    matchPercentCell.textContent = data.matchPercent.toFixed(2) + "%";
+    // Create cells
+    const cells = [
+      data.sponsor,
+      data.totalQuota.toLocaleString(),
+      data.totalMatched.toLocaleString(),
+      data.notMatched.toLocaleString(),
+      data.matchPercent.toFixed(2) + "%"
+    ].map(text => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      return td;
+    });
 
-    tr.appendChild(sponsorCell);
-    tr.appendChild(quotaCell);
-    tr.appendChild(matchedCell);
-    tr.appendChild(notMatchedCell);
-    tr.appendChild(matchPercentCell);
+    cells.forEach(cell => tr.appendChild(cell));
     tbody.appendChild(tr);
 
-    totalQuota += data.totalQuota;
-    totalMatched += data.totalMatched;
+    // Add a distinct border row at the median
+    if (!addedMedianBorder && data.matchPercent <= median) {
+      const borderRow = document.createElement("tr");
+      borderRow.classList.add("median-border-row");
+      const borderCell = document.createElement("td");
+      borderCell.colSpan = 5; // Span across all columns
+      borderCell.textContent = ""; // Empty content
+      borderRow.appendChild(borderCell);
+      tbody.appendChild(borderRow);
+      addedMedianBorder = true;
+    }
   });
 
   // Add total row
@@ -518,10 +555,13 @@ yearSlider.noUiSlider.on("update", function () {
   totalRow.classList.add("total-row");
   totalRow.innerHTML = `
     <td>Total</td>
-    <td>${totalQuota.toLocaleString()}</td>
-    <td>${totalMatched.toLocaleString()}</td>
-    <td>${(totalQuota - totalMatched).toLocaleString()}</td>
-    <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
+    <td>${sortedData.reduce((sum, row) => sum + row.totalQuota, 0).toLocaleString()}</td>
+    <td>${sortedData.reduce((sum, row) => sum + row.totalMatched, 0).toLocaleString()}</td>
+    <td>${sortedData.reduce((sum, row) => sum + row.notMatched, 0).toLocaleString()}</td>
+    <td>${(
+      sortedData.reduce((sum, row) => sum + row.totalMatched, 0) /
+      sortedData.reduce((sum, row) => sum + row.totalQuota, 0)
+    ).toFixed(2)}%</td>
   `;
   tbody.appendChild(totalRow);
 
@@ -530,8 +570,6 @@ yearSlider.noUiSlider.on("update", function () {
   section.appendChild(table);
   return section;
 }
-
-
         // Initialize Tables
         updateTables();
       })
@@ -549,7 +587,7 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Wrap and add filters text
   doc.setFont("helvetica", "normal"); // Reset font to normal
-  const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
+  const filtersText = Filters: ${document.getElementById("dynamic-title-text").textContent};
   const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
