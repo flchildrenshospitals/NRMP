@@ -159,7 +159,7 @@ tr:hover {
 }
 
 .median-border-row td {
-  border-top: 4px solid #003366; /* Dark blue border */
+  border-top: 3px dotted #003366; /* Dark blue dotted line */
 }
 
 /* Total Row */
@@ -491,11 +491,29 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Add statistics summary
   const statsSummary = document.createElement("div");
-  statsSummary.classList.add("stats-summary");
-  statsSummary.textContent = `Median Match Rate: ${median.toFixed(2)}%`;
-  section.appendChild(statsSummary);
+statsSummary.classList.add("stats-summary");
+statsSummary.innerHTML = `
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="10"
+    viewBox="0 0 100 10"
+    style="margin-right: 10px; vertical-align: middle;"
+  >
+    <line
+      x1="0"
+      y1="5"
+      x2="100"
+      y2="5"
+      stroke="#003366"
+      stroke-width="3"
+      stroke-dasharray="5,5"
+    />
+  </svg>
+  Median Match Rate: ${median.toFixed(2)}%
+`;
+section.appendChild(statsSummary);
 
-  // Add rows and insert a border at the median
   // Add rows and insert a border at the median
 let addedMedianBorder = false;
 
