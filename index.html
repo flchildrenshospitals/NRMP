@@ -464,31 +464,37 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Process and sort data
   const sortedData = Object.keys(aggregates)
-    .map(sponsor => {
-      const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
-      const matchPercent = sponsorData.totalQuota > 0
-        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-        : 0;
+  .map(sponsor => {
+    const sponsorData = aggregates[sponsor];
+    const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+    const matchPercent = sponsorData.totalQuota > 0
+      ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+      : "N/A"; // Handle "N/A" for no data
 
-      return {
-        sponsor,
-        totalQuota: sponsorData.totalQuota,
-        totalMatched: sponsorData.totalMatched,
-        notMatched,
-        matchPercent,
-      };
-    })
-    .sort((a, b) => b.matchPercent - a.matchPercent);
+    return {
+      sponsor,
+      totalQuota: sponsorData.totalQuota,
+      totalMatched: sponsorData.totalMatched,
+      notMatched,
+      matchPercent,
+    };
+  })
+  .sort((a, b) => {
+    if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
+    if (b.matchPercent === "N/A") return -1;
+    return b.matchPercent - a.matchPercent;
+  });
 
-  // Calculate median
-  const matchPercentages = sortedData.map(data => data.matchPercent);
-const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
+// Calculate median
+const validPercentages = sortedData
+  .filter(data => data.matchPercent !== "N/A")
+  .map(data => data.matchPercent);
 let median;
 
-if (sortedPercentages.length === 0) {
-  median = "N/A"; // No data available
+if (validPercentages.length === 0) {
+  median = "N/A"; // No valid data
 } else {
+  const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
   const middle = Math.floor(sortedPercentages.length / 2);
   median = sortedPercentages.length % 2 === 0
     ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
@@ -521,7 +527,7 @@ statsSummary.innerHTML = `
 `;
 section.appendChild(statsSummary);
 
-  // Add rows and insert a border at the median
+// Add rows and insert a border at the median
 let addedMedianBorder = false;
 
 sortedData.forEach((data, index) => {
@@ -533,7 +539,7 @@ sortedData.forEach((data, index) => {
     data.totalQuota.toLocaleString(),
     data.totalMatched.toLocaleString(),
     data.notMatched.toLocaleString(),
-    data.matchPercent.toFixed(2) + "%",
+    data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`
   ].map(text => {
     const td = document.createElement("td");
     td.textContent = text;
@@ -542,14 +548,15 @@ sortedData.forEach((data, index) => {
 
   cells.forEach(cell => tr.appendChild(cell));
 
-  // Check if this row is the first one below the median
-  if (!addedMedianBorder && data.matchPercent < median) {
+  // Add median border if not already added
+  if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < median) {
     tr.classList.add("median-border-row");
     addedMedianBorder = true;
   }
 
   tbody.appendChild(tr);
 });
+
 
 // Add total row
 const totalRow = document.createElement("tr");
