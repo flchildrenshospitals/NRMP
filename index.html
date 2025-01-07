@@ -158,6 +158,10 @@ tr:hover {
   transition: background-color 0.3s ease;
 }
 
+.median-border-row td {
+  border-top: 3px dashed #003366; /* Dark blue dotted line */
+}
+
 /* Total Row */
 .total-row {
   background-color: rgba(218, 233, 248, 0.5) !important; /* Updated to preferred color */
@@ -198,33 +202,6 @@ tr:hover {
   outline: none; /* Remove default focus outline */
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Subtle shadow on focus */
 }
-
-/* Add these new styles for the markers */
-    .median-row {
-      position: relative;
-      background-color: rgba(255, 235, 205, 0.3) !important;
-    }
-
-    .average-row {
-      position: relative;
-      background-color: rgba(230, 244, 255, 0.3) !important;
-    }
-
-    .marker-indicator {
-      position: absolute;
-      right: 10px;
-      font-size: 12px;
-      font-style: italic;
-      color: #666;
-    }
-
-    /* Style for the statistics summary */
-    .stats-summary {
-      margin: 10px 0;
-      font-size: 14px;
-      color: #666;
-      font-style: italic;
-    }
 
 /* Responsive Layout */
 @media (max-width: 768px) {
@@ -476,7 +453,7 @@ yearSlider.noUiSlider.on("update", function () {
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  // Add headers (same as before)
+  // Add headers
   const headerRow = document.createElement("tr");
   ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
     const th = document.createElement("th");
@@ -487,94 +464,115 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Process and sort data
   const sortedData = Object.keys(aggregates)
-    .map(sponsor => {
-      const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
-      const matchPercent = sponsorData.totalQuota > 0
-        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-        : 0;
+  .map(sponsor => {
+    const sponsorData = aggregates[sponsor];
+    const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+    const matchPercent = sponsorData.totalQuota > 0
+      ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+      : "N/A"; // Handle "N/A" for no data
 
-      return {
-        sponsor,
-        totalQuota: sponsorData.totalQuota,
-        totalMatched: sponsorData.totalMatched,
-        notMatched,
-        matchPercent,
-      };
-    })
-    .sort((a, b) => b.matchPercent - a.matchPercent);
-
-  // Calculate median and average
-  const matchPercentages = sortedData.map(data => data.matchPercent);
-  const average = matchPercentages.reduce((a, b) => a + b, 0) / matchPercentages.length;
-  
-  // Calculate median
-  const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
-  const middle = Math.floor(sortedPercentages.length / 2);
-  const median = sortedPercentages.length % 2 === 0
-    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-    : sortedPercentages[middle];
-
-  // Add statistics summary
-  const statsSummary = document.createElement("div");
-  statsSummary.classList.add("stats-summary");
-  statsSummary.textContent = Statistics: Median Match Rate: ${median.toFixed(2)}% | Average Match Rate: ${average.toFixed(2)}%;
-  section.appendChild(statsSummary);
-
-  // Track running totals
-  let totalQuota = 0;
-  let totalMatched = 0;
-
-  // Add rows with markers for median and average
-  sortedData.forEach((data, index) => {
-    const tr = document.createElement("tr");
-    
-    // Add marker classes if this row's percentage is closest to median or average
-    const isMedianRow = Math.abs(data.matchPercent - median) < 0.01;
-    const isAverageRow = Math.abs(data.matchPercent - average) < 0.01;
-    
-    if (isMedianRow) tr.classList.add("median-row");
-    if (isAverageRow) tr.classList.add("average-row");
-
-    // Create cells
-    const cells = [
-      data.sponsor,
-      data.totalQuota.toLocaleString(),
-      data.totalMatched.toLocaleString(),
-      data.notMatched.toLocaleString(),
-      data.matchPercent.toFixed(2) + "%"
-    ].map(text => {
-      const td = document.createElement("td");
-      td.textContent = text;
-      return td;
-    });
-
-    // Add marker indicators if needed
-    if (isMedianRow) {
-      cells[4].innerHTML += '<span class="marker-indicator">(Median)</span>';
-    }
-    if (isAverageRow) {
-      cells[4].innerHTML += '<span class="marker-indicator">(Average)</span>';
-    }
-
-    cells.forEach(cell => tr.appendChild(cell));
-    tbody.appendChild(tr);
-
-    totalQuota += data.totalQuota;
-    totalMatched += data.totalMatched;
+    return {
+      sponsor,
+      totalQuota: sponsorData.totalQuota,
+      totalMatched: sponsorData.totalMatched,
+      notMatched,
+      matchPercent,
+    };
+  })
+  .sort((a, b) => {
+    if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
+    if (b.matchPercent === "N/A") return -1;
+    return b.matchPercent - a.matchPercent;
   });
 
-  // Add total row (same as before)
-  const totalRow = document.createElement("tr");
-  totalRow.classList.add("total-row");
-  totalRow.innerHTML = 
-    <td>Total</td>
-    <td>${totalQuota.toLocaleString()}</td>
-    <td>${totalMatched.toLocaleString()}</td>
-    <td>${(totalQuota - totalMatched).toLocaleString()}</td>
-    <td>${(totalQuota > 0 ? (totalMatched / totalQuota) * 100 : 0).toFixed(2)}%</td>
-  ;
-  tbody.appendChild(totalRow);
+// Calculate median
+const validPercentages = sortedData
+  .filter(data => data.matchPercent !== "N/A")
+  .map(data => data.matchPercent);
+let median;
+
+if (validPercentages.length === 0) {
+  median = "N/A"; // No valid data
+} else {
+  const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
+  const middle = Math.floor(sortedPercentages.length / 2);
+  median = sortedPercentages.length % 2 === 0
+    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+    : sortedPercentages[middle];
+  median = median.toFixed(2); // Format as percentage
+}
+
+// Create stats summary with the adjusted median
+const statsSummary = document.createElement("div");
+statsSummary.classList.add("stats-summary");
+statsSummary.innerHTML = 
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="30"
+    height="15"
+    viewBox="0 0 120 15"
+    style="margin-right: 10px; vertical-align: middle;"
+  >
+    <line
+      x1="0"
+      y1="7.5"
+      x2="120"
+      y2="7.5"
+      stroke="#003366"
+      stroke-width="5"
+      stroke-dasharray="10,5"
+    />
+  </svg>
+  Median Match Rate: ${median === "N/A" ? "N/A" : ${median}%}
+;
+section.appendChild(statsSummary);
+
+// Add rows and insert a border at the median
+let addedMedianBorder = false;
+
+sortedData.forEach((data, index) => {
+  const tr = document.createElement("tr");
+
+  // Create cells
+  const cells = [
+    data.sponsor,
+    data.totalQuota.toLocaleString(),
+    data.totalMatched.toLocaleString(),
+    data.notMatched.toLocaleString(),
+    data.matchPercent === "N/A" ? "N/A" : ${data.matchPercent.toFixed(2)}%
+  ].map(text => {
+    const td = document.createElement("td");
+    td.textContent = text;
+    return td;
+  });
+
+  cells.forEach(cell => tr.appendChild(cell));
+
+  // Add median border if not already added
+  if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < median) {
+    tr.classList.add("median-border-row");
+    addedMedianBorder = true;
+  }
+
+  tbody.appendChild(tr);
+});
+
+
+// Add total row
+const totalRow = document.createElement("tr");
+totalRow.classList.add("total-row");
+totalRow.innerHTML = 
+  <td>Total</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.totalQuota, 0).toLocaleString()}</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.totalMatched, 0).toLocaleString()}</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.notMatched, 0).toLocaleString()}</td>
+  <td>${(
+    sortedData.reduce((sum, row) => sum + row.totalMatched, 0) /
+    sortedData.reduce((sum, row) => sum + row.totalQuota, 0)
+  ).toFixed(2)}%</td>
+;
+tbody.appendChild(totalRow);
+
 
   table.appendChild(thead);
   table.appendChild(tbody);
