@@ -160,8 +160,6 @@ tr:hover {
 
 .median-border-row td {
   border-top: 4px solid #003366; /* Dark blue border */
-  background-color: #f9f9f9; /* Optional: slight background for visibility */
-  height: 10px; /* Height to make the border more prominent */
 }
 
 /* Total Row */
@@ -498,54 +496,51 @@ yearSlider.noUiSlider.on("update", function () {
   section.appendChild(statsSummary);
 
   // Add rows and insert a border at the median
-  let addedMedianBorder = false;
+  // Add rows and insert a border at the median
+let addedMedianBorder = false;
 
-  sortedData.forEach(data => {
-    const tr = document.createElement("tr");
+sortedData.forEach((data, index) => {
+  const tr = document.createElement("tr");
 
-    // Create cells
-    const cells = [
-      data.sponsor,
-      data.totalQuota.toLocaleString(),
-      data.totalMatched.toLocaleString(),
-      data.notMatched.toLocaleString(),
-      data.matchPercent.toFixed(2) + "%"
-    ].map(text => {
-      const td = document.createElement("td");
-      td.textContent = text;
-      return td;
-    });
-
-    cells.forEach(cell => tr.appendChild(cell));
-    tbody.appendChild(tr);
-
-    // Add a distinct border row at the median
-    if (!addedMedianBorder && data.matchPercent <= median) {
-      const borderRow = document.createElement("tr");
-      borderRow.classList.add("median-border-row");
-      const borderCell = document.createElement("td");
-      borderCell.colSpan = 5; // Span across all columns
-      borderCell.textContent = ""; // Empty content
-      borderRow.appendChild(borderCell);
-      tbody.appendChild(borderRow);
-      addedMedianBorder = true;
-    }
+  // Create cells
+  const cells = [
+    data.sponsor,
+    data.totalQuota.toLocaleString(),
+    data.totalMatched.toLocaleString(),
+    data.notMatched.toLocaleString(),
+    data.matchPercent.toFixed(2) + "%",
+  ].map(text => {
+    const td = document.createElement("td");
+    td.textContent = text;
+    return td;
   });
 
-  // Add total row
-  const totalRow = document.createElement("tr");
-  totalRow.classList.add("total-row");
-  totalRow.innerHTML = `
-    <td>Total</td>
-    <td>${sortedData.reduce((sum, row) => sum + row.totalQuota, 0).toLocaleString()}</td>
-    <td>${sortedData.reduce((sum, row) => sum + row.totalMatched, 0).toLocaleString()}</td>
-    <td>${sortedData.reduce((sum, row) => sum + row.notMatched, 0).toLocaleString()}</td>
-    <td>${(
-      sortedData.reduce((sum, row) => sum + row.totalMatched, 0) /
-      sortedData.reduce((sum, row) => sum + row.totalQuota, 0)
-    ).toFixed(2)}%</td>
-  `;
-  tbody.appendChild(totalRow);
+  cells.forEach(cell => tr.appendChild(cell));
+
+  // Check if this row is the first one below the median
+  if (!addedMedianBorder && data.matchPercent < median) {
+    tr.classList.add("median-border-row");
+    addedMedianBorder = true;
+  }
+
+  tbody.appendChild(tr);
+});
+
+// Add total row
+const totalRow = document.createElement("tr");
+totalRow.classList.add("total-row");
+totalRow.innerHTML = `
+  <td>Total</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.totalQuota, 0).toLocaleString()}</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.totalMatched, 0).toLocaleString()}</td>
+  <td>${sortedData.reduce((sum, row) => sum + row.notMatched, 0).toLocaleString()}</td>
+  <td>${(
+    sortedData.reduce((sum, row) => sum + row.totalMatched, 0) /
+    sortedData.reduce((sum, row) => sum + row.totalQuota, 0)
+  ).toFixed(2)}%</td>
+`;
+tbody.appendChild(totalRow);
+
 
   table.appendChild(thead);
   table.appendChild(tbody);
