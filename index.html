@@ -311,9 +311,9 @@ tr:hover {
         // Populate Specialty Checkboxes
         const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
         const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-        specialtyCheckboxContainer.innerHTML = 
+        specialtyCheckboxContainer.innerHTML = `
           <label><input type="checkbox" value="ALL" checked> ALL</label>
-        ;
+        `;
         uniqueSpecialties.forEach(specialty => {
           const checkbox = document.createElement("label");
           checkbox.innerHTML = <input type="checkbox" value="${specialty}"> ${specialty};
