@@ -483,14 +483,21 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Calculate median
   const matchPercentages = sortedData.map(data => data.matchPercent);
-  const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
+const sortedPercentages = [...matchPercentages].sort((a, b) => a - b);
+let median;
+
+if (sortedPercentages.length === 0) {
+  median = "N/A"; // No data available
+} else {
   const middle = Math.floor(sortedPercentages.length / 2);
-  const median = sortedPercentages.length % 2 === 0
+  median = sortedPercentages.length % 2 === 0
     ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
     : sortedPercentages[middle];
+  median = median.toFixed(2); // Format as percentage
+}
 
-  // Add statistics summary
-  const statsSummary = document.createElement("div");
+// Create stats summary with the adjusted median
+const statsSummary = document.createElement("div");
 statsSummary.classList.add("stats-summary");
 statsSummary.innerHTML = `
   <svg
@@ -502,15 +509,15 @@ statsSummary.innerHTML = `
   >
     <line
       x1="0"
-      y1="5"
-      x2="100"
-      y2="5"
+      y1="7.5"
+      x2="120"
+      y2="7.5"
       stroke="#003366"
       stroke-width="5"
       stroke-dasharray="10,5"
     />
   </svg>
-  Median Match Rate: ${median.toFixed(2)}%
+  Median Match Rate: ${median === "N/A" ? "N/A" : `${median}%`}
 `;
 section.appendChild(statsSummary);
 
