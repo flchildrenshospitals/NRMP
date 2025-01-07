@@ -598,7 +598,7 @@ yearSlider.noUiSlider.on("update", function () {
 
   // Wrap and add filters text
   doc.setFont("helvetica", "normal"); // Reset font to normal
-  const filtersText = Filters: ${document.getElementById("dynamic-title-text").textContent};
+  const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`
   const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
