@@ -663,24 +663,17 @@ yearSlider.noUiSlider.on("update", function () {
       },
       didDrawCell: (data) => {
   // Only do this for body rows and only once per row:
-  if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
+  if (data.row.section === "body" && 
+    data.row.raw.isMedianBorder && 
+    data.column.index === 0
+    ) {
     const doc = data.doc;
 
-    const xStart = data.table.startX;              // left edge of the table
-    const xEnd = data.table.startX + data.table.width; // right edge
+    // 1) Horizontal range: entire table 
+    const xStart = data.table.startX;
+    const xEnd   = data.table.startX + data.table.width;
 
-
-    // Go through all cells in the row
-    Object.keys(data.row.cells).forEach((key) => {
-      const cell = data.row.cells[key];
-      const cellLeft = cell.x;
-      const cellRight = cell.x + cell.width;
-
-      if (cellLeft < xStart) xStart = cellLeft;
-      if (cellRight > xEnd) xEnd = cellRight;
-    });
-
-    // The dashed line is typically at the *bottom* of the row
+    // 2) Vertical position: bottom of the row
     const dashY = data.cell.y;
 
     // Draw the dashed line
