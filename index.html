@@ -623,14 +623,14 @@ yearSlider.noUiSlider.on("update", function () {
       startY += 10;
     }
 
-    // Variables to store median line coordinates
+// Variables to store median line coordinates
 let medianY = null;
 let medianXStart = null;
 
 doc.autoTable({
   html: tableElement,
   startY: startY,
-  margin: { top: 20 },  // Margin setting preserved here
+  margin: { top: 20 },
   theme: "plain",
   headStyles: {
     fillColor: [0, 51, 102],
@@ -660,26 +660,30 @@ doc.autoTable({
         });
       }
 
-      // Mark median border row and store its y-position and xStart
+      // Mark median border row without storing coordinates here
       if (rowElem.classList.contains("median-border-row")) {
         data.row.raw.isMedianBorder = true;
-        medianY = data.cell.y;
-        medianXStart = data.cell.x;
       }
     }
   },
   didDrawCell: (data) => {
-    // No line drawing here; could include other cell-specific logic if needed.
+    if (
+      data.row.section === "body" &&
+      data.row.raw.isMedianBorder &&
+      data.column.index === 0
+    ) {
+      // Store final vertical position for the median row
+      medianY = data.cell.y;
+      medianXStart = data.cell.x;
+    }
   },
+  margin: { top: 20 },
 });
 
-// After the table has been drawn, draw the dashed line if we have median info
+// After autoTable renders, draw the dashed line if we have median info
 if (medianY !== null && medianXStart !== null) {
-  // Use the same doc instance used above
   const pageWidth = doc.internal.pageSize.getWidth();
-  
-  // Determine right margin—replace with your margin retrieval logic if available
-  const rightMargin = 10; 
+  const rightMargin = 10; // adjust as needed
   const xEnd = pageWidth - rightMargin;
 
   doc.setLineDash([3, 3], 0);
