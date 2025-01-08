@@ -662,22 +662,27 @@ yearSlider.noUiSlider.on("update", function () {
         }
       },
       didDrawCell: (data) => {
-  // Only in body rows that are flagged with isMedianBorder
   if (data.row.section === "body" && data.row.raw.isMedianBorder) {
-    // Only do it for the first cell in the row (column 0)
+    // Example only do it once per row:
     if (data.column.index === 0) {
       const doc = data.doc;
       const table = data.table;
-      const dashY = data.row.y + data.row.height;
+      
+      // Usually we do something like:
+      const xStart = table.left;
+      const xEnd   = table.left + table.width;
+      const dashY  = data.row.y + data.row.height; // bottom of the row
 
+      console.log('xStart:', xStart, 'xEnd:', xEnd, 'dashY:', dashY);
+      
       doc.setLineDash([3, 3], 0);
       doc.setDrawColor(0, 51, 102);
       doc.setLineWidth(0.5);
 
-      doc.line(table.left, dashY, table.left + table.width, dashY);
+      // If xStart, xEnd, dashY are valid numbers, we can draw the line:
+      doc.line(xStart, dashY, xEnd, dashY);
 
-      // Reset line dash/width for subsequent table drawing
-      doc.setLineDash([]);
+      doc.setLineDash();
       doc.setLineWidth(0.2);
     }
   }
