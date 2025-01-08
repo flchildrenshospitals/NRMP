@@ -662,30 +662,36 @@ yearSlider.noUiSlider.on("update", function () {
         }
       },
       didDrawCell: (data) => {
-  if (data.row.section === "body" && data.row.raw.isMedianBorder) {
-    // Example only do it once per row:
-    if (data.column.index === 0) {
-      const doc = data.doc;
-      const table = data.table;
-      
-      // Usually we do something like:
-      const xStart = table.left;
-      const xEnd   = table.left + table.width;
-      const dashY  = data.row.y + data.row.height; // bottom of the row
+  // Only do this for body rows and only once per row:
+  if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
+    const doc = data.doc;
 
-      console.log(data);
-      console.log('xStart:', xStart, 'xEnd:', xEnd, 'dashY:', dashY);
-      
-      doc.setLineDash([3, 3], 0);
-      doc.setDrawColor(0, 51, 102);
-      doc.setLineWidth(0.5);
+    // Find the left edge and right edge of this row
+    let xStart = Infinity;
+    let xEnd = -Infinity;
 
-      // If xStart, xEnd, dashY are valid numbers, we can draw the line:
-      doc.line(xStart, dashY, xEnd, dashY);
+    // Go through all cells in the row
+    Object.keys(data.row.cells).forEach((key) => {
+      const cell = data.row.cells[key];
+      const cellLeft = cell.x;
+      const cellRight = cell.x + cell.width;
 
-      doc.setLineDash();
-      doc.setLineWidth(0.2);
-    }
+      if (cellLeft < xStart) xStart = cellLeft;
+      if (cellRight > xEnd) xEnd = cellRight;
+    });
+
+    // The dashed line is typically at the *bottom* of the row
+    const dashY = data.cell.y + data.cell.height;
+
+    // Draw the dashed line
+    doc.setLineDash([3, 3], 0);
+    doc.setDrawColor(0, 51, 102);
+    doc.setLineWidth(0.5);
+    doc.line(xStart, dashY, xEnd, dashY);
+
+    // Reset dash
+    doc.setLineDash([]);
+    doc.setLineWidth(0.2);
   }
 },
       margin: { top: 20 },
