@@ -605,11 +605,23 @@ yearSlider.noUiSlider.on("update", function () {
   let currentY = 20 + wrappedFiltersText.length * 10;
 
   function generateTable(title, tableElement, startY) {
+    const container = tableElement.closest(".table-container");
+    const statsSummary = container.querySelector(".stats-summary");
+    let medianText = statsSummary ? statsSummary.textContent.trim() : "";
+
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
     doc.setFont("helvetica", "bold");
     doc.text(title, 10, startY);
     startY += 10;
+
+    if (medianText) {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      doc.text(medianText, 10, startY);
+      startY += 10;
+    }
 
     doc.autoTable({
       html: tableElement,
@@ -628,17 +640,40 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didParseCell: (data) => {
-        if (data.row.section === 'body') {
-          // Join all lines of cell text and convert to lowercase
-          const cellText = (data.cell.text || []).join(' ').toLowerCase();
-          if (cellText.includes('total')) {
-            // If this cell contains 'total', style the entire row
-            Object.values(data.row.cells).forEach(cell => {
+        if (data.row.section === "body") {
+          const cellElem = data.cell.raw;
+          if (!cellElem) return;
+
+          const rowElem = cellElem.parentElement;
+          // If this row includes the word 'total', we highlight
+          const rowText = (data.cell.text || []).join(" ").toLowerCase();
+          if (rowText.includes("total")) {
+            Object.values(data.row.cells).forEach((cell) => {
               cell.styles.fillColor = [218, 233, 248]; // Light blue
-              cell.styles.textColor = [0, 0, 0];       // Black text
-              cell.styles.fontStyle = 'bold';          // Bold text
+              cell.styles.textColor = [0, 0, 0];
+              cell.styles.fontStyle = "bold";
             });
           }
+
+          // Mark this row for the median border if it has the class
+          if (rowElem.classList.contains("median-border-row")) {
+            data.row.raw.isMedianBorder = true;
+          }
+        }
+      },
+      didDrawCell: (data) => {
+        if (data.row.section === "body" && data.row.raw.isMedianBorder) {
+          // Dashed line for the median row
+          const y = data.cell.y;
+          const table = data.table;
+          const xStart = table.left;
+          const xEnd = table.left + table.width;
+
+          doc.setLineDash([10, 5], 0);  // 10 units on, 5 off
+          doc.setDrawColor(0, 51, 102); // #003366
+          doc.setLineWidth(1.0);
+          doc.line(xStart, y, xEnd, y);
+          doc.setLineDash(); // Reset dash
         }
       },
       margin: { top: 20 },
@@ -656,10 +691,10 @@ yearSlider.noUiSlider.on("update", function () {
   // Export Non-SNHAF Table
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
-    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
+    currentY = generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
   }
 
-  // Save the PDF
+  // Finally save the PDF
   doc.save("NRMP_Data.pdf");
 });
     
