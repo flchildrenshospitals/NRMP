@@ -625,79 +625,59 @@ yearSlider.noUiSlider.on("update", function () {
     }
 
     doc.autoTable({
-      html: tableElement,
-      startY: startY,
-      theme: "plain",
-      headStyles: {
+    html: tableElement,
+    startY: startY,
+    theme: "plain",
+    headStyles: {
         fillColor: [0, 51, 102],
         textColor: [255, 255, 255],
         fontSize: 12,
-      },
-      bodyStyles: {
+    },
+    bodyStyles: {
         fontSize: 10,
         textColor: [33, 33, 33],
-      },
-      alternateRowStyles: {
+    },
+    alternateRowStyles: {
         fillColor: [245, 245, 245],
-      },
-      didDrawCell: (data) => {
-    if (data.row.raw.isMedianBorder) {
-        const table = data.table;
-        const xStart = table.startX;
-        const xEnd = table.startX + table.width;
-        const y = data.cell.y + data.cell.height;
-        doc.setLineDash([5, 5], 0); // Dashed line
-        doc.setDrawColor(0, 51, 102); // Consistent blue
-        doc.line(xStart, y + 2, xEnd, y + 2);
-        doc.setLineDash(); // Reset dash
-    }
-},
-      didParseCell: (data) => {
-        if (data.row.section === "body") {
-          const cellElem = data.cell.raw;
-          if (!cellElem) return;
+    },
+    didDrawCell: (data) => {
+        if (data.row.raw.isMedianBorder) {
+            const table = data.table;
+            const xStart = table.startX;
+            const xEnd = table.startX + table.width;
+            const y = data.cell.y + data.cell.height;
 
-          const rowElem = cellElem.parentElement;
-          // If this row includes the word 'total', we highlight
-          const rowText = (data.cell.text || []).join(" ").toLowerCase();
-          if (rowText.includes("total")) {
-            Object.values(data.row.cells).forEach((cell) => {
-              cell.styles.fillColor = [218, 233, 248]; // Light blue
-              cell.styles.textColor = [0, 0, 0];
-              cell.styles.fontStyle = "bold";
-            });
-          }
-
-          // Mark this row for the median border if it has the class
-          if (rowElem.classList.contains("median-border-row")) {
-            data.row.raw.isMedianBorder = true;
-          }
+            // Draw dashed line
+            doc.setLineDash([5, 5], 0); // Dashed line
+            doc.setDrawColor(0, 51, 102); // Consistent blue
+            doc.line(xStart, y + 2, xEnd, y + 2);
+            doc.setLineDash(); // Reset dash
         }
-      },
-      drawCell: (data) => {
-  if (data.row.section === "body" && data.row.raw.isMedianBorder) {
-    console.log('Drawing dashed line at row:', data.cell.text);
-    const table = data.table;
-    const xStart = data.table.left;
-    const xEnd = data.table.left + data.table.width;
-    const y = data.cell.y + data.cell.height;
+    },
+    didParseCell: (data) => {
+        if (data.row.section === "body") {
+            const cellElem = data.cell.raw;
+            if (!cellElem) return;
 
-    // Check if they are valid numbers
-    if (
-      Number.isFinite(xStart) &&
-      Number.isFinite(xEnd) &&
-      Number.isFinite(y)
-    ) {
-      doc.setLineDash([10, 5], 0);
-      doc.setDrawColor(255, 0, 0);
-      doc.setLineWidth(3);
-      doc.line(xStart, y + 2, xEnd, y + 2);
-      doc.setLineDash(); // Reset dash
-    }
-  }
-},
-      margin: { top: 20 },
-    });
+            const rowElem = cellElem.parentElement;
+            // If this row includes the word 'total', we highlight
+            const rowText = (data.cell.text || []).join(" ").toLowerCase();
+            if (rowText.includes("total")) {
+                Object.values(data.row.cells).forEach((cell) => {
+                    cell.styles.fillColor = [218, 233, 248]; // Light blue
+                    cell.styles.textColor = [0, 0, 0];
+                    cell.styles.fontStyle = "bold";
+                });
+            }
+
+            // Mark this row for the median border if it has the class
+            if (rowElem.classList.contains("median-border-row")) {
+                data.row.raw.isMedianBorder = true;
+            }
+        }
+    },
+    margin: { top: 20 },
+});
 
     return doc.lastAutoTable.finalY + 20;
   }
