@@ -662,7 +662,7 @@ yearSlider.noUiSlider.on("update", function () {
           }
         }
       },
-      didDrawCell: (data) => {
+      drawCell: (data) => {
   if (data.row.section === "body" && data.row.raw.isMedianBorder) {
     console.log('Drawing dashed line at row:', data.cell.text);
     const table = data.table;
