@@ -679,6 +679,9 @@ yearSlider.noUiSlider.on("update", function () {
     const firstCell = cellsArray[0];
     const lastCell = cellsArray[cellsArray.length - 1];
 
+    // Retrieve a left margin if available, defaulting to 0
+    const leftMargin = data.settings?.margin?.left || 0;
+
     // Calculate xStart from the left edge of the first cell
     const xStart = Math.max(firstCell.x, leftMargin);
 
