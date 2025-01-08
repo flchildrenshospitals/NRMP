@@ -662,35 +662,55 @@ yearSlider.noUiSlider.on("update", function () {
         }
       },
       didDrawCell: (data) => {
-  if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
+  if (
+    data.row.section === "body" &&
+    data.row.raw.isMedianBorder &&
+    data.column.index === 0
+  ) {
     const doc = data.doc;
 
-    // Derive xStart / xEnd from the table's columns array
+    // Initialize boundaries
     let xStart = Infinity;
     let xEnd = -Infinity;
+
+    // Check if table columns exist
     const columns = data.table.columns || [];
 
+    // Loop over each column to find the extreme left and right values
     columns.forEach((col) => {
-      const colLeft = col.x;             // left boundary of this column
-      const colRight = col.x + col.width; 
-      if (colLeft < xStart) xStart = colLeft;
-      if (colRight > xEnd) xEnd = colRight;
+      // Ensure col.x and col.width exist
+      if (typeof col.x === "number" && typeof col.width === "number") {
+        const colLeft = col.x;
+        const colRight = col.x + col.width;
+        if (colLeft < xStart) xStart = colLeft;
+        if (colRight > xEnd) xEnd = colRight;
+      }
     });
 
-    // Then pick your vertical coordinate
-    // e.g., the top of the cell or bottom of the cell
-    const dashY = data.cell.y;
+    // If we didn't find any columns, fall back to row cells
+    if (!isFinite(xStart) || !isFinite(xEnd)) {
+      Object.values(data.row.cells).forEach((cell) => {
+        if (typeof cell.x === "number" && typeof cell.width === "number") {
+          const cellLeft = cell.x;
+          const cellRight = cell.x + cell.width;
+          if (cellLeft < xStart) xStart = cellLeft;
+          if (cellRight > xEnd) xEnd = cellRight;
+        }
+      });
+    }
+
+    // At this point, xStart and xEnd should span the table width.
+    const dashY = data.cell.y; // Your valid vertical position
 
     doc.setLineDash([3, 3], 0);
     doc.setDrawColor(0, 51, 102);
     doc.setLineWidth(0.5);
     doc.line(xStart, dashY, xEnd, dashY);
-
     doc.setLineDash([]);
     doc.setLineWidth(0.2);
   }
-},
-
+}
+,
       margin: { top: 20 },
     });
 
