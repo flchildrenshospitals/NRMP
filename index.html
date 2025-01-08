@@ -673,6 +673,7 @@ yearSlider.noUiSlider.on("update", function () {
       const xEnd   = table.left + table.width;
       const dashY  = data.row.y + data.row.height; // bottom of the row
 
+      console.log(data);
       console.log('xStart:', xStart, 'xEnd:', xEnd, 'dashY:', dashY);
       
       doc.setLineDash([3, 3], 0);
