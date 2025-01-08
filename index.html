@@ -553,7 +553,6 @@ yearSlider.noUiSlider.on("update", function () {
     if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < rawMedian) {
       tr.classList.add("median-border-row");
       addedMedianBorder = true;
-      console.log('Flagging row for median border:', data.sponsor, data.matchPercent);
     }
 
     tbody.appendChild(tr);
@@ -625,59 +624,66 @@ yearSlider.noUiSlider.on("update", function () {
     }
 
     doc.autoTable({
-    html: tableElement,
-    startY: startY,
-    theme: "plain",
-    headStyles: {
+      html: tableElement,
+      startY: startY,
+      theme: "grid",
+      headStyles: {
         fillColor: [0, 51, 102],
         textColor: [255, 255, 255],
         fontSize: 12,
-    },
-    bodyStyles: {
+      },
+      bodyStyles: {
         fontSize: 10,
         textColor: [33, 33, 33],
-    },
-    alternateRowStyles: {
+      },
+      alternateRowStyles: {
         fillColor: [245, 245, 245],
-    },
-    didDrawCell: (data) => {
-        if (data.row.raw.isMedianBorder) {
-            const table = data.table;
-            const xStart = table.startX;
-            const xEnd = table.startX + table.width;
-            const y = data.cell.y + data.cell.height;
-
-            // Draw dashed line
-            doc.setLineDash([5, 5], 0); // Dashed line
-            doc.setDrawColor(0, 51, 102); // Consistent blue
-            doc.line(xStart, y + 2, xEnd, y + 2);
-            doc.setLineDash(); // Reset dash
-        }
-    },
-    didParseCell: (data) => {
+      },
+      didParseCell: (data) => {
         if (data.row.section === "body") {
-            const cellElem = data.cell.raw;
-            if (!cellElem) return;
+          const cellElem = data.cell.raw;
+          if (!cellElem) return;
 
-            const rowElem = cellElem.parentElement;
-            // If this row includes the word 'total', we highlight
-            const rowText = (data.cell.text || []).join(" ").toLowerCase();
-            if (rowText.includes("total")) {
-                Object.values(data.row.cells).forEach((cell) => {
-                    cell.styles.fillColor = [218, 233, 248]; // Light blue
-                    cell.styles.textColor = [0, 0, 0];
-                    cell.styles.fontStyle = "bold";
-                });
-            }
+          const rowElem = cellElem.parentElement;
+          // If this row includes the word 'total', we highlight
+          const rowText = (data.cell.text || []).join(" ").toLowerCase();
+          if (rowText.includes("total")) {
+            Object.values(data.row.cells).forEach((cell) => {
+              cell.styles.fillColor = [218, 233, 248]; // Light blue
+              cell.styles.textColor = [0, 0, 0];
+              cell.styles.fontStyle = "bold";
+            });
+          }
 
-            // Mark this row for the median border if it has the class
-            if (rowElem.classList.contains("median-border-row")) {
-                data.row.raw.isMedianBorder = true;
-            }
+          // Mark this row for the median border if it has the class
+          if (rowElem.classList.contains("median-border-row")) {
+            data.row.raw.isMedianBorder = true;
+          }
         }
-    },
-    margin: { top: 20 },
-});
+      },
+      didDrawCell: (data) => {
+  if (data.row.section === 'body' && data.row.raw.isMedianBorder) {
+    // Get the document context
+    const doc = data.doc;
+    
+    // Calculate positions
+    const y = data.cell.y;
+    
+    // Draw the dashed line
+    doc.setLineDash([3, 3]); // Shorter dash pattern for PDF
+    doc.setDrawColor(0, 51, 102); // Dark blue color (#003366)
+    doc.setLineWidth(0.5); // Thinner line for PDF
+    
+    // Draw the line across the full width of the table
+    doc.line(data.table.left, y, data.table.left + data.table.width, y);
+    
+    // Reset line style
+    doc.setLineDash(); // Reset to solid line
+    doc.setLineWidth(0.2); // Reset to default line width
+  }
+},
+      margin: { top: 20 },
+    });
 
     return doc.lastAutoTable.finalY + 20;
   }
