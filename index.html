@@ -553,6 +553,7 @@ yearSlider.noUiSlider.on("update", function () {
     if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < rawMedian) {
       tr.classList.add("median-border-row");
       addedMedianBorder = true;
+      console.log('Flagging row for median border:', data.sponsor, data.matchPercent);
     }
 
     tbody.appendChild(tr);
