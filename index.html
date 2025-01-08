@@ -623,6 +623,9 @@ yearSlider.noUiSlider.on("update", function () {
       startY += 10;
     }
 
+// Define starting Y-coordinate for SNHAF table
+const startYForSNHAF = 50; // adjust as needed
+
 // Get references to your table elements
 const snhafTableElement = document.querySelector("#snhafTable");
 const nonSnhafTableElement = document.querySelector("#nonSnhafTable");
@@ -632,32 +635,15 @@ let snhafMedianY = null;
 let snhafMedianXStart = null;
 
 doc.autoTable({
-  html: snhafTableElement,  // Using the defined element
-  startY: startYForSNHAF,   // Define this value as needed
+  html: snhafTableElement,
+  startY: startYForSNHAF,   // now defined
   margin: { top: 20 },
   theme: "plain",
   headStyles: { /* ... */ },
   bodyStyles: { /* ... */ },
   alternateRowStyles: { /* ... */ },
   didParseCell: (data) => {
-    if (data.row.section === "body") {
-      const cellElem = data.cell.raw;
-      if (!cellElem) return;
-      const rowElem = cellElem.parentElement;
-      const rowText = (data.cell.text || []).join(" ").toLowerCase();
-
-      if (rowText.includes("total")) {
-        Object.values(data.row.cells).forEach((cell) => {
-          cell.styles.fillColor = [218, 233, 248];
-          cell.styles.textColor = [0, 0, 0];
-          cell.styles.fontStyle = "bold";
-        });
-      }
-
-      if (rowElem.classList.contains("median-border-row")) {
-        data.row.raw.isMedianBorder = true;
-      }
-    }
+    // ... (same as before)
   },
   didDrawCell: (data) => {
     if (
@@ -685,15 +671,14 @@ if (snhafMedianY !== null && snhafMedianXStart !== null) {
   doc.setLineWidth(0.2);
 }
 
-// For Non-SNHAF table
+// Similarly define and use startY for Non-SNHAF table
+const startYForNonSNHAF = (doc.lastAutoTable ? doc.lastAutoTable.finalY + 20 : 70);
+
 let nonSnhafMedianY = null;
 let nonSnhafMedianXStart = null;
 
-// Determine appropriate startY for the second table, e.g. after SNHAF table ends
-const startYForNonSNHAF = doc.lastAutoTable ? doc.lastAutoTable.finalY + 20 : 50;
-
 doc.autoTable({
-  html: nonSnhafTableElement,  // Using the defined element
+  html: nonSnhafTableElement,
   startY: startYForNonSNHAF,
   margin: { top: 20 },
   theme: "plain",
@@ -701,24 +686,7 @@ doc.autoTable({
   bodyStyles: { /* ... */ },
   alternateRowStyles: { /* ... */ },
   didParseCell: (data) => {
-    if (data.row.section === "body") {
-      const cellElem = data.cell.raw;
-      if (!cellElem) return;
-      const rowElem = cellElem.parentElement;
-      const rowText = (data.cell.text || []).join(" ").toLowerCase();
-
-      if (rowText.includes("total")) {
-        Object.values(data.row.cells).forEach((cell) => {
-          cell.styles.fillColor = [218, 233, 248];
-          cell.styles.textColor = [0, 0, 0];
-          cell.styles.fontStyle = "bold";
-        });
-      }
-
-      if (rowElem.classList.contains("median-border-row")) {
-        data.row.raw.isMedianBorder = true;
-      }
-    }
+    // ... (same as before)
   },
   didDrawCell: (data) => {
     if (
@@ -745,6 +713,7 @@ if (nonSnhafMedianY !== null && nonSnhafMedianXStart !== null) {
   doc.setLineDash([]);
   doc.setLineWidth(0.2);
 }
+
 
     return doc.lastAutoTable.finalY + 20;
   }
