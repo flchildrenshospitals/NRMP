@@ -549,7 +549,7 @@ yearSlider.noUiSlider.on("update", function () {
     cells.forEach(cell => tr.appendChild(cell));
 
     // Add median border if not already added
-    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < median) {
+    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent <= median) {
       tr.classList.add("median-border-row");
       addedMedianBorder = true;
     }
