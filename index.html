@@ -255,106 +255,122 @@ tr:hover {
   <script>
   document.addEventListener("DOMContentLoaded", function () {
     const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
-    let yearRange = [2020, 2024];
-    let selectedSpecialties = ["ALL"];
+    let yearRange = [2020, 2024]; // Default Year Range
+    let selectedSpecialties = ["ALL"]; // Default: All specialties
 
-    // Fetch CSV and process data
     fetch(csvUrl)
-      .then((response) => response.text())
-      .then((data) => {
-        const rows = data.split("\n").map((row) => row.split(","));
-        const headers = rows.shift().map((header) => header.trim());
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split("\n").map(row => row.split(","));
+        const headers = rows.shift().map(header => header.trim());
 
-        // Extract year and other column indices
-        const quotaYearColumns = headers.filter((header) => header.match(/^\d{4} Quota$/));
-        const matchedYearColumns = headers.filter((header) => header.match(/^\d{4} Matched$/));
+        // Extract years dynamically from headers
+        const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
+        const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
+        const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
+
+        // Find other column indexes
         const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
-        const specialtyIndex = headers.indexOf("Specialty Cleaned");
         const snhafIndex = headers.indexOf("SNHAF");
+        const specialtyIndex = headers.indexOf("Specialty Cleaned");
 
-        if (sponsorIndex === -1 || specialtyIndex === -1 || snhafIndex === -1) {
-          console.error("Required columns not found. Check the CSV file.");
+        if (
+          sponsorIndex === -1 ||
+          snhafIndex === -1 ||
+          specialtyIndex === -1 ||
+          quotaYearColumns.length === 0 ||
+          matchedYearColumns.length === 0
+        ) {
+          console.error("Missing required columns. Please check your CSV file.");
           return;
         }
 
-        // Create Slider, Tables, and Dynamic Content
-        setupSlider();
-        setupSpecialtyCheckboxes();
-        updateTables();
-
-        // Handle "Export to PDF" click
-        document.getElementById("export-pdf").addEventListener("click", function () {
-          const rawMedian = calculateMedian(); // Dynamically calculate the median
-          exportToPDF(rawMedian);
+        // Create Year Range Slider
+        const yearSlider = document.getElementById("year-slider");
+        noUiSlider.create(yearSlider, {
+          start: [Math.min(...years), Math.max(...years)],
+          connect: true,
+          range: {
+            min: Math.min(...years),
+            max: Math.max(...years),
+          },
+          step: 1,
+          tooltips: true,
+          format: {
+            to: value => Math.round(value),
+            from: value => Math.round(value),
+          },
         });
 
-        function setupSlider() {
-          const yearSlider = document.getElementById("year-slider");
-          noUiSlider.create(yearSlider, {
-            start: [Math.min(...years), Math.max(...years)],
-            connect: true,
-            range: {
-              min: Math.min(...years),
-              max: Math.max(...years),
-            },
-            step: 1,
-            tooltips: true,
-            format: {
-              to: (value) => Math.round(value),
-              from: (value) => Math.round(value),
-            },
-          });
-
-          yearSlider.noUiSlider.on("update", function (values) {
-            yearRange = values.map((v) => parseInt(v, 10));
-            updateTables();
-          });
-        }
-
-        function setupSpecialtyCheckboxes() {
-          const specialties = [...new Set(rows.map((row) => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
-          const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-
-          specialtyCheckboxContainer.innerHTML = `<label><input type="checkbox" value="ALL" checked>ALL</label>`;
-          specialties.forEach((specialty) => {
-            const checkbox = document.createElement("label");
-            checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
-            specialtyCheckboxContainer.appendChild(checkbox);
-          });
-
-          specialtyCheckboxContainer.addEventListener("change", handleSpecialtyChange);
-        }
-
-        function handleSpecialtyChange(event) {
-          const checkboxes = [...document.querySelectorAll("#specialty-checkboxes input[type='checkbox']")];
-          const allCheckbox = checkboxes.find((cb) => cb.value === "ALL");
-
-          if (event.target.value === "ALL" && event.target.checked) {
-            checkboxes.forEach((cb) => (cb.checked = cb.value === "ALL"));
-            selectedSpecialties = ["ALL"];
-          } else {
-            allCheckbox.checked = false;
-            selectedSpecialties = checkboxes.filter((cb) => cb.checked).map((cb) => cb.value);
-
-            if (selectedSpecialties.length === 0) allCheckbox.checked = true;
-          }
+        // Update Year Range and Trigger Table Update
+        yearSlider.noUiSlider.on("update", function (values) {
+          yearRange = values.map(v => parseInt(v, 10));
           updateTables();
+        });
+
+        // Populate Specialty Checkboxes
+        const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
+        const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
+        specialtyCheckboxContainer.innerHTML = `
+  <label><input type="checkbox" value="ALL" checked>ALL</label>
+`;
+        uniqueSpecialties.forEach(specialty => {
+          const checkbox = document.createElement("label");
+          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
+          specialtyCheckboxContainer.appendChild(checkbox);
+        });
+
+        // Handle Specialty Selection Changes
+        specialtyCheckboxContainer.addEventListener("change", function (event) {
+    const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+    const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
+
+    if (event.target.value === "ALL") {
+        // If "ALL" is checked, deselect all others
+        if (event.target.checked) {
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value !== "ALL") checkbox.checked = false;
+            });
+            selectedSpecialties = ["ALL"];
+        } else {
+            selectedSpecialties = [];
+        }
+    } else {
+        // If any specific checkbox is checked, uncheck "ALL"
+        if (event.target.checked) {
+            allCheckbox.checked = false;
         }
 
+        // Update selected specialties
+        selectedSpecialties = checkboxes
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        // Ensure "ALL" is deselected if other boxes are selected
+        if (selectedSpecialties.includes("ALL")) {
+            selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
+        }
+    }
+
+    updateTables(); // Update table based on the new selection
+});
+
+        // Update Tables Based on Filters
         function updateTables() {
-          // Filter rows based on year range and specialties
-          const filteredRows = rows.filter((row) => {
-            const yearMatch = years.some((year) => {
-              const yearInRange = year >= yearRange[0] && year <= yearRange[1];
-              const quotaIndex = headers.indexOf(`${year} Quota`);
-              return yearInRange && parseInt(row[quotaIndex]?.trim() || 0, 10) > 0;
-            });
+  const filteredRows = rows.filter(row => {
+    // Check year range
+    const yearMatch = years.some(year => {
+      const inRange = year >= yearRange[0] && year <= yearRange[1];
+      const quotaColumn = headers.indexOf(`${year} Quota`);
+      return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
+    });
 
-            const specialtyMatch =
-              selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
+    // Check specialty filter
+    const specialtyMatch =
+      selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
 
-            return yearMatch && specialtyMatch;
-          });
+    return yearMatch && specialtyMatch;
+  });
 
   const snhafAggregates = {};
   const notAggregates = {};
@@ -588,74 +604,66 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
 
-  function generateTable(title, tableElement, medianValue, startY) {
-    const doc = new jsPDF();
-
-    // Add the table title
+  function generateTable(title, tableElement, startY) {
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
     doc.setFont("helvetica", "bold");
     doc.text(title, 10, startY);
     startY += 10;
 
-    // Add median subtitle
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Median Match Rate: ${medianValue}%`, 10, startY);
-    startY += 10;
-
-    function calculateMedian() {
-          const validPercentages = rows
-            .map((row) => parseFloat(row.matchPercent))
-            .filter((val) => !isNaN(val));
-
-          if (validPercentages.length === 0) return "N/A";
-
-          validPercentages.sort((a, b) => a - b);
-          const mid = Math.floor(validPercentages.length / 2);
-
-          return validPercentages.length % 2 === 0
-            ? (validPercentages[mid - 1] + validPercentages[mid]) / 2
-            : validPercentages[mid];
+    doc.autoTable({
+      html: tableElement,
+      startY: startY,
+      theme: "grid",
+      headStyles: {
+        fillColor: [0, 51, 102],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: [33, 33, 33],
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      didParseCell: (data) => {
+        if (data.row.section === 'body') {
+          // Join all lines of cell text and convert to lowercase
+          const cellText = (data.cell.text || []).join(' ').toLowerCase();
+          if (cellText.includes('total')) {
+            // If this cell contains 'total', style the entire row
+            Object.values(data.row.cells).forEach(cell => {
+              cell.styles.fillColor = [218, 233, 248]; // Light blue
+              cell.styles.textColor = [0, 0, 0];       // Black text
+              cell.styles.fontStyle = 'bold';          // Bold text
+            });
+          }
         }
+      },
+      margin: { top: 20 },
+    });
 
-        function exportToPDF(rawMedian) {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
+    return doc.lastAutoTable.finalY + 20;
+  }
 
-          // Export each table
-          let currentY = 20;
-          exportTable(doc, "SNHAF Sponsoring Institutions", document.querySelector(".table-container:nth-of-type(1) table"), rawMedian, currentY);
-          exportTable(doc, "Non-SNHAF Sponsoring Institutions", document.querySelector(".table-container:nth-of-type(2) table"), rawMedian, currentY);
+  // Export SNHAF Table
+  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
+  if (snhafTable) {
+    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
+  }
 
-          // Save the PDF
-          doc.save("NRMP_Data.pdf");
-        }
+  // Export Non-SNHAF Table
+  const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
+  if (nonSnhafTable) {
+    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
+  }
 
-        function exportTable(doc, title, tableElement, rawMedian, startY) {
-          doc.setFontSize(14).setTextColor(0, 51, 102).setFont("helvetica", "bold").text(title, 10, startY);
-          startY += 10;
-
-          doc.setFontSize(12).setTextColor(0, 0, 0).setFont("helvetica", "normal").text(`Median Match Rate: ${rawMedian}%`, 10, startY);
-          startY += 10;
-
-          doc.autoTable({
-            html: tableElement,
-            startY,
-            theme: "grid",
-            didParseCell: (data) => {
-              const matchPercent = parseFloat(data.row.cells[data.row.cells.length - 1]?.text[0]?.replace("%", ""));
-              if (matchPercent && matchPercent < rawMedian) {
-                Object.values(data.row.cells).forEach((cell) => (cell.styles.border = "top"));
-              }
-            },
-          });
-        }
-      })
-      .catch((error) => console.error("Error loading CSV:", error));
+  // Save the PDF
+  doc.save("NRMP_Data.pdf");
+});
+    
   });
-
 </script>
 
 </body>
