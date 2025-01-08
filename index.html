@@ -680,7 +680,7 @@ yearSlider.noUiSlider.on("update", function () {
     const lastCell = cellsArray[cellsArray.length - 1];
 
     // Calculate xStart from the left edge of the first cell
-    const xStart = firstCell.x;
+    const xStart = Math.max(firstCell.x, leftMargin);
 
     // Calculate xEnd using the right edge of the last cell
     const xEnd = lastCell.x + lastCell.width;
