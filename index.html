@@ -669,9 +669,14 @@ yearSlider.noUiSlider.on("update", function () {
   ) {
     const doc = data.doc;
 
-    const xStart = data.row.raw._medianXStart;
-      const xEnd = data.cell.x + data.cell.width; // right edge of the last column
-      const dashY = data.cell.y; // adjust vertically as needed
+    // Calculate xStart from the left edge of the first cell
+    const xStart = data.cell.x;
+
+    // Calculate xEnd using the right edge of the last cell
+    const xEnd = data.cell.x; * 8
+
+    // Use the top of the cell for vertical position (adjust as needed)
+    const dashY = data.cell.y;
 
     doc.setLineDash([3, 3], 0);
     doc.setDrawColor(0, 51, 102);
