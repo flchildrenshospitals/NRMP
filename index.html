@@ -1,33 +1,725 @@
-didDrawCell: (data) => {
-  // Only do this for body rows and only once per row:
-  if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
-    const doc = data.doc;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NRMP Data</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-    // Find the left edge and right edge of this row
-    let xStart = Infinity;
-    let xEnd = -Infinity;
+  <style>
+  /* General Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+}
 
-    // Go through all cells in the row
-    Object.keys(data.row.cells).forEach((key) => {
-      const cell = data.row.cells[key];
-      const cellLeft = cell.x;
-      const cellRight = cell.x + cell.width;
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-      if (cellLeft < xStart) xStart = cellLeft;
-      if (cellRight > xEnd) xEnd = cellRight;
+/* Header Styling */
+h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: -5px;
+}
+
+/* Slider Section */
+.slider-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#year-slider {
+  width: 90%;
+}
+
+.noUi-connect {
+  background-color: #003366; /* Updated to preferred blue */
+}
+
+.dynamic-title {
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 50px;
+}
+
+.dynamic-title h2 {
+  font-size: 24px;
+  color: #003366;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Main Layout */
+.main-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start; /* Align items at the top to prevent stretching */
+}
+
+/* Specialty Checkboxes */
+#specialty-checkboxes {
+  flex: none; /* Prevent flexbox from stretching this container */
+  max-height: fit-content; /* Ensure the height is just enough to fit the content */
+  height: auto;
+  min-height: unset; /* Ensure no minimum height is inherited */
+  max-height: fit-content; /* Adjust height to fit content */
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 350px; /* Increased width for labels */
+}
+
+#specialty-checkboxes label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+#specialty-checkboxes input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Content Section */
+main#content {
+  flex: 2; /* Ensure it takes appropriate space in the layout */
+  padding: 0; /* Remove unnecessary padding */
+  border: none; /* Remove the border */
+  background: none; /* Remove the background */
+  box-shadow: none; /* Remove the shadow */
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+}
+
+.table-container {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px; /* Add space between table boxes */
+}
+
+.table-container h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #003366;
+  text-align: left;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #003366;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+
+.median-border-row td {
+  border-top: 3px dashed #003366; /* Dark blue dotted line */
+}
+
+/* Total Row */
+.total-row {
+  background-color: rgba(218, 233, 248, 0.5) !important; /* Updated to preferred color */
+  font-weight: bold;
+}
+
+.total-row td {
+  font-size: 16px;
+}
+
+.btn-export {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #003366; /* Dark blue */
+  border: 2px solid #003366;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 50px;
+}
+
+.btn-export:hover {
+  background-color: #00509e; /* Lighter blue on hover */
+  border-color: #00509e;
+}
+
+.btn-export:active {
+  background-color: #002244; /* Darker shade when clicked */
+  border-color: #002244;
+}
+
+.btn-export:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Subtle shadow on focus */
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  #specialty-checkboxes {
+    max-width: 100%;
+  }
+
+  #content {
+  border: none; /* Remove border */
+  background: none; /* Remove background */
+  box-shadow: none; /* Remove shadow */
+  padding: 0; /* Optional: remove padding if it creates extra space */
+  }
+
+}
+
+</style>
+
+</head>
+<body>
+  <div class="container">
+  <h1>NRMP Data Viewer</h1>
+
+  <!-- Slider Section -->
+  <div class="slider-section">
+    <div id="year-slider"></div>
+  </div>
+
+    <!-- Dynamic Title -->
+  <div class="dynamic-title">
+    <h2 id="dynamic-title-text"></h2>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Specialty Checkboxes -->
+    <aside id="specialty-checkboxes"></aside>
+
+    <!-- Content Section -->
+    <main id="content"></main>
+  </div>
+</div>
+  <div style="text-align: center; margin-top: 20px;">
+  <button id="export-pdf" class="btn-export">Export to PDF</button>
+</div>
+  
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+    let yearRange = [2020, 2024]; // Default Year Range
+    let selectedSpecialties = ["ALL"]; // Default: All specialties
+
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split("\n").map(row => row.split(","));
+        const headers = rows.shift().map(header => header.trim());
+
+        // Extract years dynamically from headers
+        const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
+        const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
+        const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
+
+        // Find other column indexes
+        const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+        const snhafIndex = headers.indexOf("SNHAF");
+        const specialtyIndex = headers.indexOf("Specialty Cleaned");
+
+        if (
+          sponsorIndex === -1 ||
+          snhafIndex === -1 ||
+          specialtyIndex === -1 ||
+          quotaYearColumns.length === 0 ||
+          matchedYearColumns.length === 0
+        ) {
+          console.error("Missing required columns. Please check your CSV file.");
+          return;
+        }
+
+        // Create Year Range Slider
+        const yearSlider = document.getElementById("year-slider");
+        noUiSlider.create(yearSlider, {
+          start: [Math.min(...years), Math.max(...years)],
+          connect: true,
+          range: {
+            min: Math.min(...years),
+            max: Math.max(...years),
+          },
+          step: 1,
+          tooltips: true,
+          format: {
+            to: value => Math.round(value),
+            from: value => Math.round(value),
+          },
+        });
+
+        // Update Year Range and Trigger Table Update
+        yearSlider.noUiSlider.on("update", function (values) {
+          yearRange = values.map(v => parseInt(v, 10));
+          updateTables();
+        });
+
+        // Populate Specialty Checkboxes
+        const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
+        const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
+        specialtyCheckboxContainer.innerHTML = `
+  <label><input type="checkbox" value="ALL" checked>ALL</label>
+`;
+        uniqueSpecialties.forEach(specialty => {
+          const checkbox = document.createElement("label");
+          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
+          specialtyCheckboxContainer.appendChild(checkbox);
+        });
+
+        // Handle Specialty Selection Changes
+        specialtyCheckboxContainer.addEventListener("change", function (event) {
+    const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+    const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
+
+    if (event.target.value === "ALL") {
+        // If "ALL" is checked, deselect all others
+        if (event.target.checked) {
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value !== "ALL") checkbox.checked = false;
+            });
+            selectedSpecialties = ["ALL"];
+        } else {
+            selectedSpecialties = [];
+        }
+    } else {
+        // If any specific checkbox is checked, uncheck "ALL"
+        if (event.target.checked) {
+            allCheckbox.checked = false;
+        }
+
+        // Update selected specialties
+        selectedSpecialties = checkboxes
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        // Ensure "ALL" is deselected if other boxes are selected
+        if (selectedSpecialties.includes("ALL")) {
+            selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
+        }
+    }
+
+    updateTables(); // Update table based on the new selection
+});
+
+        // Update Tables Based on Filters
+        function updateTables() {
+  const filteredRows = rows.filter(row => {
+    // Check year range
+    const yearMatch = years.some(year => {
+      const inRange = year >= yearRange[0] && year <= yearRange[1];
+      const quotaColumn = headers.indexOf(`${year} Quota`);
+      return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
     });
 
-    // The dashed line is typically at the *bottom* of the row
+    // Check specialty filter
+    const specialtyMatch =
+      selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
+
+    return yearMatch && specialtyMatch;
+  });
+
+  const snhafAggregates = {};
+  const notAggregates = {};
+
+  filteredRows.forEach(row => {
+    const sponsor = row[sponsorIndex]?.trim();
+    const snhaf = row[snhafIndex]?.trim();
+    if (sponsor && snhaf) {
+      const targetAggregates = snhaf === "SNHAF" ? snhafAggregates : notAggregates;
+
+      if (!targetAggregates[sponsor]) {
+        targetAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+      }
+
+      years.forEach(year => {
+        if (year >= yearRange[0] && year <= yearRange[1]) {
+          const quotaColumn = headers.indexOf(`${year} Quota`);
+          const matchedColumn = headers.indexOf(`${year} Matched`);
+          targetAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
+          targetAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
+        }
+      });
+    }
+  });
+
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = ""; // Clear previous content
+
+  // Count the total number of sponsors for each category
+  const totalSnhafSponsors = Object.keys(snhafAggregates).length;
+  const totalNonSnhafSponsors = Object.keys(notAggregates).length;
+
+  // Create container for SNHAF table
+const snhafContainer = document.createElement("div");
+snhafContainer.classList.add("table-container");
+snhafContainer.innerHTML = `<h2>SNHAF Sponsoring Institutions (Total Sponsors: ${totalSnhafSponsors})</h2>`;
+snhafContainer.appendChild(createTable(snhafAggregates, "SNHAF Sponsoring Institutions", "table1"));
+
+// Create container for Non-SNHAF table
+const nonSnhafContainer = document.createElement("div");
+nonSnhafContainer.classList.add("table-container");
+nonSnhafContainer.innerHTML = `<h2>Non-SNHAF Sponsoring Institutions (Total Sponsors: ${totalNonSnhafSponsors})</h2>`;
+nonSnhafContainer.appendChild(createTable(notAggregates, "Non-SNHAF Sponsoring Institutions", "table2"));
+
+  // Append both containers to the content div
+  contentDiv.appendChild(snhafContainer);
+  contentDiv.appendChild(nonSnhafContainer);
+}
+
+
+        function updateDynamicTitle() {
+  const titleElement = document.getElementById("dynamic-title-text");
+
+  // Generate title based on selected filters
+  let title = "NRMP Data"; // Default title
+  if (selectedSpecialties.length === 1 && selectedSpecialties[0] === "ALL") {
+    title = "NRMP Data for All Specialties";
+  } else if (selectedSpecialties.length > 0) {
+    title = `NRMP Data for ${selectedSpecialties.join(", ")}`
+  }
+
+  // Add year range to the title
+  title += ` (${yearRange[0]} - ${yearRange[1]})`;
+
+  // Update the DOM
+  titleElement.textContent = title;
+}
+
+// Call this function whenever filters are updated
+specialtyCheckboxContainer.addEventListener("change", updateDynamicTitle);
+yearSlider.noUiSlider.on("update", function () {
+  updateDynamicTitle();
+});
+
+        // Function to create a table
+        function createTable(aggregates, title, className) {
+  const section = document.createElement("div");
+  const table = document.createElement("table");
+  table.classList.add(className);
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
+
+  // Add headers
+  const headerRow = document.createElement("tr");
+  ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+
+  // Process and sort data
+  const sortedData = Object.keys(aggregates)
+    .map(sponsor => {
+      const sponsorData = aggregates[sponsor];
+      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+      const matchPercent = sponsorData.totalQuota > 0
+        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+        : "N/A"; // Handle "N/A" for no data
+
+      return {
+        sponsor,
+        totalQuota: sponsorData.totalQuota,
+        totalMatched: sponsorData.totalMatched,
+        notMatched,
+        matchPercent,
+      };
+    })
+    .sort((a, b) => {
+      if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
+      if (b.matchPercent === "N/A") return -1;
+      return b.matchPercent - a.matchPercent;
+    });
+
+  // Calculate median
+  const validPercentages = sortedData
+    .filter(data => data.matchPercent !== "N/A")
+    .map(data => data.matchPercent);
+  let rawMedian, displayMedian;
+
+  if (validPercentages.length === 0) {
+    rawMedian = "N/A"; // No valid data
+    displayMedian = "N/A"; // Also display as "N/A"
+  } else {
+    const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
+    const middle = Math.floor(sortedPercentages.length / 2);
+    rawMedian = sortedPercentages.length % 2 === 0
+      ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+      : sortedPercentages[middle];
+    displayMedian = rawMedian.toFixed(2); // Format as percentage
+  }
+
+  // Create stats summary with the adjusted median
+  const statsSummary = document.createElement("div");
+  statsSummary.classList.add("stats-summary");
+  statsSummary.innerHTML = `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="30"
+      height="15"
+      viewBox="0 0 120 15"
+      style="margin-right: 10px; vertical-align: middle;"
+    >
+      <line
+        x1="0"
+        y1="7.5"
+        x2="120"
+        y2="7.5"
+        stroke="#003366"
+        stroke-width="5"
+        stroke-dasharray="10,5"
+      />
+    </svg>
+    Median Match Rate: ${displayMedian === "N/A" ? "N/A" : `${displayMedian}%`}
+  `;
+  section.appendChild(statsSummary);
+
+  // Add rows and insert a border at the median
+  let addedMedianBorder = false;
+
+  sortedData.forEach((data, index) => {
+    const tr = document.createElement("tr");
+
+    // Create cells
+    const cells = [
+      data.sponsor,
+      data.totalQuota.toLocaleString(),
+      data.totalMatched.toLocaleString(),
+      data.notMatched.toLocaleString(),
+      data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`
+    ].map(text => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      return td;
+    });
+
+    cells.forEach(cell => tr.appendChild(cell));
+
+    // Add median border if not already added
+    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < rawMedian) {
+      tr.classList.add("median-border-row");
+      addedMedianBorder = true;
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  // Add total row
+  const totalRow = document.createElement("tr");
+  totalRow.classList.add("total-row");
+  const totalQuota = sortedData.reduce((sum, row) => sum + row.totalQuota, 0);
+  const totalMatched = sortedData.reduce((sum, row) => sum + row.totalMatched, 0);
+  const totalNotMatched = sortedData.reduce((sum, row) => sum + row.notMatched, 0);
+  const totalMatchPercent =
+    totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) : "N/A";
+
+  totalRow.innerHTML = `
+    <td>Total</td>
+    <td>${totalQuota.toLocaleString()}</td>
+    <td>${totalMatched.toLocaleString()}</td>
+    <td>${totalNotMatched.toLocaleString()}</td>
+    <td>${totalMatchPercent === "N/A" ? "N/A" : `${totalMatchPercent}%`}</td>
+  `;
+  tbody.appendChild(totalRow);
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  section.appendChild(table);
+  return section;
+}
+
+        // Initialize Tables
+        updateTables();
+      })
+      .catch(error => console.error("Error loading CSV:", error));
+
+    document.getElementById("export-pdf").addEventListener("click", function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Add title to the PDF
+  doc.setFont("helvetica", "bold"); // Set font to bold
+  doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0);
+  doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
+
+  // Wrap and add filters text
+  doc.setFont("helvetica", "normal"); // Reset font to normal
+  const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`
+  const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
+  doc.text(wrappedFiltersText, 10, 20);
+  let currentY = 20 + wrappedFiltersText.length * 10;
+
+  function generateTable(title, tableElement, startY) {
+    const container = tableElement.closest(".table-container");
+    const statsSummary = container.querySelector(".stats-summary");
+    let medianText = statsSummary ? statsSummary.textContent.trim() : "";
+
+    doc.setFontSize(14);
+    doc.setTextColor(0, 51, 102);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, 10, startY);
+    startY += 10;
+
+    if (medianText) {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      doc.text(medianText, 10, startY);
+      startY += 10;
+    }
+
+    doc.autoTable({
+      html: tableElement,
+      startY: startY,
+      theme: "plain",
+      headStyles: {
+        fillColor: [0, 51, 102],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: [33, 33, 33],
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      didParseCell: (data) => {
+        if (data.row.section === "body") {
+          const cellElem = data.cell.raw;
+          if (!cellElem) return;
+
+          const rowElem = cellElem.parentElement;
+          // If this row includes the word 'total', we highlight
+          const rowText = (data.cell.text || []).join(" ").toLowerCase();
+          if (rowText.includes("total")) {
+            Object.values(data.row.cells).forEach((cell) => {
+              cell.styles.fillColor = [218, 233, 248]; // Light blue
+              cell.styles.textColor = [0, 0, 0];
+              cell.styles.fontStyle = "bold";
+            });
+          }
+
+          // Mark this row for the median border if it has the class
+          if (rowElem.classList.contains("median-border-row")) {
+            data.row.raw.isMedianBorder = true;
+          }
+        }
+      },
+      didDrawCell: (data) => {
+  if (
+    data.row.section === "body" &&
+    data.row.raw.isMedianBorder &&
+    data.column.index === 0
+  ) {
+    const doc = data.doc;
+
+    // Get all cells in the current row as an array
+    const cellsArray = Object.values(data.row.cells);
+
+    // Ensure there are cells in this row
+    if (cellsArray.length === 0) return;
+
+    // Determine boundaries using the first and last cells
+    const firstCell = cellsArray[0];
+    const lastCell = cellsArray[cellsArray.length - 1];
+
+    // Calculate xStart from the left edge of the first cell
+    const xStart = firstCell.x;
+
+    // Calculate xEnd using the right edge of the last cell
+    const xEnd = lastCell.x + lastCell.width;
+
+    // Use the top of the cell for vertical position (adjust as needed)
     const dashY = data.cell.y;
 
-    // Draw the dashed line
     doc.setLineDash([3, 3], 0);
     doc.setDrawColor(0, 51, 102);
     doc.setLineWidth(0.5);
     doc.line(xStart, dashY, xEnd, dashY);
-
-    // Reset dash
     doc.setLineDash([]);
     doc.setLineWidth(0.2);
   }
-}
+},
+      margin: { top: 20 },
+    });
+
+    return doc.lastAutoTable.finalY + 20;
+  }
+
+  // Export SNHAF Table
+  const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
+  if (snhafTable) {
+    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
+  }
+
+  // Export Non-SNHAF Table
+  const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
+  if (nonSnhafTable) {
+    currentY = generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
+  }
+
+  // Finally save the PDF
+  doc.save("NRMP_Data.pdf");
+});
+    
+  });
+</script>
+
+</body>
+</html>
