@@ -678,7 +678,7 @@ yearSlider.noUiSlider.on("update", function () {
     ) {
       doc.setLineDash([10, 5], 0);
       doc.setDrawColor(255, 0, 0);
-      doc.setLineWidth(3, 0);
+      doc.setLineWidth(3);
       doc.line(xStart, y + 2, xEnd, y + 2);
       doc.setLineDash(); // Reset dash
     }
