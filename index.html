@@ -640,6 +640,18 @@ yearSlider.noUiSlider.on("update", function () {
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
+      didDrawCell: (data) => {
+    if (data.row.raw.isMedianBorder) {
+        const table = data.table;
+        const xStart = table.startX;
+        const xEnd = table.startX + table.width;
+        const y = data.cell.y + data.cell.height;
+        doc.setLineDash([5, 5], 0); // Dashed line
+        doc.setDrawColor(0, 51, 102); // Consistent blue
+        doc.line(xStart, y + 2, xEnd, y + 2);
+        doc.setLineDash(); // Reset dash
+    }
+},
       didParseCell: (data) => {
         if (data.row.section === "body") {
           const cellElem = data.cell.raw;
@@ -683,18 +695,6 @@ yearSlider.noUiSlider.on("update", function () {
       doc.setLineDash(); // Reset dash
     }
   }
-},
-didDrawCell: (data) => {
-    if (data.row.raw.isMedianBorder) {
-        const table = data.table;
-        const xStart = table.startX;
-        const xEnd = table.startX + table.width;
-        const y = data.cell.y + data.cell.height;
-        doc.setLineDash([5, 5], 0); // Dashed line
-        doc.setDrawColor(0, 51, 102); // Consistent blue
-        doc.line(xStart, y + 2, xEnd, y + 2);
-        doc.setLineDash(); // Reset dash
-    }
 },
       margin: { top: 20 },
     });
