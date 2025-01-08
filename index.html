@@ -664,6 +664,7 @@ yearSlider.noUiSlider.on("update", function () {
       },
       didDrawCell: (data) => {
   if (data.row.section === "body" && data.row.raw.isMedianBorder) {
+    console.log('Drawing dashed line at row:', data.cell.text);
     const y = data.cell.y;
     const table = data.table;
     const xStart = table.left;
