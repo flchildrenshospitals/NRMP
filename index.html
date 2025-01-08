@@ -639,6 +639,8 @@ yearSlider.noUiSlider.on("update", function () {
         fillColor: [245, 245, 245],
       },
       didParseCell: (data) => {
+        const medianValue = parseFloat(rawMedian); // Use the global or calculated median
+
         if (data.row.section === 'body') {
           // Join all lines of cell text and convert to lowercase
           const cellText = (data.cell.text || []).join(' ').toLowerCase();
