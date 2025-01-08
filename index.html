@@ -623,73 +623,72 @@ yearSlider.noUiSlider.on("update", function () {
       startY += 10;
     }
 
-    doc.autoTable({
-      html: tableElement,
-      startY: startY,
-      theme: "plain",
-      headStyles: {
-        fillColor: [0, 51, 102],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-      },
-      bodyStyles: {
-        fontSize: 10,
-        textColor: [33, 33, 33],
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-      didParseCell: (data) => {
-        if (data.row.section === "body") {
-          const cellElem = data.cell.raw;
-          if (!cellElem) return;
+    // Variables to store median line coordinates
+let medianY = null;
+let medianXStart = null;
 
-          const rowElem = cellElem.parentElement;
-          // If this row includes the word 'total', we highlight
-          const rowText = (data.cell.text || []).join(" ").toLowerCase();
-          if (rowText.includes("total")) {
-            Object.values(data.row.cells).forEach((cell) => {
-              cell.styles.fillColor = [218, 233, 248]; // Light blue
-              cell.styles.textColor = [0, 0, 0];
-              cell.styles.fontStyle = "bold";
-            });
-          }
+doc.autoTable({
+  html: tableElement,
+  startY: startY,
+  margin: { top: 20 },  // Margin setting preserved here
+  theme: "plain",
+  headStyles: {
+    fillColor: [0, 51, 102],
+    textColor: [255, 255, 255],
+    fontSize: 12,
+  },
+  bodyStyles: {
+    fontSize: 10,
+    textColor: [33, 33, 33],
+  },
+  alternateRowStyles: {
+    fillColor: [245, 245, 245],
+  },
+  didParseCell: (data) => {
+    if (data.row.section === "body") {
+      const cellElem = data.cell.raw;
+      if (!cellElem) return;
 
-          // Mark this row for the median border if it has the class
-          if (rowElem.classList.contains("median-border-row")) {
-            data.row.raw.isMedianBorder = true;
-          }
-        }
-      },
-      didDrawCell: (data) => {
-  if (
-    data.row.section === "body" &&
-    data.row.raw.isMedianBorder &&
-    data.column.index === 0
-  ) {
-    const doc = data.doc;
+      const rowElem = cellElem.parentElement;
+      const rowText = (data.cell.text || []).join(" ").toLowerCase();
 
-    
-  }
-},
-      margin: { top: 20 },
-    });
+      if (rowText.includes("total")) {
+        Object.values(data.row.cells).forEach((cell) => {
+          cell.styles.fillColor = [218, 233, 248];
+          cell.styles.textColor = [0, 0, 0];
+          cell.styles.fontStyle = "bold";
+        });
+      }
 
-    // After the table has been drawn, get the last table's finalY and positions
-const finalY = doc.lastAutoTable.finalY; // bottom Y of the table
-// Use stored xStart from earlier median calculation or recalculate if needed
-const xStart = /* your computed starting X position for median row */;
-const pageWidth = doc.internal.pageSize.getWidth();
-const rightMargin = (/* your margin settings */) || 10;
-const xEnd = pageWidth - rightMargin;
-const dashY = /* vertical position determined for the median row */;
+      // Mark median border row and store its y-position and xStart
+      if (rowElem.classList.contains("median-border-row")) {
+        data.row.raw.isMedianBorder = true;
+        medianY = data.cell.y;
+        medianXStart = data.cell.x;
+      }
+    }
+  },
+  didDrawCell: (data) => {
+    // No line drawing here; could include other cell-specific logic if needed.
+  },
+});
 
-doc.setLineDash([3, 3], 0);
-doc.setDrawColor(0, 51, 102);
-doc.setLineWidth(0.5);
-doc.line(xStart, dashY, xEnd, dashY);
-doc.setLineDash([]);
-doc.setLineWidth(0.2);
+// After the table has been drawn, draw the dashed line if we have median info
+if (medianY !== null && medianXStart !== null) {
+  // Use the same doc instance used above
+  const pageWidth = doc.internal.pageSize.getWidth();
+  
+  // Determine right margin—replace with your margin retrieval logic if available
+  const rightMargin = 10; 
+  const xEnd = pageWidth - rightMargin;
+
+  doc.setLineDash([3, 3], 0);
+  doc.setDrawColor(0, 51, 102);
+  doc.setLineWidth(0.5);
+  doc.line(medianXStart, medianY, xEnd, medianY);
+  doc.setLineDash([]);
+  doc.setLineWidth(0.2);
+}
 
     return doc.lastAutoTable.finalY + 20;
   }
