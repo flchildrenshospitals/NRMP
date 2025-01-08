@@ -661,7 +661,7 @@ yearSlider.noUiSlider.on("update", function () {
           }
         }
       },
-      didDrawCell: (data) => {
+      drawCell: (data) => {
   if (data.row.section === "body" && data.row.raw.isMedianBorder) {
     const doc = data.doc
     const y = data.cell.y;
