@@ -489,17 +489,18 @@ yearSlider.noUiSlider.on("update", function () {
   const validPercentages = sortedData
     .filter(data => data.matchPercent !== "N/A")
     .map(data => data.matchPercent);
-  let median;
+  let rawMedian, displayMedian;
 
   if (validPercentages.length === 0) {
-    median = "N/A"; // No valid data
+    rawMedian = "N/A"; // No valid data
+    displayMedian = "N/A"; // Also display as "N/A"
   } else {
     const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
     const middle = Math.floor(sortedPercentages.length / 2);
-    median = sortedPercentages.length % 2 === 0
+    rawMedian = sortedPercentages.length % 2 === 0
       ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
       : sortedPercentages[middle];
-    median = median.toFixed(2); // Format as percentage
+    displayMedian = rawMedian.toFixed(2); // Format as percentage
   }
 
   // Create stats summary with the adjusted median
@@ -523,7 +524,7 @@ yearSlider.noUiSlider.on("update", function () {
         stroke-dasharray="10,5"
       />
     </svg>
-    Median Match Rate: ${median === "N/A" ? "N/A" : `${median}%`}
+    Median Match Rate: ${displayMedian === "N/A" ? "N/A" : `${displayMedian}%`}
   `;
   section.appendChild(statsSummary);
 
@@ -549,7 +550,7 @@ yearSlider.noUiSlider.on("update", function () {
     cells.forEach(cell => tr.appendChild(cell));
 
     // Add median border if not already added
-    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent <= median) {
+    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent <= rawMedian) {
       tr.classList.add("median-border-row");
       addedMedianBorder = true;
     }
