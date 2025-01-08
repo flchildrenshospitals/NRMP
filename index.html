@@ -604,13 +604,24 @@ yearSlider.noUiSlider.on("update", function () {
   doc.text(wrappedFiltersText, 10, 20);
   let currentY = 20 + wrappedFiltersText.length * 10;
 
-  function generateTable(title, tableElement, startY) {
+  function generateTable(title, tableElement, medianValue, startY) {
+    const doc = new jsPDF();
+
+    // Add the table title
     doc.setFontSize(14);
     doc.setTextColor(0, 51, 102);
     doc.setFont("helvetica", "bold");
     doc.text(title, 10, startY);
     startY += 10;
 
+    // Add median subtitle
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Median Match Rate: ${medianValue}%`, 10, startY);
+    startY += 10;
+
+    // Use jsPDF-autoTable to generate the table
     doc.autoTable({
       html: tableElement,
       startY: startY,
@@ -639,6 +650,18 @@ yearSlider.noUiSlider.on("update", function () {
               cell.styles.fontStyle = 'bold';          // Bold text
             });
           }
+          // add median border styling
+          const matchPercentCell =
+            data.row.cells[data.table.columns.length - 1]?.text[0]; // Match % cell (last column)
+          const matchPercent = parseFloat(matchPercentCell?.replace("%", ""));
+
+          if (!isNaN(matchPercent) && matchPercent < parseFloat(medianValue)) {
+            Object.values(data.row.cells).forEach((cell) => {
+                cell.styles.lineWidth = 0.5;
+            cell.styles.lineColor = [0, 51, 102]; // Median border color
+            cell.styles.border = "top"; // Add top border to the row
+            });
+          }
         }
       },
       margin: { top: 20 },
@@ -650,13 +673,13 @@ yearSlider.noUiSlider.on("update", function () {
   // Export SNHAF Table
   const snhafTable = document.querySelector(".table-container:nth-of-type(1) table");
   if (snhafTable) {
-    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, currentY);
+    currentY = generateTable("SNHAF Sponsoring Institutions", snhafTable, medianValue, currentY);
   }
 
   // Export Non-SNHAF Table
   const nonSnhafTable = document.querySelector(".table-container:nth-of-type(2) table");
   if (nonSnhafTable) {
-    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, currentY);
+    generateTable("Non-SNHAF Sponsoring Institutions", nonSnhafTable, medianValue, currentY);
   }
 
   // Save the PDF
