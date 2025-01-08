@@ -669,31 +669,27 @@ yearSlider.noUiSlider.on("update", function () {
   ) {
     const doc = data.doc;
 
-    // Left starting position from the first cell
-    const xStart = data.cell.x;
-
-    // Get the page width from jsPDF
-    const pageWidth = doc.internal.pageSize.getWidth();
-
-    // Determine right margin from settings if available, default to 10
-    const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
-
-    // Calculate xEnd: page width minus right margin
-    const xEnd = pageWidth - rightMargin;
-
-    // Use the current cell's y for vertical position
-    const dashY = data.cell.y;
-
-    doc.setLineDash([3, 3], 0);
-    doc.setDrawColor(0, 51, 102);
-    doc.setLineWidth(0.5);
-    doc.line(xStart, dashY, xEnd, dashY);
-    doc.setLineDash([]);
-    doc.setLineWidth(0.2);
+    
   }
 },
       margin: { top: 20 },
     });
+
+    // After the table has been drawn, get the last table's finalY and positions
+const finalY = doc.lastAutoTable.finalY; // bottom Y of the table
+// Use stored xStart from earlier median calculation or recalculate if needed
+const xStart = /* your computed starting X position for median row */;
+const pageWidth = doc.internal.pageSize.getWidth();
+const rightMargin = (/* your margin settings */) || 10;
+const xEnd = pageWidth - rightMargin;
+const dashY = /* vertical position determined for the median row */;
+
+doc.setLineDash([3, 3], 0);
+doc.setDrawColor(0, 51, 102);
+doc.setLineWidth(0.5);
+doc.line(xStart, dashY, xEnd, dashY);
+doc.setLineDash([]);
+doc.setLineWidth(0.2);
 
     return doc.lastAutoTable.finalY + 20;
   }
