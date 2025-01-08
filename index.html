@@ -669,19 +669,19 @@ yearSlider.noUiSlider.on("update", function () {
   ) {
     const doc = data.doc;
 
-    // Get all cells in the current row as an array
-    const cellsArray = Object.values(data.row.cells);
-
-    // Ensure there are cells in this row
-    if (cellsArray.length === 0) return;
-
-    // Calculate xStart from the left edge of the first cell
+    // Left starting position from the first cell
     const xStart = data.cell.x;
 
-    // Calculate xEnd using the right edge of the last cell
-    const xEnd = data.cell.x + 182;
+    // Get the page width from jsPDF
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Use the top of the cell for vertical position (adjust as needed)
+    // Determine right margin from settings if available, default to 10
+    const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
+
+    // Calculate xEnd: page width minus right margin
+    const xEnd = pageWidth - rightMargin;
+
+    // Use the current cell's y for vertical position
     const dashY = data.cell.y;
 
     doc.setLineDash([3, 3], 0);
