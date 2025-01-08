@@ -666,8 +666,8 @@ yearSlider.noUiSlider.on("update", function () {
     const doc = data.doc
     const y = data.cell.y;
     const table = data.table;
-    const xStart = data.table.left;
-    const xEnd = data.table.left + data.table.width;
+    const xStart = table.left;
+    const xEnd = table.left + table.width;
 
     // Check if they are valid numbers
     if (
