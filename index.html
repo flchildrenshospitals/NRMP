@@ -623,97 +623,77 @@ yearSlider.noUiSlider.on("update", function () {
       startY += 10;
     }
 
-// Define starting Y-coordinate for SNHAF table
-const startYForSNHAF = 50; // adjust as needed
+    doc.autoTable({
+      html: tableElement,
+      startY: startY,
+      theme: "plain",
+      headStyles: {
+        fillColor: [0, 51, 102],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: [33, 33, 33],
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      didParseCell: (data) => {
+        if (data.row.section === "body") {
+          const cellElem = data.cell.raw;
+          if (!cellElem) return;
 
-// Get references to your table elements
-const snhafTableElement = document.querySelector("#snhafTable");
-const nonSnhafTableElement = document.querySelector("#nonSnhafTable");
+          const rowElem = cellElem.parentElement;
+          // If this row includes the word 'total', we highlight
+          const rowText = (data.cell.text || []).join(" ").toLowerCase();
+          if (rowText.includes("total")) {
+            Object.values(data.row.cells).forEach((cell) => {
+              cell.styles.fillColor = [218, 233, 248]; // Light blue
+              cell.styles.textColor = [0, 0, 0];
+              cell.styles.fontStyle = "bold";
+            });
+          }
 
-// For SNHAF table
-let snhafMedianY = null;
-let snhafMedianXStart = null;
+          // Mark this row for the median border if it has the class
+          if (rowElem.classList.contains("median-border-row")) {
+            data.row.raw.isMedianBorder = true;
+          }
+        }
+      },
+      didDrawCell: (data) => {
+  if (
+    data.row.section === "body" &&
+    data.row.raw.isMedianBorder &&
+    data.column.index === 0
+  ) {
+    const doc = data.doc;
 
-doc.autoTable({
-  html: snhafTableElement,
-  startY: startYForSNHAF,   // now defined
-  margin: { top: 20 },
-  theme: "plain",
-  headStyles: { /* ... */ },
-  bodyStyles: { /* ... */ },
-  alternateRowStyles: { /* ... */ },
-  didParseCell: (data) => {
-    // ... (same as before)
-  },
-  didDrawCell: (data) => {
-    if (
-      data.row.section === "body" &&
-      data.row.raw.isMedianBorder &&
-      data.column.index === 0
-    ) {
-      snhafMedianY = data.cell.y;
-      snhafMedianXStart = data.cell.x;
-    }
-  },
-});
+    // Left starting position from the first cell
+    const xStart = data.cell.x;
 
-// Draw dashed line for SNHAF table after rendering
-if (snhafMedianY !== null && snhafMedianXStart !== null) {
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const rightMargin = 10; // adjust as needed
-  const xEnd = pageWidth - rightMargin;
+    // Get the page width from jsPDF
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-  doc.setLineDash([3, 3], 0);
-  doc.setDrawColor(0, 51, 102);
-  doc.setLineWidth(0.5);
-  doc.line(snhafMedianXStart, snhafMedianY, xEnd, snhafMedianY);
-  doc.setLineDash([]);
-  doc.setLineWidth(0.2);
-}
+    // Determine right margin from settings if available, default to 10
+    const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
 
-// Similarly define and use startY for Non-SNHAF table
-const startYForNonSNHAF = (doc.lastAutoTable ? doc.lastAutoTable.finalY + 20 : 70);
+    // Calculate xEnd: page width minus right margin
+    const xEnd = pageWidth - rightMargin;
 
-let nonSnhafMedianY = null;
-let nonSnhafMedianXStart = null;
+    // Use the current cell's y for vertical position
+    const dashY = data.cell.y;
 
-doc.autoTable({
-  html: nonSnhafTableElement,
-  startY: startYForNonSNHAF,
-  margin: { top: 20 },
-  theme: "plain",
-  headStyles: { /* ... */ },
-  bodyStyles: { /* ... */ },
-  alternateRowStyles: { /* ... */ },
-  didParseCell: (data) => {
-    // ... (same as before)
-  },
-  didDrawCell: (data) => {
-    if (
-      data.row.section === "body" &&
-      data.row.raw.isMedianBorder &&
-      data.column.index === 0
-    ) {
-      nonSnhafMedianY = data.cell.y;
-      nonSnhafMedianXStart = data.cell.x;
-    }
-  },
-});
-
-// Draw dashed line for Non-SNHAF table after rendering
-if (nonSnhafMedianY !== null && nonSnhafMedianXStart !== null) {
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const rightMargin = 10; // adjust as needed
-  const xEnd = pageWidth - rightMargin;
-
-  doc.setLineDash([3, 3], 0);
-  doc.setDrawColor(0, 51, 102);
-  doc.setLineWidth(0.5);
-  doc.line(nonSnhafMedianXStart, nonSnhafMedianY, xEnd, nonSnhafMedianY);
-  doc.setLineDash([]);
-  doc.setLineWidth(0.2);
-}
-
+    doc.setLineDash([3, 3], 0);
+    doc.setDrawColor(0, 51, 102);
+    doc.setLineWidth(0.5);
+    doc.line(xStart, dashY, xEnd, dashY);
+    doc.setLineDash([]);
+    doc.setLineWidth(0.2);
+  }
+},
+      margin: { top: 20 },
+    });
 
     return doc.lastAutoTable.finalY + 20;
   }
