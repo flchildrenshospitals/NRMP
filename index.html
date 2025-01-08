@@ -666,9 +666,9 @@ yearSlider.noUiSlider.on("update", function () {
   if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
     const doc = data.doc;
 
-    // Find the left edge and right edge of this row
-    let xStart = Infinity;
-    let xEnd = -Infinity;
+    const xStart = data.table.startX;              // left edge of the table
+    const xEnd = data.table.startX + data.table.width; // right edge
+
 
     // Go through all cells in the row
     Object.keys(data.row.cells).forEach((key) => {
