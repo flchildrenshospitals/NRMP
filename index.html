@@ -662,20 +662,26 @@ yearSlider.noUiSlider.on("update", function () {
         }
       },
       didDrawCell: (data) => {
-        if (data.row.section === "body" && data.row.raw.isMedianBorder) {
-          // Dashed line for the median row
-          const y = data.cell.y;
-          const table = data.table;
-          const xStart = table.left;
-          const xEnd = table.left + table.width;
+  if (data.row.section === "body" && data.row.raw.isMedianBorder) {
+    const y = data.cell.y;
+    const table = data.table;
+    const xStart = table.left;
+    const xEnd = table.left + table.width;
 
-          doc.setLineDash([10, 5], 0);  // 10 units on, 5 off
-          doc.setDrawColor(0, 51, 102); // #003366
-          doc.setLineWidth(1.0);
-          doc.line(xStart, y, xEnd, y);
-          doc.setLineDash(); // Reset dash
-        }
-      },
+    // Check if they are valid numbers
+    if (
+      Number.isFinite(xStart) &&
+      Number.isFinite(xEnd) &&
+      Number.isFinite(y)
+    ) {
+      doc.setLineDash([10, 5]);
+      doc.setDrawColor(0, 51, 102);
+      doc.setLineWidth(1.0);
+      doc.line(xStart, y, xEnd, y);
+      doc.setLineDash(); // Reset dash
+    }
+  }
+},
       margin: { top: 20 },
     });
 
