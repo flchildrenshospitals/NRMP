@@ -665,11 +665,20 @@ yearSlider.noUiSlider.on("update", function () {
   if (data.row.section === "body" && data.row.raw.isMedianBorder && data.column.index === 0) {
     const doc = data.doc;
 
-    // The left and right edges of the entire table:
-    const xStart = data.table.startX;
-    const xEnd = data.table.startX + data.table.width;
+    // Derive xStart / xEnd from the table's columns array
+    let xStart = Infinity;
+    let xEnd = -Infinity;
+    const columns = data.table.columns || [];
 
-    // Or just keep your dashY logic the same:
+    columns.forEach((col) => {
+      const colLeft = col.x;             // left boundary of this column
+      const colRight = col.x + col.width; 
+      if (colLeft < xStart) xStart = colLeft;
+      if (colRight > xEnd) xEnd = colRight;
+    });
+
+    // Then pick your vertical coordinate
+    // e.g., the top of the cell or bottom of the cell
     const dashY = data.cell.y;
 
     doc.setLineDash([3, 3], 0);
@@ -677,12 +686,10 @@ yearSlider.noUiSlider.on("update", function () {
     doc.setLineWidth(0.5);
     doc.line(xStart, dashY, xEnd, dashY);
 
-    // Reset dash
     doc.setLineDash([]);
     doc.setLineWidth(0.2);
   }
-},
-
+};
       margin: { top: 20 },
     });
 
