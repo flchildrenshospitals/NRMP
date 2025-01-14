@@ -463,100 +463,87 @@ yearSlider.noUiSlider.on("update", function () {
   thead.appendChild(headerRow);
 
   // Process and sort data
-  const sortedData = Object.keys(aggregates)
-    .map(sponsor => {
-      const sponsorData = aggregates[sponsor];
-      const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
-      const matchPercent = sponsorData.totalQuota > 0
-        ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-        : "N/A"; // Handle "N/A" for no data
+  // 1) Process & sort data (already in descending order by matchPercent)
+const sortedData = Object.keys(aggregates)
+  .map(sponsor => {
+    const sponsorData = aggregates[sponsor];
+    const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+    const matchPercent = sponsorData.totalQuota > 0
+      ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+      : "N/A";
+    return {
+      sponsor,
+      totalQuota: sponsorData.totalQuota,
+      totalMatched: sponsorData.totalMatched,
+      notMatched,
+      matchPercent,
+    };
+  })
+  .sort((a, b) => {
+    if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
+    if (b.matchPercent === "N/A") return -1;
+    return b.matchPercent - a.matchPercent; // Descending order
+  });
 
-      return {
-        sponsor,
-        totalQuota: sponsorData.totalQuota,
-        totalMatched: sponsorData.totalMatched,
-        notMatched,
-        matchPercent,
-      };
-    })
-    .sort((a, b) => {
-      if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
-      if (b.matchPercent === "N/A") return -1;
-      return b.matchPercent - a.matchPercent;
-    });
+// 2) Calculate the median (same as your original code)
+const validPercentages = sortedData
+  .filter(data => data.matchPercent !== "N/A")
+  .map(data => data.matchPercent);
 
-  // Calculate median
-  const validPercentages = sortedData
-    .filter(data => data.matchPercent !== "N/A")
-    .map(data => data.matchPercent);
-  let rawMedian, displayMedian;
+let rawMedian, displayMedian;
 
-  if (validPercentages.length === 0) {
-    rawMedian = "N/A"; // No valid data
-    displayMedian = "N/A"; // Also display as "N/A"
-  } else {
-    const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
-    const middle = Math.floor(sortedPercentages.length / 2);
-    rawMedian = sortedPercentages.length % 2 === 0
-      ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
-      : sortedPercentages[middle];
-    displayMedian = rawMedian.toFixed(2); // Format as percentage
+if (validPercentages.length === 0) {
+  rawMedian = "N/A";
+  displayMedian = "N/A";
+} else {
+  const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
+  const middle = Math.floor(sortedPercentages.length / 2);
+  rawMedian = sortedPercentages.length % 2 === 0
+    ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+    : sortedPercentages[middle];
+  displayMedian = rawMedian.toFixed(2);
+}
+
+// 3) Figure out the index where matchPercent < rawMedian in a descending list
+let medianIndex = -1;
+if (rawMedian !== "N/A") {
+  // Because our data is descending, the median boundary is the first row
+  // whose matchPercent is strictly below the median.
+  medianIndex = sortedData.findIndex(d => 
+    d.matchPercent !== "N/A" && d.matchPercent < rawMedian
+  );
+}
+// If medianIndex remains -1, it means everyone’s at or above the median
+// or we have no data that’s strictly below it. You can handle that case
+// however you’d like (e.g. no dashed line).
+
+// 4) Now create table rows, adding the dashed line class exactly once
+sortedData.forEach((data, index) => {
+  const tr = document.createElement("tr");
+
+  const cells = [
+    data.sponsor,
+    data.totalQuota.toLocaleString(),
+    data.totalMatched.toLocaleString(),
+    data.notMatched.toLocaleString(),
+    data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`,
+  ].map(text => {
+    const td = document.createElement("td");
+    td.textContent = text;
+    return td;
+  });
+
+  // Append all cells
+  cells.forEach(cell => tr.appendChild(cell));
+
+  // If this is the index for the median divider (and not -1), add the class
+  if (index === medianIndex && medianIndex !== -1) {
+    tr.classList.add("median-border-row");
   }
 
-  // Create stats summary with the adjusted median
-  const statsSummary = document.createElement("div");
-  statsSummary.classList.add("stats-summary");
-  statsSummary.innerHTML = `
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="15"
-      viewBox="0 0 120 15"
-      style="margin-right: 10px; vertical-align: middle;"
-    >
-      <line
-        x1="0"
-        y1="7.5"
-        x2="120"
-        y2="7.5"
-        stroke="#003366"
-        stroke-width="5"
-        stroke-dasharray="10,5"
-      />
-    </svg>
-    Median Match Rate: ${displayMedian === "N/A" ? "N/A" : `${displayMedian}%`}
-  `;
-  section.appendChild(statsSummary);
+  tbody.appendChild(tr);
+});
 
-  // Add rows and insert a border at the median
-  let addedMedianBorder = false;
-
-  sortedData.forEach((data, index) => {
-    const tr = document.createElement("tr");
-
-    // Create cells
-    const cells = [
-      data.sponsor,
-      data.totalQuota.toLocaleString(),
-      data.totalMatched.toLocaleString(),
-      data.notMatched.toLocaleString(),
-      data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`
-    ].map(text => {
-      const td = document.createElement("td");
-      td.textContent = text;
-      return td;
-    });
-
-    cells.forEach(cell => tr.appendChild(cell));
-
-    // Add median border if not already added
-    if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < rawMedian) {
-      tr.classList.add("median-border-row");
-      addedMedianBorder = true;
-    }
-
-    tbody.appendChild(tr);
-  });
 
   // Add total row
   const totalRow = document.createElement("tr");
