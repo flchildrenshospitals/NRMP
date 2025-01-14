@@ -681,7 +681,7 @@ yearSlider.noUiSlider.on("update", function () {
           }
         }
       },
-      didDrawCell: (data) => {
+      willDrawCell: (data) => {
   if (
     data.row.section === "body" &&
     data.row.raw.isMedianBorder && // Apply only for median-border rows
