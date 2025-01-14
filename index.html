@@ -685,7 +685,7 @@ yearSlider.noUiSlider.on("update", function () {
   if (
     data.row.section === "body" &&
     data.row.raw.isMedianBorder &&
-    data.column.index === 0
+    data.column.index === data.table.columns.length - 1
   ) {
     const doc = data.doc;
 
@@ -708,8 +708,8 @@ yearSlider.noUiSlider.on("update", function () {
     doc.setDrawColor(0, 51, 102);
     doc.setLineWidth(0.5);
     doc.line(xStart, dashY, xEnd, dashY);
-    //doc.setLineDash([]);
-    //doc.setLineWidth(0.5);
+    doc.setLineDash([]);
+    doc.setLineWidth(0.5);
   }
 },
       margin: { top: 20 },
