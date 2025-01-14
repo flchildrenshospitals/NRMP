@@ -684,29 +684,30 @@ yearSlider.noUiSlider.on("update", function () {
       didDrawCell: (data) => {
   if (
     data.row.section === "body" &&
-    data.row.raw.isMedianBorder &&
-    data.column.index === 0
+    data.row.raw.isMedianBorder && // Apply only for median-border rows
+    data.column.index === 0 // Draw once per row
   ) {
     const doc = data.doc;
 
-    // Get table width and margins
-    const tableWidth = doc.internal.pageSize.getWidth();
-    const marginLeft = data.settings.margin.left || 10;
-    const marginRight = data.settings.margin.right || 10;
-
-    // Calculate full line start and end positions
+    // Calculate start and end X positions based on table margins
+    const marginLeft = data.settings.margin.left || 10; // Default left margin
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginRight = data.settings.margin.right || 10; // Default right margin
     const xStart = marginLeft;
-    const xEnd = tableWidth - marginRight;
+    const xEnd = pageWidth - marginRight;
 
-    // Line Y position (relative to cell)
-    const dashY = data.cell.y + data.cell.height; // Align at the cell's bottom edge
+    // Calculate Y position: Align dashes to the vertical center of the row
+    const dashY = data.cell.y + data.cell.height / 2; // Middle of the cell
 
     // Draw the dashed line
-    doc.setLineDash([2, 2], 0); // Set dash pattern
+    doc.setLineDash([2, 2], 0); // Dashed pattern
     doc.setDrawColor(0, 51, 102); // Dark blue color
-    doc.setLineWidth(0.5); // Line width
-    doc.line(xStart, dashY, xEnd, dashY); // Draw the line
-    doc.setLineDash([]); // Reset line dash
+    doc.setLineWidth(0.5); // Thickness
+    doc.line(xStart, dashY, xEnd, dashY); // Draw across the full table width
+
+    // Reset dash pattern and line width for subsequent content
+    doc.setLineDash([]); 
+    doc.setLineWidth(0.2); 
   }
 },
       margin: { top: 20 },
