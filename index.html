@@ -690,7 +690,7 @@ yearSlider.noUiSlider.on("update", function () {
     const doc = data.doc;
 
     // Left starting position from the first cell
-    const xStart = data.cell.x;
+    const xStart = data.table.startX; // left edge of the table
 
     // Get the page width from jsPDF
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -699,7 +699,7 @@ yearSlider.noUiSlider.on("update", function () {
     const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
 
     // Calculate xEnd: page width minus right margin
-    const xEnd = pageWidth - rightMargin;
+    const xEnd = data.table.endX;
 
     // Use the current cell's y for vertical position
     const dashY = data.cell.y;
