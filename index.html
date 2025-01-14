@@ -622,9 +622,9 @@ yearSlider.noUiSlider.on("update", function () {
 
       // We'll first draw the dashed line, then add text just to the right of it.
       // Let's position them on the same 'row' or one just below the other.
-      const lineY = startY - 2; // Draw line slightly above baseline
+      const lineY = startY - 0; // Draw line slightly above baseline
       const lineXStart = 10;
-      const lineXEnd = 40;
+      const lineXEnd = 30;
 
       // (B) Replicate the dashed line using doc.line() and doc.setLineDash()
       doc.setLineDash([3, 3], 0); // Dash 10, gap 5
@@ -639,7 +639,7 @@ yearSlider.noUiSlider.on("update", function () {
       // (C) Add the text on the same line or slightly offset
       // This example places the text just after the line.
       const textX = lineXEnd + 5; // A little gap from line
-      doc.text(medianText, textX, startY);
+      doc.text(medianText, textX - 10, startY);
       startY += 5;
     }
 
