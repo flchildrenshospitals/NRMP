@@ -685,12 +685,12 @@ yearSlider.noUiSlider.on("update", function () {
   if (
     data.row.section === "body" &&
     data.row.raw.isMedianBorder &&
-    data.column.index === data.table.columns.length - 1
+    data.column.index === 0
   ) {
     const doc = data.doc;
 
     // Left starting position from the first cell
-    const xStart = data.table.startX; // left edge of the table
+    const xStart = data.cell.x;
 
     // Get the page width from jsPDF
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -699,7 +699,7 @@ yearSlider.noUiSlider.on("update", function () {
     const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
 
     // Calculate xEnd: page width minus right margin
-    const xEnd = data.table.endX;
+    const xEnd = pageWidth - rightMargin;
 
     // Use the current cell's y for vertical position
     const dashY = data.cell.y;
