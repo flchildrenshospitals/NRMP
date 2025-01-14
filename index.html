@@ -689,27 +689,24 @@ yearSlider.noUiSlider.on("update", function () {
   ) {
     const doc = data.doc;
 
-    // Left starting position from the first cell
-    const xStart = data.cell.x;
+    // Get table width and margins
+    const tableWidth = doc.internal.pageSize.getWidth();
+    const marginLeft = data.settings.margin.left || 10;
+    const marginRight = data.settings.margin.right || 10;
 
-    // Get the page width from jsPDF
-    const pageWidth = doc.internal.pageSize.getWidth();
+    // Calculate full line start and end positions
+    const xStart = marginLeft;
+    const xEnd = tableWidth - marginRight;
 
-    // Determine right margin from settings if available, default to 10
-    const rightMargin = (data.settings && data.settings.margin && data.settings.margin.right) || 10;
+    // Line Y position (relative to cell)
+    const dashY = data.cell.y + data.cell.height; // Align at the cell's bottom edge
 
-    // Calculate xEnd: page width minus right margin
-    const xEnd = pageWidth - rightMargin;
-
-    // Use the current cell's y for vertical position
-    const dashY = data.cell.y;
-
-    doc.setLineDash([2, 2], 0);
-    doc.setDrawColor(0, 51, 102);
-    doc.setLineWidth(0.5);
-    doc.line(xStart, dashY, xEnd, dashY);
-    doc.setLineDash([]);
-    doc.setLineWidth(0.5);
+    // Draw the dashed line
+    doc.setLineDash([2, 2], 0); // Set dash pattern
+    doc.setDrawColor(0, 51, 102); // Dark blue color
+    doc.setLineWidth(0.5); // Line width
+    doc.line(xStart, dashY, xEnd, dashY); // Draw the line
+    doc.setLineDash([]); // Reset line dash
   }
 },
       margin: { top: 20 },
