@@ -627,9 +627,9 @@ yearSlider.noUiSlider.on("update", function () {
       const lineXEnd = 40;
 
       // (B) Replicate the dashed line using doc.line() and doc.setLineDash()
-      doc.setLineDash([10, 5], 0); // Dash 10, gap 5
+      doc.setLineDash([3, 3], 0); // Dash 10, gap 5
       doc.setDrawColor(0, 51, 102); // #003366
-      doc.setLineWidth(1.5);       // Similar thickness to SVG 'stroke-width=5' in PDF scale
+      doc.setLineWidth(0.5);       // Similar thickness to SVG 'stroke-width=5' in PDF scale
       doc.line(lineXStart, lineY, lineXEnd, lineY);
 
       // Reset dash to normal after
