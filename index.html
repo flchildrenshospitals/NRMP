@@ -697,7 +697,7 @@ yearSlider.noUiSlider.on("update", function () {
     const xEnd = pageWidth - marginRight;
 
     // Calculate Y position: Align dashes to the vertical center of the row
-    const dashY = data.cell.y - 0.5; // Middle of the cell
+    const dashY = data.cell.y - 0.25; // Middle of the cell
 
     // Draw the dashed line
     doc.setLineDash([2, 2], 0); // Dashed pattern
