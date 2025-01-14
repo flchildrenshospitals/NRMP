@@ -627,7 +627,7 @@ yearSlider.noUiSlider.on("update", function () {
       const lineXEnd = 30;
 
       // (B) Replicate the dashed line using doc.line() and doc.setLineDash()
-      doc.setLineDash([3, 3], 0); // Dash 10, gap 5
+      doc.setLineDash([2, 2], 0); // Dash 10, gap 5
       doc.setDrawColor(0, 51, 102); // #003366
       doc.setLineWidth(0.5);       // Similar thickness to SVG 'stroke-width=5' in PDF scale
       doc.line(lineXStart, lineY, lineXEnd, lineY);
@@ -704,7 +704,7 @@ yearSlider.noUiSlider.on("update", function () {
     // Use the current cell's y for vertical position
     const dashY = data.cell.y;
 
-    doc.setLineDash([3, 3], 0);
+    doc.setLineDash([2, 2], 0);
     doc.setDrawColor(0, 51, 102);
     doc.setLineWidth(0.5);
     doc.line(xStart, dashY, xEnd, dashY);
