@@ -214,15 +214,15 @@ tr:hover {
   }
 
   #content {
-  border: none; /* Remove border */
-  background: none; /* Remove background */
-  box-shadow: none; /* Remove shadow */
-  padding: 0; /* Optional: remove padding if it creates extra space */
+    border: none; /* Remove border */
+    background: none; /* Remove background */
+    box-shadow: none; /* Remove shadow */
+    padding: 0; /* Optional: remove padding if it creates extra space */
   }
-
 }
 
 </style>
+
 </head>
 <body>
   <div class="container">
@@ -247,214 +247,463 @@ tr:hover {
       <main id="content"></main>
     </div>
   </div>
-
   <div style="text-align: center; margin-top: 20px;">
     <button id="export-pdf" class="btn-export">Export to PDF</button>
   </div>
-
+  
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main_and_Specialty.csv";
-      let yearRange = [2020, 2024]; // Default Year Range
-      let selectedSpecialties = ["ALL"]; // Default: All specialties
+  document.addEventListener("DOMContentLoaded", function () {
+    const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main.csv";
+    let yearRange = [2020, 2024]; // Default Year Range
+    let selectedSpecialties = ["ALL"]; // Default: All specialties
 
-      fetch(csvUrl)
-        .then(response => response.text())
-        .then(data => {
-          const rows = data.split("\n").map(row => row.split(","));
-          const headers = rows.shift().map(header => header.trim());
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split("\n").map(row => row.split(","));
+        const headers = rows.shift().map(header => header.trim());
 
-          // Extract years dynamically from headers
-          const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
-          const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
-          const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
+        // Extract years dynamically from headers
+        const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
+        const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
+        const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
 
-          // Find other column indexes
-          const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
-          const snhafIndex = headers.indexOf("SNHAF");
-          const specialtyIndex = headers.indexOf("Specialty Cleaned");
+        // Find other column indexes
+        const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+        const snhafIndex = headers.indexOf("SNHAF"); // This column exists but we won't split by SNHAF anymore
+        const specialtyIndex = headers.indexOf("Specialty Cleaned");
 
-          if (
-            sponsorIndex === -1 ||
-            snhafIndex === -1 ||
-            specialtyIndex === -1 ||
-            quotaYearColumns.length === 0 ||
-            matchedYearColumns.length === 0
-          ) {
-            console.error("Missing required columns. Please check your CSV file.");
-            return;
-          }
+        if (
+          sponsorIndex === -1 ||
+          snhafIndex === -1 || // We'll keep checking for it, even though we won't split
+          specialtyIndex === -1 ||
+          quotaYearColumns.length === 0 ||
+          matchedYearColumns.length === 0
+        ) {
+          console.error("Missing required columns. Please check your CSV file.");
+          return;
+        }
 
-          // Create Year Range Slider
-          const yearSlider = document.getElementById("year-slider");
-          noUiSlider.create(yearSlider, {
-            start: [Math.min(...years), Math.max(...years)],
-            connect: true,
-            range: {
-              min: Math.min(...years),
-              max: Math.max(...years),
-            },
-            step: 1,
-            tooltips: true,
-            format: {
-              to: value => Math.round(value),
-              from: value => Math.round(value),
-            },
-          });
+        // Create Year Range Slider
+        const yearSlider = document.getElementById("year-slider");
+        noUiSlider.create(yearSlider, {
+          start: [Math.min(...years), Math.max(...years)],
+          connect: true,
+          range: {
+            min: Math.min(...years),
+            max: Math.max(...years),
+          },
+          step: 1,
+          tooltips: true,
+          format: {
+            to: value => Math.round(value),
+            from: value => Math.round(value),
+          },
+        });
 
-          // Update Year Range and Trigger Table Update
-          yearSlider.noUiSlider.on("update", function (values) {
-            yearRange = values.map(v => parseInt(v, 10));
-            updateTable();
-          });
+        // Update Year Range and Trigger Table Update
+        yearSlider.noUiSlider.on("update", function (values) {
+          yearRange = values.map(v => parseInt(v, 10));
+          updateTables();
+        });
 
-          // Populate Specialty Checkboxes
-          const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
-          const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
-          specialtyCheckboxContainer.innerHTML = `
-            <label><input type="checkbox" value="ALL" checked>ALL</label>
-          `;
-          uniqueSpecialties.forEach(specialty => {
-            const checkbox = document.createElement("label");
-            checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
-            specialtyCheckboxContainer.appendChild(checkbox);
-          });
+        // Populate Specialty Checkboxes
+        const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
+        const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
+        specialtyCheckboxContainer.innerHTML = `
+          <label><input type="checkbox" value="ALL" checked>ALL</label>
+        `;
+        uniqueSpecialties.forEach(specialty => {
+          const checkbox = document.createElement("label");
+          checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
+          specialtyCheckboxContainer.appendChild(checkbox);
+        });
 
-          // Handle Specialty Selection Changes
-          specialtyCheckboxContainer.addEventListener("change", function (event) {
-            const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
-            const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
+        // Handle Specialty Selection Changes
+        specialtyCheckboxContainer.addEventListener("change", function (event) {
+          const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+          const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
 
-            if (event.target.value === "ALL") {
-              if (event.target.checked) {
-                checkboxes.forEach(checkbox => {
-                  if (checkbox.value !== "ALL") checkbox.checked = false;
-                });
-                selectedSpecialties = ["ALL"];
-              } else {
-                selectedSpecialties = [];
-              }
+          if (event.target.value === "ALL") {
+            // If "ALL" is checked, deselect all others
+            if (event.target.checked) {
+              checkboxes.forEach(checkbox => {
+                if (checkbox.value !== "ALL") checkbox.checked = false;
+              });
+              selectedSpecialties = ["ALL"];
             } else {
-              if (event.target.checked) {
-                allCheckbox.checked = false;
-              }
-
-              selectedSpecialties = checkboxes
-                .filter(checkbox => checkbox.checked)
-                .map(checkbox => checkbox.value);
-
-              if (selectedSpecialties.includes("ALL")) {
-                selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
-              }
+              selectedSpecialties = [];
+            }
+          } else {
+            // If any specific checkbox is checked, uncheck "ALL"
+            if (event.target.checked) {
+              allCheckbox.checked = false;
             }
 
-            updateTable();
+            // Update selected specialties
+            selectedSpecialties = checkboxes
+              .filter(checkbox => checkbox.checked)
+              .map(checkbox => checkbox.value);
+
+            // Ensure "ALL" is deselected if other boxes are selected
+            if (selectedSpecialties.includes("ALL")) {
+              selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
+            }
+          }
+          updateTables(); // Update table based on the new selection
+        });
+
+        // Update Tables Based on Filters
+        function updateTables() {
+          const filteredRows = rows.filter(row => {
+            // Check year range
+            const yearMatch = years.some(year => {
+              const inRange = year >= yearRange[0] && year <= yearRange[1];
+              const quotaColumn = headers.indexOf(`${year} Quota`);
+              return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
+            });
+
+            // Check specialty filter
+            const specialtyMatch =
+              selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
+
+            return yearMatch && specialtyMatch;
           });
 
-          // Update Table Based on Filters
-          function updateTable() {
-            const filteredRows = rows.filter(row => {
-              const yearMatch = years.some(year => {
-                const inRange = year >= yearRange[0] && year <= yearRange[1];
-                const quotaColumn = headers.indexOf(`${year} Quota`);
-                return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
-              });
+          // Single aggregator for ALL institutions
+          const allAggregates = {};
 
-              const specialtyMatch =
-                selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
-
-              return yearMatch && specialtyMatch;
-            });
-
-            const aggregates = {};
-
-            filteredRows.forEach(row => {
-              const sponsor = row[sponsorIndex]?.trim();
-              if (sponsor) {
-                if (!aggregates[sponsor]) {
-                  aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
-                }
-
-                years.forEach(year => {
-                  if (year >= yearRange[0] && year <= yearRange[1]) {
-                    const quotaColumn = headers.indexOf(`${year} Quota`);
-                    const matchedColumn = headers.indexOf(`${year} Matched`);
-                    aggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
-                    aggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
-                  }
-                });
+          // Aggregate data
+          filteredRows.forEach(row => {
+            const sponsor = row[sponsorIndex]?.trim();
+            if (sponsor) {
+              if (!allAggregates[sponsor]) {
+                allAggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
               }
-            });
 
-            const contentDiv = document.getElementById("content");
-            contentDiv.innerHTML = ""; // Clear previous content
+              years.forEach(year => {
+                if (year >= yearRange[0] && year <= yearRange[1]) {
+                  const quotaColumn = headers.indexOf(`${year} Quota`);
+                  const matchedColumn = headers.indexOf(`${year} Matched`);
+                  allAggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
+                  allAggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
+                }
+              });
+            }
+          });
 
-            contentDiv.appendChild(createTable(aggregates));
+          // Clear previous content
+          const contentDiv = document.getElementById("content");
+          contentDiv.innerHTML = "";
+
+          // Create one container for all institutions
+          const container = document.createElement("div");
+          container.classList.add("table-container");
+
+          // Count how many sponsors we have
+          const totalSponsors = Object.keys(allAggregates).length;
+          container.innerHTML = `<h2>All Sponsoring Institutions (Total Sponsors: ${totalSponsors})</h2>`;
+
+          // Append the single table
+          container.appendChild(createTable(allAggregates, "All Sponsoring Institutions", "table1"));
+          contentDiv.appendChild(container);
+        }
+
+        function updateDynamicTitle() {
+          const titleElement = document.getElementById("dynamic-title-text");
+
+          // Generate title based on selected filters
+          let title = "NRMP Data"; // Default title
+          if (selectedSpecialties.length === 1 && selectedSpecialties[0] === "ALL") {
+            title = "NRMP Data for All Specialties";
+          } else if (selectedSpecialties.length > 0) {
+            title = `NRMP Data for ${selectedSpecialties.join(", ")}`;
           }
 
-          // Function to create a table
-          function createTable(aggregates) {
-            const section = document.createElement("div");
-            const table = document.createElement("table");
-            const thead = document.createElement("thead");
-            const tbody = document.createElement("tbody");
+          // Add year range to the title
+          title += ` (${yearRange[0]} - ${yearRange[1]})`;
 
-            const headerRow = document.createElement("tr");
-            ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
-              const th = document.createElement("th");
-              th.textContent = header;
-              headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
+          // Update the DOM
+          titleElement.textContent = title;
+        }
 
-            Object.keys(aggregates).forEach(sponsor => {
+        // Call this function whenever filters are updated
+        specialtyCheckboxContainer.addEventListener("change", updateDynamicTitle);
+        yearSlider.noUiSlider.on("update", function () {
+          updateDynamicTitle();
+        });
+
+        // Function to create a table
+        function createTable(aggregates, title, className) {
+          const section = document.createElement("div");
+          const table = document.createElement("table");
+          table.classList.add(className);
+          const thead = document.createElement("thead");
+          const tbody = document.createElement("tbody");
+
+          // Add headers
+          const headerRow = document.createElement("tr");
+          ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
+            const th = document.createElement("th");
+            th.textContent = header;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+
+          // Process and sort data
+          const sortedData = Object.keys(aggregates)
+            .map(sponsor => {
               const sponsorData = aggregates[sponsor];
               const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
               const matchPercent = sponsorData.totalQuota > 0
                 ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
-                : "N/A";
+                : "N/A"; // Handle "N/A" for no data
 
-              const tr = document.createElement("tr");
-              [
+              return {
                 sponsor,
-                sponsorData.totalQuota.toLocaleString(),
-                sponsorData.totalMatched.toLocaleString(),
-                notMatched.toLocaleString(),
-                matchPercent === "N/A" ? "N/A" : `${matchPercent.toFixed(2)}%`
-              ].forEach(text => {
-                const td = document.createElement("td");
-                td.textContent = text;
-                tr.appendChild(td);
-              });
-
-              tbody.appendChild(tr);
+                totalQuota: sponsorData.totalQuota,
+                totalMatched: sponsorData.totalMatched,
+                notMatched,
+                matchPercent,
+              };
+            })
+            .sort((a, b) => {
+              if (a.matchPercent === "N/A") return 1; // Place "N/A" at the end
+              if (b.matchPercent === "N/A") return -1;
+              return b.matchPercent - a.matchPercent;
             });
 
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            section.appendChild(table);
-            return section;
+          // Calculate median
+          const validPercentages = sortedData
+            .filter(data => data.matchPercent !== "N/A")
+            .map(data => data.matchPercent);
+          let rawMedian, displayMedian;
+
+          if (validPercentages.length === 0) {
+            rawMedian = "N/A"; // No valid data
+            displayMedian = "N/A"; // Also display as "N/A"
+          } else {
+            const sortedPercentages = [...validPercentages].sort((a, b) => a - b);
+            const middle = Math.floor(sortedPercentages.length / 2);
+            rawMedian = sortedPercentages.length % 2 === 0
+              ? (sortedPercentages[middle - 1] + sortedPercentages[middle]) / 2
+              : sortedPercentages[middle];
+            displayMedian = rawMedian.toFixed(2); // Format as percentage
           }
 
-          updateTable(); // Initialize table
-        })
-        .catch(error => console.error("Error loading CSV:", error));
+          // Create stats summary with the adjusted median
+          const statsSummary = document.createElement("div");
+          statsSummary.classList.add("stats-summary");
+          statsSummary.innerHTML = `
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="15"
+              viewBox="0 0 120 15"
+              style="margin-right: 10px; vertical-align: middle;"
+            >
+              <line
+                x1="0"
+                y1="7.5"
+                x2="120"
+                y2="7.5"
+                stroke="#003366"
+                stroke-width="5"
+                stroke-dasharray="10,5"
+              />
+            </svg>
+            Median Match Rate: ${displayMedian === "N/A" ? "N/A" : `${displayMedian}%`}
+          `;
+          section.appendChild(statsSummary);
 
-      document.getElementById("export-pdf").addEventListener("click", function () {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+          // Add rows and insert a border at the median
+          let addedMedianBorder = false;
 
-        doc.setFontSize(16);
-        doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
+          sortedData.forEach((data, index) => {
+            const tr = document.createElement("tr");
+
+            // Create cells
+            const cells = [
+              data.sponsor,
+              data.totalQuota.toLocaleString(),
+              data.totalMatched.toLocaleString(),
+              data.notMatched.toLocaleString(),
+              data.matchPercent === "N/A" ? "N/A" : `${data.matchPercent.toFixed(2)}%`
+            ].map(text => {
+              const td = document.createElement("td");
+              td.textContent = text;
+              return td;
+            });
+
+            cells.forEach(cell => tr.appendChild(cell));
+
+            // Add median border if not already added
+            if (!addedMedianBorder && data.matchPercent !== "N/A" && data.matchPercent < rawMedian) {
+              tr.classList.add("median-border-row");
+              addedMedianBorder = true;
+            }
+
+            tbody.appendChild(tr);
+          });
+
+          // Add total row
+          const totalRow = document.createElement("tr");
+          totalRow.classList.add("total-row");
+          const totalQuota = sortedData.reduce((sum, row) => sum + row.totalQuota, 0);
+          const totalMatched = sortedData.reduce((sum, row) => sum + row.totalMatched, 0);
+          const totalNotMatched = sortedData.reduce((sum, row) => sum + row.notMatched, 0);
+          const totalMatchPercent =
+            totalQuota > 0 ? ((totalMatched / totalQuota) * 100).toFixed(2) : "N/A";
+
+          totalRow.innerHTML = `
+            <td>Total</td>
+            <td>${totalQuota.toLocaleString()}</td>
+            <td>${totalMatched.toLocaleString()}</td>
+            <td>${totalNotMatched.toLocaleString()}</td>
+            <td>${totalMatchPercent === "N/A" ? "N/A" : `${totalMatchPercent}%`}</td>
+          `;
+          tbody.appendChild(totalRow);
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+          section.appendChild(table);
+          return section;
+        }
+
+        // Initialize Tables (and dynamic title) on load
+        updateTables();
+        updateDynamicTitle();
+      })
+      .catch(error => console.error("Error loading CSV:", error));
+
+    // PDF export logic remains as is, but now we only export one table
+    document.getElementById("export-pdf").addEventListener("click", function () {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Add title to the PDF
+      doc.setFont("helvetica", "bold"); // Set font to bold
+      doc.setFontSize(16);
+      doc.setTextColor(0, 0, 0);
+      doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
+
+      // Wrap and add filters text
+      doc.setFont("helvetica", "normal"); // Reset font to normal
+      const filtersText = `Filters: ${document.getElementById("dynamic-title-text").textContent}`;
+      const wrappedFiltersText = doc.splitTextToSize(filtersText, 180);
+      doc.text(wrappedFiltersText, 10, 20);
+      let currentY = 20 + wrappedFiltersText.length * 10;
+
+      function generateTable(title, tableElement, startY) {
+        const container = tableElement.closest(".table-container");
+        const statsSummary = container.querySelector(".stats-summary");
+        let medianText = statsSummary ? statsSummary.textContent.trim() : "";
+
+        doc.setFontSize(14);
+        doc.setTextColor(0, 51, 102);
+        doc.setFont("helvetica", "bold");
+        doc.text(title, 10, startY);
+        startY += 10;
+
+        if (medianText) {
+          doc.setFontSize(12);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "normal");
+
+          // Draw dashed line (roughly replicating the SVG)
+          const lineY = startY - 1.6;
+          const lineXStart = 15;
+          const lineXEnd = 30;
+          doc.setLineDash([2, 2], 0);
+          doc.setDrawColor(0, 51, 102);
+          doc.setLineWidth(0.5);
+          doc.line(lineXStart, lineY, lineXEnd, lineY);
+          doc.setLineDash([]);
+          doc.setLineWidth(0.5);
+
+          // Place the median text
+          const textX = lineXEnd + 5;
+          doc.text(medianText, textX - 2.5, startY);
+          startY += 5;
+        }
 
         doc.autoTable({
-          html: document.querySelector("table"),
-          startY: 20,
+          html: tableElement,
+          startY: startY,
+          theme: "plain",
+          headStyles: {
+            fillColor: [0, 51, 102],
+            textColor: [255, 255, 255],
+            fontSize: 12,
+          },
+          bodyStyles: {
+            fontSize: 10,
+            textColor: [33, 33, 33],
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245],
+          },
+          didParseCell: (data) => {
+            if (data.row.section === "body") {
+              const cellElem = data.cell.raw;
+              if (!cellElem) return;
+
+              const rowElem = cellElem.parentElement;
+              // Highlight 'total' row
+              const rowText = (data.cell.text || []).join(" ").toLowerCase();
+              if (rowText.includes("total")) {
+                Object.values(data.row.cells).forEach((cell) => {
+                  cell.styles.fillColor = [218, 233, 248]; // Light blue
+                  cell.styles.textColor = [0, 0, 0];
+                  cell.styles.fontStyle = "bold";
+                });
+              }
+
+              // Mark row for median border if needed
+              if (rowElem.classList.contains("median-border-row")) {
+                data.row.raw.isMedianBorder = true;
+              }
+            }
+          },
+          willDrawCell: (data) => {
+            if (
+              data.row.section === "body" &&
+              data.row.raw.isMedianBorder && // Only for median-border rows
+              data.column.index === 0 // Draw once per row
+            ) {
+              const doc = data.doc;
+              const marginLeft = data.settings.margin.left || 10;
+              const pageWidth = doc.internal.pageSize.getWidth();
+              const marginRight = data.settings.margin.right || 10;
+              const xStart = marginLeft;
+              const xEnd = pageWidth - marginRight;
+              const dashY = data.cell.y - 0.25;
+
+              doc.setLineDash([2, 2], 0);
+              doc.setDrawColor(0, 51, 102);
+              doc.setLineWidth(0.5);
+              doc.line(xStart, dashY, xEnd, dashY);
+              doc.setLineDash([]);
+              doc.setLineWidth(0.5);
+            }
+          },
+          margin: { top: 20 },
         });
 
-        doc.save("NRMP_Data.pdf");
-      });
+        return doc.lastAutoTable.finalY + 20;
+      }
+
+      // We now only have one table: "All Sponsoring Institutions"
+      const allTable = document.querySelector(".table-container table");
+      if (allTable) {
+        currentY = generateTable("All Sponsoring Institutions", allTable, currentY);
+      }
+
+      doc.save("NRMP_Data.pdf");
     });
+    
+  });
   </script>
+
 </body>
 </html>
