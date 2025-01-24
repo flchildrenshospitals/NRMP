@@ -505,11 +505,22 @@
                 };
               })
               .sort((a, b) => {
-                // Sort descending by match %
-                if (a.matchPercent === "N/A") return 1;
-                if (b.matchPercent === "N/A") return -1;
-                return b.matchPercent - a.matchPercent;
-              });
+  // Handle "N/A" first. Keep "N/A" at the bottom.
+  if (a.matchPercent === "N/A" && b.matchPercent !== "N/A") return 1;
+  if (b.matchPercent === "N/A" && a.matchPercent !== "N/A") return -1;
+  if (a.matchPercent === "N/A" && b.matchPercent === "N/A") {
+    // Both are "N/A" -- tie break on totalMatched (descending).
+    return b.totalMatched - a.totalMatched;
+  }
+
+  // Now both have numeric matchPercent, sort by descending match %
+  if (a.matchPercent !== b.matchPercent) {
+    return b.matchPercent - a.matchPercent;
+  }
+
+  // If match percents are equal, break tie using totalMatched (descending)
+  return b.totalMatched - a.totalMatched;
+});
 
             // Calculate median
             const validPercentages = sortedData
