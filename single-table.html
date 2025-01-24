@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NRMP Data</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    /* Your CSS remains unchanged */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NRMP Data Viewer</h1>
+
+    <!-- Slider Section -->
+    <div class="slider-section">
+      <div id="year-slider"></div>
+    </div>
+
+    <!-- Dynamic Title -->
+    <div class="dynamic-title">
+      <h2 id="dynamic-title-text"></h2>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Specialty Checkboxes -->
+      <aside id="specialty-checkboxes"></aside>
+
+      <!-- Content Section -->
+      <main id="content"></main>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button id="export-pdf" class="btn-export">Export to PDF</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const csvUrl = "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2024_Main_and_Specialty.csv";
+      let yearRange = [2020, 2024]; // Default Year Range
+      let selectedSpecialties = ["ALL"]; // Default: All specialties
+
+      fetch(csvUrl)
+        .then(response => response.text())
+        .then(data => {
+          const rows = data.split("\n").map(row => row.split(","));
+          const headers = rows.shift().map(header => header.trim());
+
+          // Extract years dynamically from headers
+          const quotaYearColumns = headers.filter(header => header.match(/^\d{4} Quota$/));
+          const matchedYearColumns = headers.filter(header => header.match(/^\d{4} Matched$/));
+          const years = quotaYearColumns.map(col => parseInt(col.split(" ")[0], 10)); // Extract year as a number
+
+          // Find other column indexes
+          const sponsorIndex = headers.indexOf("Sponsoring Institution Cleaned");
+          const snhafIndex = headers.indexOf("SNHAF");
+          const specialtyIndex = headers.indexOf("Specialty Cleaned");
+
+          if (
+            sponsorIndex === -1 ||
+            snhafIndex === -1 ||
+            specialtyIndex === -1 ||
+            quotaYearColumns.length === 0 ||
+            matchedYearColumns.length === 0
+          ) {
+            console.error("Missing required columns. Please check your CSV file.");
+            return;
+          }
+
+          // Create Year Range Slider
+          const yearSlider = document.getElementById("year-slider");
+          noUiSlider.create(yearSlider, {
+            start: [Math.min(...years), Math.max(...years)],
+            connect: true,
+            range: {
+              min: Math.min(...years),
+              max: Math.max(...years),
+            },
+            step: 1,
+            tooltips: true,
+            format: {
+              to: value => Math.round(value),
+              from: value => Math.round(value),
+            },
+          });
+
+          // Update Year Range and Trigger Table Update
+          yearSlider.noUiSlider.on("update", function (values) {
+            yearRange = values.map(v => parseInt(v, 10));
+            updateTable();
+          });
+
+          // Populate Specialty Checkboxes
+          const uniqueSpecialties = [...new Set(rows.map(row => row[specialtyIndex]?.trim()).filter(Boolean))].sort();
+          const specialtyCheckboxContainer = document.getElementById("specialty-checkboxes");
+          specialtyCheckboxContainer.innerHTML = `
+            <label><input type="checkbox" value="ALL" checked>ALL</label>
+          `;
+          uniqueSpecialties.forEach(specialty => {
+            const checkbox = document.createElement("label");
+            checkbox.innerHTML = `<input type="checkbox" value="${specialty}"> ${specialty}`;
+            specialtyCheckboxContainer.appendChild(checkbox);
+          });
+
+          // Handle Specialty Selection Changes
+          specialtyCheckboxContainer.addEventListener("change", function (event) {
+            const checkboxes = Array.from(specialtyCheckboxContainer.querySelectorAll("input[type='checkbox']"));
+            const allCheckbox = checkboxes.find(checkbox => checkbox.value === "ALL");
+
+            if (event.target.value === "ALL") {
+              if (event.target.checked) {
+                checkboxes.forEach(checkbox => {
+                  if (checkbox.value !== "ALL") checkbox.checked = false;
+                });
+                selectedSpecialties = ["ALL"];
+              } else {
+                selectedSpecialties = [];
+              }
+            } else {
+              if (event.target.checked) {
+                allCheckbox.checked = false;
+              }
+
+              selectedSpecialties = checkboxes
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+              if (selectedSpecialties.includes("ALL")) {
+                selectedSpecialties = selectedSpecialties.filter(value => value !== "ALL");
+              }
+            }
+
+            updateTable();
+          });
+
+          // Update Table Based on Filters
+          function updateTable() {
+            const filteredRows = rows.filter(row => {
+              const yearMatch = years.some(year => {
+                const inRange = year >= yearRange[0] && year <= yearRange[1];
+                const quotaColumn = headers.indexOf(`${year} Quota`);
+                return inRange && parseInt(row[quotaColumn]?.trim() || 0, 10) > 0;
+              });
+
+              const specialtyMatch =
+                selectedSpecialties.includes("ALL") || selectedSpecialties.includes(row[specialtyIndex]?.trim());
+
+              return yearMatch && specialtyMatch;
+            });
+
+            const aggregates = {};
+
+            filteredRows.forEach(row => {
+              const sponsor = row[sponsorIndex]?.trim();
+              if (sponsor) {
+                if (!aggregates[sponsor]) {
+                  aggregates[sponsor] = { totalQuota: 0, totalMatched: 0 };
+                }
+
+                years.forEach(year => {
+                  if (year >= yearRange[0] && year <= yearRange[1]) {
+                    const quotaColumn = headers.indexOf(`${year} Quota`);
+                    const matchedColumn = headers.indexOf(`${year} Matched`);
+                    aggregates[sponsor].totalQuota += parseInt(row[quotaColumn]?.trim() || 0, 10);
+                    aggregates[sponsor].totalMatched += parseInt(row[matchedColumn]?.trim() || 0, 10);
+                  }
+                });
+              }
+            });
+
+            const contentDiv = document.getElementById("content");
+            contentDiv.innerHTML = ""; // Clear previous content
+
+            contentDiv.appendChild(createTable(aggregates));
+          }
+
+          // Function to create a table
+          function createTable(aggregates) {
+            const section = document.createElement("div");
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const headerRow = document.createElement("tr");
+            ["Sponsoring Institution", "Solicited", "Matched", "Not Matched", "Match %"].forEach(header => {
+              const th = document.createElement("th");
+              th.textContent = header;
+              headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            Object.keys(aggregates).forEach(sponsor => {
+              const sponsorData = aggregates[sponsor];
+              const notMatched = sponsorData.totalQuota - sponsorData.totalMatched;
+              const matchPercent = sponsorData.totalQuota > 0
+                ? (sponsorData.totalMatched / sponsorData.totalQuota) * 100
+                : "N/A";
+
+              const tr = document.createElement("tr");
+              [
+                sponsor,
+                sponsorData.totalQuota.toLocaleString(),
+                sponsorData.totalMatched.toLocaleString(),
+                notMatched.toLocaleString(),
+                matchPercent === "N/A" ? "N/A" : `${matchPercent.toFixed(2)}%`
+              ].forEach(text => {
+                const td = document.createElement("td");
+                td.textContent = text;
+                tr.appendChild(td);
+              });
+
+              tbody.appendChild(tr);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(table);
+            return section;
+          }
+
+          updateTable(); // Initialize table
+        })
+        .catch(error => console.error("Error loading CSV:", error));
+
+      document.getElementById("export-pdf").addEventListener("click", function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.text("National Residency Match Program (NRMP) Data Export", 10, 10);
+
+        doc.autoTable({
+          html: document.querySelector("table"),
+          startY: 20,
+        });
+
+        doc.save("NRMP_Data.pdf");
+      });
+    });
+  </script>
+</body>
+</html>
