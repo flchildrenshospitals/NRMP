@@ -141,7 +141,7 @@ Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Larg
 Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Orthopaedic Surgery,Orthopaedic Surgery,1981260C0,2,2,2,2,2,2,2,2,2,2
 Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Psychiatry,Psychiatry,1981400C0,5,5,4,4,4,4,4,4,4,1
 Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Transitional,Transitional,1981999P0,7,7,2,2,8,4,7,0,7,5
-Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Transitional/Dermatology,Transitional,1981999P1,3,3,3,3,3,3,3,3,3,3
+Main,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Transitional/Dermatology,Transitional,1981999P1,3,3,3,3,2,2,3,3,3,3
 Main,HCA Healthcare/USF Morsani GME-Oak Hill-FL,HCA Healthcare/USF Morsani GME-Oak Hill,NOT,Brooksville,Brooksville,Anesthesiology,Anesthesiology,1662040A0,0,0,6,6,6,6,6,6,6,6
 Main,HCA Healthcare/USF Morsani GME-Oak Hill-FL,HCA Healthcare/USF Morsani GME-Oak Hill,NOT,Brooksville,Brooksville,Anesthesiology,Anesthesiology,1662040R1,0,0,0,0,2,2,0,0,0,0
 Main,HCA Healthcare/USF Morsani GME-Oak Hill-FL,HCA Healthcare/USF Morsani GME-Oak Hill,NOT,Brooksville,Brooksville,Emergency Medicine,Emergency Medicine,1662110C0,6,6,6,1,6,4,6,6,6,6
@@ -247,6 +247,8 @@ Main,Mt Sinai Med Ctr-Miami-FL,Mt Sinai Med Ctr-Miami,SNHAF,Miami Beach,Miami Be
 Main,NCH Healthcare Sys-FL,NCH Healthcare Sys,NOT,Naples,Naples,Internal Medicine,Internal Medicine,1958140C0,16,16,15,15,16,16,16,16,12,12
 Main,NCH Healthcare Sys-FL,NCH Healthcare Sys,NOT,Naples,Naples,Transitional,Transitional,1958999P0,6,6,6,6,6,6,6,6,0,0
 Main,Nemours Childrens Hosp-FL,Nemours Childrens Hosp,NOT,Orlando,Orlando,Pediatrics,Pediatrics,2175320C0,16,16,12,12,12,12,12,12,12,10
+Main,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatrics,Pediatrics,1110320C0,27,27,27,25,27,27,27,27,27,27
+Main,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatrics/SACM,Pediatrics,1110320C1,1,1,1,1,1,1,1,1,1,1
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Clearwater,Family Medicine,Family Medicine,2256120C0,4,4,4,4,0,0,0,0,0,0
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Orlando,Psychiatry/Orlando,Psychiatry,2256400C0,6,6,6,4,6,6,6,6,6,0
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Clearwater,Psychiatry/Bay Pines,Psychiatry,2256400C1,3,3,3,3,3,1,0,0,0,0
