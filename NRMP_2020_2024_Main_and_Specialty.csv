@@ -16,20 +16,20 @@ Main,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,Radiology-Dia
 Main,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,General Surgery,General Surgery,1102440C0,4,4,4,4,4,4,4,4,4,4
 Main,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Tampa,General Surgery/Tampa,General Surgery,1102440C1,4,4,0,0,0,0,0,0,0,0
 Main,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Tampa,Surgery Prelim/Tampa,Surgery-Preliminary,1102440P0,4,4,0,0,0,0,0,0,0,0
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Emergency Medicine,Emergency Medicine,1752110C0,0,0,0,0,0,0,12,12,12,12
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Internal Medicine,Internal Medicine,1752140C0,0,0,0,0,0,0,15,15,15,15
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Psychiatry,Psychiatry,1752400C0,0,0,0,0,0,0,5,5,5,5
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420A0,0,0,0,0,0,0,0,0,5,2
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420C0,0,0,0,0,0,0,5,1,0,0
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420R0,0,0,0,0,0,0,1,1,0,0
-Main,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Transitional,Transitional,1752999P0,0,0,0,0,0,0,8,8,13,13
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Emergency Medicine,Emergency Medicine,1752110C0,0,0,0,0,0,0,12,12,12,12
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Internal Medicine,Internal Medicine,1752140C0,0,0,0,0,0,0,15,15,15,15
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Psychiatry,Psychiatry,1752400C0,0,0,0,0,0,0,5,5,5,5
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420A0,0,0,0,0,0,0,0,0,5,2
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420C0,0,0,0,0,0,0,5,1,0,0
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Radiology-Diagnostic,Radiology-Diagnostic,1752420R0,0,0,0,0,0,0,1,1,0,0
+Main,Aventura Hospital,HCA Aventura Hospital,NOT,Aventura,Aventura,Transitional,Transitional,1752999P0,0,0,0,0,0,0,8,8,13,13
 Main,Baptist Health South Florida,Baptist Health South Florida,NOT,Coral Gables,Coral Gables,Family Medicine/FIU,Family Medicine,2331120C0,4,4,4,4,0,0,0,0,0,0
 Main,BayCare Health System-FL,BayCare Health System,NOT,Clearwater,Clearwater,Family Medicine,Family Medicine,2300120C0,6,6,0,0,0,0,0,0,0,0
 Main,BayCare Health System-FL,BayCare Health System,NOT,Clearwater,Clearwater,Internal Medicine,Internal Medicine,2300140C0,39,19,0,0,0,0,0,0,0,0
 Main,BayCare Health System-FL,BayCare Health System,NOT,Clearwater,Clearwater,Pediatrics,Pediatrics,2300320C0,8,5,8,8,8,8,0,0,0,0
 Main,BayCare Health System-FL,BayCare Health System,NOT,Clearwater,Clearwater,Psychiatry,Psychiatry,2300400C0,6,6,6,6,6,6,0,0,0,0
-Main,Bayfront Med Ctr-FL,Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Family Medicine,Family Medicine,1911120C0,8,8,8,8,8,8,8,8,8,8
-Main,Bayfront Med Ctr-FL,Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Obstetrics-Gynecology,Obstetrics-Gynecology,1911220C0,4,4,4,4,4,4,4,4,4,4
+Main,Bayfront Med Ctr-FL,OH Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Family Medicine,Family Medicine,1911120C0,8,8,8,8,8,8,8,8,8,8
+Main,Bayfront Med Ctr-FL,OH Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Obstetrics-Gynecology,Obstetrics-Gynecology,1911220C0,4,4,4,4,4,4,4,4,4,4
 Main,Borinquen Health Care Ctr-FL,Borinquen Health Care Ctr,NOT,Miami,Miami,Family Medicine,Family Medicine,2254120C0,4,4,4,4,4,4,4,4,4,4
 Main,Broward Health Med Ctr-FL,Broward Health Med Ctr,SNHAF,Fort Lauderdale,Fort Lauderdale,Dermatology,Dermatology,1892080A0,3,3,3,3,3,3,3,3,3,3
 Main,Broward Health Med Ctr-FL,Broward Health Med Ctr,SNHAF,Fort Lauderdale,Fort Lauderdale,Emergency Medicine,Emergency Medicine,1892110C0,15,12,13,7,13,8,13,13,0,0
@@ -252,7 +252,7 @@ Main,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,S
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Clearwater,Family Medicine,Family Medicine,2256120C0,4,4,4,4,0,0,0,0,0,0
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Orlando,Psychiatry/Orlando,Psychiatry,2256400C0,6,6,6,4,6,6,6,6,6,0
 Main,Nova Southeastern University KPCOM-FL,Nova Southeastern University KPCOM,NOT,Clearwater,Clearwater,Psychiatry/Bay Pines,Psychiatry,2256400C1,3,3,3,3,3,1,0,0,0,0
-Main,HCA Orange Park Med Ctr-FL,Orange Park Med Ctr,NOT,Orange Park,Orange Park,Surgery-Preliminary,Surgery-Preliminary,1771440P0,0,0,0,0,0,0,0,0,3,2
+Main,Orange Park Med Ctr-FL,HCA Orange Park Med Ctr,NOT,Orange Park,Orange Park,Surgery-Preliminary,Surgery-Preliminary,1771440P0,0,0,0,0,0,0,0,0,3,2
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Emergency Medicine,Emergency Medicine,1107110C0,18,18,18,18,18,18,18,18,18,18
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Internal Medicine,Internal Medicine,1107140C0,13,13,13,13,13,13,13,13,13,13
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Medicine-Preliminary,Medicine-Preliminary,1107140P0,2,0,2,1,2,2,2,2,2,2
@@ -263,17 +263,17 @@ Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Pathology,Pathology,
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Pediatrics,Pediatrics,1107320C0,16,16,14,14,0,0,0,0,0,0
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,General Surgery,General Surgery,1107440C0,6,6,6,6,6,6,6,6,6,6
 Main,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Surgery-Preliminary,Surgery-Preliminary,1107440P0,6,0,6,2,6,5,6,4,6,2
-Main,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Family Medicine,Family Medicine,2121120C0,0,0,0,0,4,4,3,3,4,4
-Main,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Internal Medicine,Internal Medicine,2121140C0,20,18,20,20,19,13,19,10,20,7
-Main,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Neurology,Neurology,2121180C0,1,1,1,1,1,1,1,1,1,0
-Main,HCA Palm Beach Consortium for GME-FL,Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Emergency Medicine,Emergency Medicine,2042110C0,0,0,0,0,0,0,6,6,6,6
-Main,HCA Palm Beach Consortium for GME-FL,Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Family Medicine,Family Medicine,2042120C0,0,0,0,0,0,0,6,4,6,1
-Main,HCA Palm Beach Consortium for GME-FL,Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Pediatrics,Pediatrics,2042320C0,0,0,0,0,0,0,6,0,6,2
-Main,HCA Palm Beach Consortium for GME-FL,Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Psychiatry,Psychiatry,2042400C0,0,0,0,0,0,0,9,9,9,9
+Main,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Family Medicine,Family Medicine,2121120C0,0,0,0,0,4,4,3,3,4,4
+Main,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Internal Medicine,Internal Medicine,2121140C0,20,18,20,20,19,13,19,10,20,7
+Main,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Neurology,Neurology,2121180C0,1,1,1,1,1,1,1,1,1,0
+Main,Palm Beach Consortium for GME-FL,HCA Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Emergency Medicine,Emergency Medicine,2042110C0,0,0,0,0,0,0,6,6,6,6
+Main,Palm Beach Consortium for GME-FL,HCA Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Family Medicine,Family Medicine,2042120C0,0,0,0,0,0,0,6,4,6,1
+Main,Palm Beach Consortium for GME-FL,HCA Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Pediatrics,Pediatrics,2042320C0,0,0,0,0,0,0,6,0,6,2
+Main,Palm Beach Consortium for GME-FL,HCA Palm Beach Consortium for GME,NOT,Ft. Lauderdale,Ft. Lauderdale,Psychiatry,Psychiatry,2042400C0,0,0,0,0,0,0,9,9,9,9
 Main,Southern Winds Hospital-FL,Southern Winds Hospital,NOT,Hialeah,Hialeah,Psychiatry,Psychiatry,2393400C0,10,10,0,0,0,0,0,0,0,0
 Main,St Vincents Med Ctr-FL,St Vincents Med Ctr,SNHAF,Jacksonville,Jacksonville,Family Medicine,Family Medicine,3125120C0,12,12,10,10,10,10,10,10,10,10
 Main,Tallahassee Mem Healthcare-FL,Tallahassee Mem Healthcare,NOT,Tallahassee,Tallahassee,Family Medicine,Family Medicine,2926120C0,11,11,11,11,11,9,12,12,11,11
-Main,HCA UCF COM/GME Consortium-FL,UCF COM/GME Consortium,NOT,Orlando,Ocala,Anesthesiology/Ocala,Anesthesiology,1587040R0,0,0,0,0,0,0,0,0,1,1
+Main,UCF COM/GME Consortium-FL,HCA UCF COM/GME Consortium,NOT,Orlando,Ocala,Anesthesiology/Ocala,Anesthesiology,1587040R0,0,0,0,0,0,0,0,0,1,1
 Main,U Central FL/HCA Healthcare GME,U Central FL/HCA Healthcare GME,NOT,Orlando,Ocala,Anesthesiology/Ocala,Anesthesiology,1587040A0,9,9,9,9,9,9,9,9,9,9
 Main,U Central FL/HCA Healthcare GME,U Central FL/HCA Healthcare GME,NOT,Orlando,Orlando,Dermatology,Dermatology,1587080A0,2,2,2,2,2,2,0,0,0,0
 Main,U Central FL/HCA Healthcare GME,U Central FL/HCA Healthcare GME,NOT,Orlando,Orlando,Dermatology,Dermatology,1587080R0,0,0,0,0,2,2,0,0,0,0
@@ -451,16 +451,16 @@ Specialty,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,Gastroen
 Specialty,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,Gynecologic Oncology,Gynecologic Oncology,1102225F0,2,2,1,1,1,1,2,2,1,1
 Specialty,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,Hospice and Palliative Medicine,Hospice and Palliative Medicine,1102540F0,0,0,2,2,2,2,2,2,2,2
 Specialty,AdventHealth Florida,AdventHealth Florida,NOT,Orlando,Orlando,Clinical Ultrasound,Clinical Ultrasound,1102E01F0,2,0,2,0,2,0,2,2,2,0
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Cardiovascular Disease,Cardiovascular Disease,1752141F0,0,0,0,0,0,0,2,2,2,2
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Gastroenterology/Clinical,Gastroenterology,1752144F0,0,0,0,0,0,0,2,2,2,2
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Infectious Disease,Infectious Disease,1752146F0,0,0,0,0,0,0,2,1,2,0
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Pulmonary Disease,Pulmonary Disease,1752149F0,0,0,0,0,0,0,1,1,1,1
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Geriatric Medicine (Internal Medicine),Geriatric Medicine,1752151F0,0,0,0,0,0,0,2,0,2,2
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Pulmonary/Critical Care,Pulmonary Critical Care,1752156F0,0,0,0,0,0,0,3,3,3,3
-Specialty,HCA Aventura Hospital-FL,Aventura Hospital,NOT,Aventura,Aventura,Hospice and Palliative Medicine,Hospice and Palliative Medicine,1752540F0,0,0,0,0,0,0,2,1,2,1
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Cardiovascular Disease,Cardiovascular Disease,1752141F0,0,0,0,0,0,0,2,2,2,2
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Gastroenterology/Clinical,Gastroenterology,1752144F0,0,0,0,0,0,0,2,2,2,2
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Infectious Disease,Infectious Disease,1752146F0,0,0,0,0,0,0,2,1,2,0
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Pulmonary Disease,Pulmonary Disease,1752149F0,0,0,0,0,0,0,1,1,1,1
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Geriatric Medicine (Internal Medicine),Geriatric Medicine,1752151F0,0,0,0,0,0,0,2,0,2,2
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Pulmonary/Critical Care,Pulmonary Critical Care,1752156F0,0,0,0,0,0,0,3,3,3,3
+Specialty,Aventura Hospital-FL,HCA Aventura Hospital,NOT,Aventura,Aventura,Hospice and Palliative Medicine,Hospice and Palliative Medicine,1752540F0,0,0,0,0,0,0,2,1,2,1
 Specialty,Baptist Health South Florida,Baptist Health South Florida,NOT,Coral Gables,Coral Gables,Sports Medicine (Fam Med),Sports Medicine,2331127F0,1,1,1,1,0,0,0,0,0,0
 Specialty,Baptist Health South Florida,Baptist Health South Florida,NOT,Coral Gables,Coral Gables,Orthopaedic Hand Surgery,Orthopaedic Hand Surgery,2331263F0,1,1,0,0,0,0,0,0,0,0
-Specialty,Bayfront Med Ctr-FL,Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Sports Medicine (Fam Med),Sports Medicine,1911127F0,2,2,2,2,2,2,2,2,2,2
+Specialty,Bayfront Med Ctr-FL,OH Bayfront Med Ctr,SNHAF,St Petersburg,St Petersburg,Sports Medicine (Fam Med),Sports Medicine,1911127F0,2,2,2,2,2,2,2,2,2,2
 Specialty,Broward County Office of Medical Examiner/TS,Broward County Office of Medical Examiner/TS,NOT,Fort Lauderdale,Fort Lauderdale,Forensic Pathology,Forensic Pathology,2363310F0,2,1,0,0,0,0,0,0,0,0
 Specialty,Broward Health Med Ctr-FL,Broward Health Med Ctr,SNHAF,Fort Lauderdale,Fort Lauderdale,Cardiovascular Disease,Cardiovascular Disease,1892141F0,3,3,3,3,3,3,3,3,3,3
 Specialty,Broward Health Med Ctr-FL,Broward Health Med Ctr,SNHAF,Fort Lauderdale,Fort Lauderdale,Gastroenterology/Clinical,Gastroenterology,1892144F0,2,2,0,0,0,0,0,0,0,0
@@ -628,10 +628,10 @@ Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Pediatric Gastr
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Pediatric Sports Medicine,Pediatric Sports Medicine,1107333F0,2,2,2,2,0,0,0,0,0,0
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Surgical Critical Care,Surgical Critical Care,1107442F0,4,3,4,2,3,3,3,3,2,2
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Clinical Ultrasound,Clinical Ultrasound,1107E01F0,2,2,2,2,2,2,2,2,2,2
-Specialty,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Cardiovascular Disease,Cardiovascular Disease,2121141F0,3,2,0,0,0,0,0,0,0,0
-Specialty,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Critical Care Medicine,Critical Care Medicine,2121142F0,3,3,3,3,0,0,0,0,0,0
-Specialty,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Infectious Disease,Infectious Disease,2121146F1,0,0,0,0,1,0,1,0,1,1
-Specialty,HCA Palmetto General Hosp-FL,Palmetto General Hosp,NOT,Hialeah,Hialeah,Vascular Neurology,Vascular Neurology,2121188F0,1,1,0,0,0,0,0,0,0,0
+Specialty,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Cardiovascular Disease,Cardiovascular Disease,2121141F0,3,2,0,0,0,0,0,0,0,0
+Specialty,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Critical Care Medicine,Critical Care Medicine,2121142F0,3,3,3,3,0,0,0,0,0,0
+Specialty,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Infectious Disease,Infectious Disease,2121146F1,0,0,0,0,1,0,1,0,1,1
+Specialty,Palmetto General Hosp-FL,HCA Palmetto General Hosp,NOT,Hialeah,Hialeah,Vascular Neurology,Vascular Neurology,2121188F0,1,1,0,0,0,0,0,0,0,0
 Specialty,St Vincents Med Ctr-FL,St Vincents Med Ctr,SNHAF,Jacksonville,Jacksonville,Sports Medicine (Fam Med),Sports Medicine,3125127F0,0,0,0,0,2,2,2,1,0,0
 Specialty,U Central FL/HCA Healthcare GME,U Central FL/HCA Healthcare GME,NOT,Orlando,Orlando,Emergency Medical Services/Orlando,Emergency Medical Services,1587112F0,2,1,2,1,0,0,0,0,0,0
 Specialty,U Central FL/HCA Healthcare GME,U Central FL/HCA Healthcare GME,NOT,Orlando,Orlando,Geriatric Medicine (Family Medicine),Geriatric Medicine,1587125F0,2,0,2,0,2,0,0,0,0,0
