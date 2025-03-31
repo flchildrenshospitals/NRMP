@@ -162,14 +162,14 @@ Main,HCA Healthcare/USF Morsani GME-Trinity-FL,HCA Healthcare/USF Morsani GME-Tr
 Main,HCA Healthcare/USF Morsani-Northside-FL,HCA Healthcare/USF Morsani-Northside,NOT,St. Petersburg,St. Petersburg,Internal Medicine,Internal Medicine,2107140C0,6,6,10,8,10,3,10,7,10,3
 Main,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St. Petersburg,St. Petersburg,Child Neurology,Child Neurology,1589185C0,1,1,0,0,0,0,0,0,0,0
 Main,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St. Petersburg,St. Petersburg,Pediatrics,Pediatrics,1589320C0,12,8,12,12,12,12,12,12,12,12
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Anesthesiology,Anesthesiology,1697040A0,0,0,0,0,0,0,6,6,6,6
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Emergency Medicine,Emergency Medicine,1697110C0,0,0,0,0,0,0,12,12,12,12
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Internal Medicine,Internal Medicine,1697140C0,0,0,0,0,0,0,14,14,14,14
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,General Surgery,General Surgery,1697440C0,0,0,0,0,0,0,5,5,5,5
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Surgery-Preliminary,Surgery-Preliminary,1697440P0,0,0,0,0,0,0,4,0,4,1
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Surg-Prelim/Anesthesiology,Surgery-Preliminary,1697440P1,0,0,0,0,0,0,2,1,2,0
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Transitional,Transitional,1697999P0,0,0,0,0,0,0,8,5,8,2
-Main,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Transitional/Anesthesiology,Transitional,1697999P1,0,0,0,0,0,0,5,5,5,3
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Anesthesiology,Anesthesiology,1697040A0,0,0,0,0,0,0,6,6,6,6
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Emergency Medicine,Emergency Medicine,1697110C0,0,0,0,0,0,0,12,12,12,12
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Internal Medicine,Internal Medicine,1697140C0,0,0,0,0,0,0,14,14,14,14
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,General Surgery,General Surgery,1697440C0,0,0,0,0,0,0,5,5,5,5
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Surgery-Preliminary,Surgery-Preliminary,1697440P0,0,0,0,0,0,0,4,0,4,1
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Surg-Prelim/Anesthesiology,Surgery-Preliminary,1697440P1,0,0,0,0,0,0,2,1,2,0
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Transitional,Transitional,1697999P0,0,0,0,0,0,0,8,5,8,2
+Main,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Transitional/Anesthesiology,Transitional,1697999P1,0,0,0,0,0,0,5,5,5,3
 Main,Keralty Hospital-FL,Keralty Hospital,NOT,Miami,Miami,Family Medicine,Family Medicine,2342120C0,6,6,6,6,0,0,0,0,0,0
 Main,Lakeland Regional Health-FL,Lakeland Regional Health,NOT,Lakeland,Lakeland,Emergency Medicine,Emergency Medicine,2323110C0,15,15,15,15,0,0,0,0,0,0
 Main,Lakeland Regional Health-FL,Lakeland Regional Health,NOT,Lakeland,Lakeland,Family Medicine,Family Medicine,2323120C0,8,5,8,7,0,0,0,0,0,0
@@ -540,8 +540,8 @@ Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,S
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Pediatric Surgery,Pediatric Surgery,1589445F0,1,1,1,1,1,1,1,1,1,1
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Hospice and Palliative Medicine,Hospice and Palliative Medicine,1589540F0,1,1,1,1,1,1,1,1,1,1
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Pediatric Hospital Medicine,Pediatric Hospital Medicine,1589H01F0,0,0,0,0,0,0,0,0,1,1
-Specialty,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Surgical Critical Care,Surgical Critical Care,1697442F0,0,0,3,3,3,2,3,3,3,2
-Specialty,Kendall Regional Med Ctr-FL,Kendall Regional Med Ctr,NOT,Miami,Miami,Clinical Ultrasound,Clinical Ultrasound,1697E01F0,0,0,0,0,2,2,2,2,2,1
+Specialty,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Surgical Critical Care,Surgical Critical Care,1697442F0,0,0,3,3,3,2,3,3,3,2
+Specialty,Kendall Regional Med Ctr-FL,HCA Kendall Regional Med Ctr,NOT,Miami,Miami,Clinical Ultrasound,Clinical Ultrasound,1697E01F0,0,0,0,0,2,2,2,2,2,1
 Specialty,Lakeland Regional Health-FL,Lakeland Regional Health,NOT,Lakeland,Lakeland,Surgical Critical Care,Surgical Critical Care,2323442F0,3,0,4,1,0,0,0,0,0,0
 Specialty,Larkin Comm Hosp Palm Springs Campus-FL,Larkin Comm Hosp Palm Springs Campus,NOT,Hialeah,Hialeah,Sports Medicine (Fam Med),Sports Medicine,2238127F0,1,1,1,1,0,0,0,0,0,0
 Specialty,Larkin Comm Hosp Palm Springs Campus-FL,Larkin Comm Hosp Palm Springs Campus,NOT,Hialeah,Hialeah,Gastroenterology/Clinical,Gastroenterology,2238144F0,3,3,3,3,3,3,3,1,0,0
