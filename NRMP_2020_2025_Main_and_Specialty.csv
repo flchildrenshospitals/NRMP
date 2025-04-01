@@ -638,17 +638,17 @@ Specialty,Nemours Childrens Hosp-FL,Nemours Childrens Hosp,NOT,Orlando,Orlando,P
 Specialty,Nemours Childrens Hosp-FL,Nemours Childrens Hosp,NOT,Orlando,Orlando,Pediatric Endocrinology,Pediatric Endocrinology,2175326F0,1,0,1,1,0,0,0,0,0,0,0,0
 Specialty,Nemours Childrens Hosp-FL,Nemours Childrens Hosp,NOT,Orlando,Orlando,Pediatric Pulmonology,Pediatric Pulmonology,2175330F0,1,0,0,0,0,0,0,0,0,0,0,0
 Specialty,Nemours Childrens Hosp-FL,Nemours Childrens Hosp,NOT,Orlando,Orlando,Pediatric Hospital Medicine,Pediatric Hospital Medicine,2175334F0,1,1,1,1,0,0,0,0,0,0,0,0
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Allergy & Immunology/Pediatrics,Allergy & Immunology,1110020F0,1,1,1,1,1,1,1,1,1,1,1,1
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Clinical Neurophysiology,Clinical Neurophysiology,1110187F0,3,2,3,0,0,0,0,0,0,0,0,0
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Adolescent Medicine,Adolescent Medicine,1110321F0,0,0,0,0,0,0,0,0,2,1,2,1
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Critical Care Medicine,Pediatric Critical Care Medicine,1110323F0,3,1,3,3,3,3,3,3,3,3,3,3
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Emergency Medicine (Pediatrics),Pediatric Emergency Medicine,1110324F0,3,3,3,3,3,2,2,2,2,2,2,2
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Cardiology,Pediatric Cardiology,1110325F0,2,1,2,2,2,0,2,2,2,2,2,2
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Hematology/Oncology,Pediatric Hematology/Oncology,1110327F0,1,0,1,1,1,1,0,0,0,0,0,0
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Gastroenterology,Pediatric Gastroenterology,1110332F0,1,1,1,1,1,1,1,1,1,1,1,1
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Hospital Medicine,Pediatric Hospital Medicine,1110334F0,2,2,2,2,2,2,1,1,1,1,0,0
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Child and Adolescent Psychiatry,Child and Adolescent Psychiatry,1110405F0,2,1,2,1,2,2,2,2,2,2,0,0
-Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami-FL,SNHAF,Miami,Miami,Pediatric Surgery,Pediatric Surgery,1110445F0,1,1,1,1,1,1,1,1,1,1,1,1
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Allergy & Immunology/Pediatrics,Allergy & Immunology,1110020F0,1,1,1,1,1,1,1,1,1,1,1,1
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Clinical Neurophysiology,Clinical Neurophysiology,1110187F0,3,2,3,0,0,0,0,0,0,0,0,0
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Adolescent Medicine,Adolescent Medicine,1110321F0,0,0,0,0,0,0,0,0,2,1,2,1
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Critical Care Medicine,Pediatric Critical Care Medicine,1110323F0,3,1,3,3,3,3,3,3,3,3,3,3
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Emergency Medicine (Pediatrics),Pediatric Emergency Medicine,1110324F0,3,3,3,3,3,2,2,2,2,2,2,2
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Cardiology,Pediatric Cardiology,1110325F0,2,1,2,2,2,0,2,2,2,2,2,2
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Hematology/Oncology,Pediatric Hematology/Oncology,1110327F0,1,0,1,1,1,1,0,0,0,0,0,0
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Gastroenterology,Pediatric Gastroenterology,1110332F0,1,1,1,1,1,1,1,1,1,1,1,1
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Hospital Medicine,Pediatric Hospital Medicine,1110334F0,2,2,2,2,2,2,1,1,1,1,0,0
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Child and Adolescent Psychiatry,Child and Adolescent Psychiatry,1110405F0,2,1,2,1,2,2,2,2,2,2,0,0
+Specialty,Nicklaus Childrens Hospital-Miami-FL,Nicklaus Childrens Hospital-Miami,SNHAF,Miami,Miami,Pediatric Surgery,Pediatric Surgery,1110445F0,1,1,1,1,1,1,1,1,1,1,1,1
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Colon And Rectal Surgery,Colon and Rectal Surgery,1107060F0,3,3,3,3,3,3,3,3,3,3,3,3
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Emergency Medical Services,Emergency Medical Services,1107112F0,2,2,0,0,1,1,1,1,1,1,1,1
 Specialty,Orlando Health-FL,Orlando Health,SNHAF,Orlando,Orlando,Pediatric Emergency Medicine (Emergency Medicine),Pediatric Emergency Medicine,1107114F0,0,0,1,1,0,0,0,0,1,1,2,2
