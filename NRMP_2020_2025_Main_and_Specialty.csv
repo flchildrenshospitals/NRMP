@@ -545,28 +545,28 @@ Specialty,HCA Florida Orange Park Hosp,HCA Florida Orange Park Hosp,NOT,Orange P
 Specialty,HCA Florida Orange Park Hosp,HCA Florida Orange Park Hosp,NOT,Orange Park,Orange Park,Interventional Cardiology,Interventional Cardiology,1771152S0,1,1,0,0,0,0,0,0,0,0,0,0
 Specialty,HCA Florida Orange Park Hosp,HCA Florida Orange Park Hosp,NOT,Orange Park,Orange Park,Hematology and Oncology/Clinical,Hematology and Oncology,1771155F0,0,0,0,0,0,0,2,2,2,2,2,2
 Specialty,HCA Florida Orange Park Hosp,HCA Florida Orange Park Hosp,NOT,Orange Park,Orange Park,Hospice and Palliative Medicine,Hospice and Palliative Medicine,1771540F0,1,1,1,0,1,1,2,1,2,1,2,1
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Cardiovascular Disease,Cardiovascular Disease,2137141F0,3,3,3,3,3,3,3,3,3,3,3,3
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Endocrinology/Clinical,Endocrinology,2137143F0,2,2,2,2,2,1,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Gastroenterology/Clinical,Gastroenterology,2137144F0,2,2,2,2,2,2,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Rheumatology,Rheumatology,2137150F0,2,2,2,2,2,2,2,2,2,1,2,2
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Interventional Cardiology,Interventional Cardiology,2137152S0,1,1,0,0,0,0,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Pulmonary/Critical Care,Pulmonary Critical Care,2137156F0,3,3,3,3,3,3,3,2,3,3,3,3
-Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani-Bayonet Pt,NOT,Hudson,Hudson,Hospice and Palliative Medicine,Hospice and Palliative Medicine,2137540F0,2,2,2,2,2,0,2,1,1,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Blake-FL,HCA Healthcare/USF Morsani GME-Blake,NOT,Bradenton,Bradenton,Cardiovascular Disease,Cardiovascular Disease,1899141F0,2,2,2,2,2,2,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Blake-FL,HCA Healthcare/USF Morsani GME-Blake,NOT,Bradenton,Bradenton,Infectious Disease,Infectious Disease,1899146F0,1,0,1,0,1,0,1,0,1,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Brandon-FL,HCA Healthcare/USF Morsani GME-Brandon,NOT,Brandon,Brandon,Cardiovascular Disease,Cardiovascular Disease,1772141F0,3,3,3,3,3,3,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani GME-Brandon-FL,HCA Healthcare/USF Morsani GME-Brandon,NOT,Brandon,Brandon,Addiction Medicine,Addiction Medicine,1772404F0,2,1,2,2,2,0,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME-Citrus,NOT,Inverness,Inverness,Cardiovascular Disease,Cardiovascular Disease,2195141F0,3,3,3,3,3,3,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME-Citrus,NOT,Inverness,Inverness,Gastroenterology/Clinical,Gastroenterology,2195144F0,2,2,2,2,0,0,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME-Citrus,NOT,Inverness,Inverness,Pulmonary Disease,Pulmonary Disease,2195149F0,0,0,0,0,3,1,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME-Citrus,NOT,Inverness,Inverness,Pulmonary/Critical Care,Pulmonary Critical Care,2195156F0,3,3,0,0,0,0,0,0,0,0,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Cardiovascular Disease,Cardiovascular Disease,1981141F0,3,3,3,3,2,2,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Gastroenterology,Gastroenterology,1981144F0,2,2,2,2,2,2,1,1,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Rheumatology,Rheumatology,1981150F0,0,0,0,0,1,1,1,0,1,1,1,1
-Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME-Largo,NOT,Largo,Largo,Pulmonary/Critical Care,Pulmonary Critical Care,1981156F0,3,1,2,2,2,2,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani-Northside-FL,HCA Healthcare/USF Morsani-Northside,NOT,St Petersburg,St Petersburg,Cardiovascular Disease,Cardiovascular Disease,2107141F0,2,2,2,2,2,2,2,2,2,2,2,2
-Specialty,HCA Healthcare/USF Morsani GME-Oak Hill-FL,HCA Healthcare/USF Morsani GME-Oak Hill,NOT,Brooksville,Brooksville,Geriatric Medicine (Internal Medicine),Geriatric Medicine,1662151F0,2,1,2,0,2,2,2,1,2,2,0,0
-Specialty,HCA Healthcare/USF Morsani GME-Trinity-FL,HCA Healthcare/USF Morsani GME-Trinity,NOT,Trinity,Trinity,Cardiovascular Disease,Cardiovascular Disease,2235141F0,3,3,3,3,3,3,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Cardiovascular Disease,Cardiovascular Disease,2137141F0,3,3,3,3,3,3,3,3,3,3,3,3
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Endocrinology/Clinical,Endocrinology,2137143F0,2,2,2,2,2,1,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Gastroenterology/Clinical,Gastroenterology,2137144F0,2,2,2,2,2,2,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Rheumatology,Rheumatology,2137150F0,2,2,2,2,2,2,2,2,2,1,2,2
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Interventional Cardiology,Interventional Cardiology,2137152S0,1,1,0,0,0,0,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Pulmonary/Critical Care,Pulmonary Critical Care,2137156F0,3,3,3,3,3,3,3,2,3,3,3,3
+Specialty,HCA Healthcare/USF Morsani-Bayonet Pt-FL,HCA Healthcare/USF Morsani - Bayonet Point,NOT,Hudson,Hudson,Hospice and Palliative Medicine,Hospice and Palliative Medicine,2137540F0,2,2,2,2,2,0,2,1,1,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Blake-FL,HCA Healthcare/USF Morsani GME - Blake,NOT,Bradenton,Bradenton,Cardiovascular Disease,Cardiovascular Disease,1899141F0,2,2,2,2,2,2,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Blake-FL,HCA Healthcare/USF Morsani GME - Blake,NOT,Bradenton,Bradenton,Infectious Disease,Infectious Disease,1899146F0,1,0,1,0,1,0,1,0,1,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Brandon-FL,HCA Healthcare/USF Morsani GME - Brandon,NOT,Brandon,Brandon,Cardiovascular Disease,Cardiovascular Disease,1772141F0,3,3,3,3,3,3,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani GME-Brandon-FL,HCA Healthcare/USF Morsani GME - Brandon,NOT,Brandon,Brandon,Addiction Medicine,Addiction Medicine,1772404F0,2,1,2,2,2,0,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME - Citrus,NOT,Inverness,Inverness,Cardiovascular Disease,Cardiovascular Disease,2195141F0,3,3,3,3,3,3,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME - Citrus,NOT,Inverness,Inverness,Gastroenterology/Clinical,Gastroenterology,2195144F0,2,2,2,2,0,0,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME - Citrus,NOT,Inverness,Inverness,Pulmonary Disease,Pulmonary Disease,2195149F0,0,0,0,0,3,1,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Citrus-FL,HCA Healthcare/USF Morsani GME - Citrus,NOT,Inverness,Inverness,Pulmonary/Critical Care,Pulmonary Critical Care,2195156F0,3,3,0,0,0,0,0,0,0,0,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME - Largo,NOT,Largo,Largo,Cardiovascular Disease,Cardiovascular Disease,1981141F0,3,3,3,3,2,2,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME - Largo,NOT,Largo,Largo,Gastroenterology,Gastroenterology,1981144F0,2,2,2,2,2,2,1,1,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME - Largo,NOT,Largo,Largo,Rheumatology,Rheumatology,1981150F0,0,0,0,0,1,1,1,0,1,1,1,1
+Specialty,HCA Healthcare/USF Morsani GME-Largo-FL,HCA Healthcare/USF Morsani GME - Largo,NOT,Largo,Largo,Pulmonary/Critical Care,Pulmonary Critical Care,1981156F0,3,1,2,2,2,2,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani-Northside-FL,HCA Healthcare/USF Morsani - Northside,NOT,St Petersburg,St Petersburg,Cardiovascular Disease,Cardiovascular Disease,2107141F0,2,2,2,2,2,2,2,2,2,2,2,2
+Specialty,HCA Healthcare/USF Morsani GME-Oak Hill-FL,HCA Healthcare/USF Morsani GME - Oak Hill,NOT,Brooksville,Brooksville,Geriatric Medicine (Internal Medicine),Geriatric Medicine,1662151F0,2,1,2,0,2,2,2,1,2,2,0,0
+Specialty,HCA Healthcare/USF Morsani GME-Trinity-FL,HCA Healthcare/USF Morsani GME - Trinity,NOT,Trinity,Trinity,Cardiovascular Disease,Cardiovascular Disease,2235141F0,3,3,3,3,3,3,0,0,0,0,0,0
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Pediatric Anesthesiology,Pediatric Anesthesiology,1589042F0,0,0,2,0,0,0,0,0,0,0,0,0
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Pediatric Critical Care Medicine,Pediatric Critical Care Medicine,1589323F0,2,2,2,2,2,2,2,2,2,2,1,1
 Specialty,Johns Hopkins All Childrens Hosp-FL,Johns Hopkins All Childrens Hosp,SNHAF,St Petersburg,St Petersburg,Pediatric Emergency Medicine (Pediatrics),Pediatric Emergency Medicine,1589324F0,2,2,0,0,0,0,0,0,0,0,0,0
