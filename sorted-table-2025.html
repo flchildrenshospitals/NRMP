@@ -247,6 +247,9 @@
       <!-- Specialty Checkboxes -->
       <aside id="specialty-checkboxes"></aside>
 
+      <!-- SNHAF Filter -->
+      <aside id="snhaf-filter" style="margin-top: 20px;"></aside>
+
       <!-- Content Section -->
       <main id="content"></main>
     </div>
@@ -262,6 +265,8 @@
       "https://raw.githubusercontent.com/flchildrenshospitals/NRMP/refs/heads/main/NRMP_2020_2025_Main_and_Specialty.csv";
     let yearRange = [2020, 2024]; // Default Year Range
     let selectedSpecialties = ["ALL"]; // Default: All specialties
+    let selectedSNHAF = "ALL"; // New variable for SNHAF filter
+
 
     // Fetch CSV data
     fetch(csvUrl)
@@ -371,24 +376,46 @@
           updateTables();
         });
 
+        // Now, create SNHAF Filter Checkboxes:
+        const snhafFilterContainer = document.getElementById("snhaf-filter");
+        snhafFilterContainer.innerHTML = `
+          <p><strong>SNHAF Filter:</strong></p>
+          <label><input type="radio" name="snhaf" value="ALL" checked> ALL</label>
+          <label><input type="radio" name="snhaf" value="SNHAF"> SNHAF</label>
+          <label><input type="radio" name="snhaf" value="NOT"> NOT</label>
+        `;
+
+        snhafFilterContainer.addEventListener("change", function (event) {
+          selectedSNHAF = event.target.value;
+          updateTables();
+          updateDynamicTitle();
+        });
+
+
         // Create/Update Tables
         function updateTables() {
           // Filter rows based on slider range & selected specialties
           const filteredRows = rows.filter((row) => {
-            // Check if any year in the range has Quota > 0
+            // Existing year filter logic
             const yearMatch = years.some((year) => {
               const inRange = year >= yearRange[0] && year <= yearRange[1];
               const quotaColumn = headers.indexOf(`${year} Quota`);
               return inRange && parseInt(row[quotaColumn] || 0, 10) > 0;
             });
 
-            // Check specialty filter
+            // Existing specialty filter
             const specialtyMatch =
               selectedSpecialties.includes("ALL") ||
               selectedSpecialties.includes(row[specialtyIndex]?.trim());
 
-            return yearMatch && specialtyMatch;
+            // New SNHAF filter: only pass if selected is ALL or row's SNHAF value matches
+            const snhafMatch =
+              selectedSNHAF === "ALL" ||
+              row[snhafIndex]?.trim() === selectedSNHAF;
+
+            return yearMatch && specialtyMatch && snhafMatch;
           });
+
 
           // Aggregate data
           const allAggregates = {};
